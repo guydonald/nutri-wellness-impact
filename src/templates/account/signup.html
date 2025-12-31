@@ -1,0 +1,66 @@
+{% extends "account/base_entrance.html" %}
+{% load allauth i18n %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}
+    {% trans "Inscription" %}
+{% endblock head_title %}
+
+{% block content %}
+<div class="container min-vh-80 mt-5 d-flex justify-content-center align-items-center bg-light" style="margin-bottom: 30px;">
+    <div class="card shadow-lg p-4 rounded-4">
+        
+        {% element h1 %}
+            <h2 class="text-center mb-4 fw-bold">{% trans "Create your account" %}</h2>
+        {% endelement %}
+
+        {% setvar link %}
+            <a href="{{ login_url }}" class="text-primary fw-semibold">
+        {% endsetvar %}
+        {% setvar end_link %}
+            </a>
+        {% endsetvar %}
+
+        {% element p %}
+            <p class="text-center text-muted mb-4">
+                {% blocktranslate %}Do you already have an account? Then {{ link }}log in here{{ end_link }}.{% endblocktranslate %}
+            </p>
+        {% endelement %}
+
+        {% if not SOCIALACCOUNT_ONLY %}
+            {% url 'account_signup' as action_url %}
+            {% element form form=form method="post" action=action_url tags="entrance,signup" %}
+                {% slot body %}
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        {{ form|crispy }}
+                    </div>
+                    {{ redirect_field }}
+                {% endslot %}
+
+                {% slot actions %}
+                    <button type="submit" class="btn btn-primary w-100 mt-2">
+                        {% trans "Register" %}
+                    </button>
+                {% endslot %}
+            {% endelement %}
+        {% endif %}
+
+        {% if PASSKEY_SIGNUP_ENABLED %}
+            <hr class="my-4">
+            <a href="{{ signup_by_passkey_url }}" class="btn btn-outline-primary w-100">
+                {% trans "Register with an access key (Passkey)" %}
+            </a>
+        {% endif %}
+
+        {% if SOCIALACCOUNT_ENABLED %}
+            <hr class="my-4">
+            <div class="text-center">
+                <p class="text-muted">{% trans "Or register with:" %}</p>
+            </div>
+            {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+        {% endif %}
+
+    </div>
+</div>
+{% endblock content %}

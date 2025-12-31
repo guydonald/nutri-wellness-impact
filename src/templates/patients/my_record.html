@@ -1,0 +1,469 @@
+{% extends "bases.html" %}
+{% load allauth i18n %}
+{% block content %}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-folder-open text-primary me-2"></i>Dossier Médical : {{ patient.get_full_name|default:patient.username }}
+        </h2>
+        <button type="button" class="btn btn-success shadow-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#addFoodModal">
+            <i class="fas fa-plus me-1"></i> Noter mon repas
+        </button>
+    </div>
+
+    <div class="card shadow mb-4 border-0">
+        <div class="card-header bg-white py-3">
+            <h6 class="m-0 font-weight-bold text-primary text-uppercase small tracking-wider">
+                <i class="fas fa-chart-line me-2"></i>Évolution du Poids
+            </h6>
+        </div>
+        <div class="card-body">
+            <div style="height: 250px;">
+                <canvas id="weightChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <ul class="nav nav-pills mb-4 bg-light p-1 rounded shadow-sm" id="recordTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active rounded-pill px-4" id="medical-tab" data-bs-toggle="tab" data-bs-target="#medical">
+                <i class="fas fa-stethoscope me-2"></i>Consultations
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link rounded-pill px-4" id="diary-tab" data-bs-toggle="tab" data-bs-target="#diary">
+                <i class="fas fa-utensils me-2"></i>Journal Alimentaire
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link rounded-pill px-4" id="plan-tab" data-bs-toggle="tab" data-bs-target="#plan">
+                <i class="fas fa-clipboard-list me-2"></i>Plan Alimentaire
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="recordTabsContent">
+        
+        <div class="tab-pane fade show active" id="medical">
+            {% for consult in history %}
+            <div class="card mb-4 border-0 border-start border-primary border-4 shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                    <span class="fw-bold text-dark">
+                        <i class="far fa-calendar-alt text-primary me-2"></i>Consultation du {{ consult.date_consultation|date:"d F Y" }}
+                    </span>
+                    <span class="badge bg-soft-info text-info border border-info px-3 py-2 rounded-pill">
+                        <i class="fas fa-user-md me-1"></i> Suivi par {{ consult.dietitian.get_full_name }}
+                    </span>
+                </div>
+                <div class="card-body bg-white">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <h6 class="text-uppercase small fw-bold text-muted mb-3 border-bottom pb-2">Bilan Clinique</h6>
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <small class="text-muted d-block">Tension</small>
+                                    <span class="fw-bold"><i class="fas fa-heartbeat text-danger me-1"></i>{{ consult.blood_pressure|default:"--" }}</span>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted d-block">Poids</small>
+                                    <span class="fw-bold"><i class="fas fa-weight text-primary me-1"></i>{{ consult.weight }} kg</span>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted d-block">IMC</small>
+                                    {% if consult.bmi %}
+                                        <span class="badge bg-{{ consult.bmi_status.color }}">
+                                            {{ consult.bmi }} - {{ consult.bmi_status.label }}
+                                        </span>
+                                    {% else %}
+                                        <span class="text-muted small italic">Taille manquante</span>
+                                    {% endif %}
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted d-block">HbA1c</small>
+                                    <span class="fw-bold">{{ consult.hba1c|default:"--" }} %</span>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted d-block">Cholestérol</small>
+                                    <span class="fw-bold text-truncate d-inline-block" style="max-width: 100%;">{{ consult.total_cholesterol|default:"--" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7 border-start">
+                            <h6 class="text-uppercase small fw-bold text-muted mb-3 border-bottom pb-2">Analyse & Prescription</h6>
+                            <div class="mb-3">
+                                <label class="small fw-bold text-primary">Diagnostic (PES) :</label>
+                                <p class="mb-2 text-dark fs-6">{{ consult.nutritional_diagnosis|linebreaksbr }}</p>
+                            </div>
+                            <div>
+                                <label class="small fw-bold text-success">Plan d'intervention :</label>
+                                <p class="mb-0 text-dark small">{{ consult.intervention_plan|truncatewords:50 }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center py-5 shadow-sm rounded bg-light border">
+                <i class="fas fa-notes-medical fa-3x text-muted mb-3"></i>
+                <p class="text-muted">Aucune consultation enregistrée.</p>
+            </div>
+            {% endfor %}
+
+            {% if history.paginator.num_pages > 1 %}
+            <nav aria-label="Pagination Consultations" class="mt-4">
+                <ul class="pagination justify-content-center shadow-sm">
+                    {% if history.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page_h=1&page_f={{ food_log.number }}" title="Début">
+                                <i class="fas fa-angle-double-left"></i> <span class="d-none d-sm-inline">Début</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page_h={{ history.previous_page_number }}&page_f={{ food_log.number }}">
+                                <span class="d-none d-sm-inline">Précédent</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link text-muted"><i class="fas fa-angle-double-left"></i></span></li>
+                        <li class="page-item disabled"><span class="page-link text-muted">Précédent</span></li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link px-4 fw-bold">
+                            Page {{ history.number }} / {{ history.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    {% if history.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page_h={{ history.next_page_number }}&page_f={{ food_log.number }}">
+                                <span class="d-none d-sm-inline">Suivant</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page_h={{ history.paginator.num_pages }}&page_f={{ food_log.number }}" title="Fin">
+                                <span class="d-none d-sm-inline">Fin</span> <i class="fas fa-angle-double-right"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link text-muted">Suivant</span></li>
+                        <li class="page-item disabled"><span class="page-link text-muted"><i class="fas fa-angle-double-right"></i></span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+
+        <div class="tab-pane fade" id="diary">
+            <div class="card shadow-sm border-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="border-0 px-4">Date</th>
+                                <th class="border-0">Moment</th>
+                                <th class="border-0">Description</th>
+                                <th class="border-0 text-center">Boisson Sucrée</th>
+                                <th class="border-0 text-center">Actions</th> </tr>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in food_log %}
+                            <tr>
+                                <td class="px-4 fw-bold text-muted small">{{ entry.date|date:"d/m/Y" }}</td>
+                                <td><span class="badge rounded-pill bg-soft-primary text-primary px-3">{{ entry.get_meal_time_display }}</span></td>
+                                <td class="text-dark">{{ entry.description }}</td>
+                                <td class="text-center">
+                                    {% if entry.beverage %}
+                                        <span class="badge bg-danger-subtle text-danger rounded-circle p-2"><i class="fas fa-check"></i></span>
+                                    {% else %}
+                                        <span class="badge bg-light text-muted rounded-circle p-2"><i class="fas fa-times"></i></span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group">
+                                        <button type="button" 
+                                                class="btn btn-sm btn-outline-primary border-0" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#editFoodModal"
+                                                data-id="{{ entry.id }}"
+                                                data-moment="{{ entry.meal_time }}"
+                                                data-desc="{{ entry.description }}"
+                                                data-beverage="{{ entry.beverage|yesno:'true,false' }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+                                                <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
+                                            </svg>
+                                        </button>
+                                        <a href="{% url 'delete_food_entry' entry.id %}" class="btn btn-sm btn-outline-danger border-0" 
+                                        onclick="return confirm('Voulez-vous vraiment supprimer ce repas ?')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" class="text-center py-4 text-muted">Journal vide.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {% if food_log.paginator.num_pages > 1 %}
+            <nav aria-label="Pagination Journal" class="mt-4">
+                <ul class="pagination justify-content-center shadow-sm">
+                    {% if food_log.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link text-success" href="?page_f=1&page_h={{ history.number }}" title="Début">
+                                <i class="fas fa-angle-double-left"></i> <span class="d-none d-sm-inline">Début</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link text-success" href="?page_f={{ food_log.previous_page_number }}&page_h={{ history.number }}">
+                                <span class="d-none d-sm-inline">Précédent</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link text-muted"><i class="fas fa-angle-double-left"></i></span></li>
+                        <li class="page-item disabled"><span class="page-link text-muted">Précédent</span></li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link bg-success border-success px-4 fw-bold">
+                            Page {{ food_log.number }} / {{ food_log.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    {% if food_log.has_next %}
+                        <li class="page-item">
+                            <a class="page-link text-success" href="?page_f={{ food_log.next_page_number }}&page_h={{ history.number }}">
+                                <span class="d-none d-sm-inline">Suivant</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link text-success" href="?page_f={{ food_log.paginator.num_pages }}&page_h={{ history.number }}" title="Fin">
+                                <span class="d-none d-sm-inline">Fin</span> <i class="fas fa-angle-double-right"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link text-muted">Suivant</span></li>
+                        <li class="page-item disabled"><span class="page-link text-muted"><i class="fas fa-angle-double-right"></i></span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+        <div class="tab-pane fade" id="plan">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="text-primary mb-0"><i class="fas fa-utensils me-2"></i>Mon Programme Hebdomadaire</h4>
+                {% if user.role == 'dietitian' %}
+                    <a href="{% url 'manage_meal_plan' patient.id %}" class="btn btn-sm btn-primary rounded-pill px-3">
+                        <i class="fas fa-edit me-1"></i> Modifier le plan
+                    </a>
+                {% endif %}
+            </div>
+
+            {% if meal_plans %}
+            <div class="accordion shadow-sm" id="accordionMealPlan">
+                {% for plan in meal_plans %}
+                <div class="accordion-item border-0 mb-2 shadow-sm">
+                    <h2 class="accordion-header" id="heading{{ plan.day }}">
+                        <button class="accordion-button collapsed fw-bold text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ plan.day }}">
+                            <i class="far fa-calendar-check me-3"></i> {{ plan.get_day_display }}
+                        </button>
+                    </h2>
+                    <div id="collapse{{ plan.day }}" class="accordion-collapse collapse" data-bs-parent="#accordionMealPlan">
+                        <div class="accordion-body bg-light-subtle">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="p-3 bg-white rounded shadow-sm h-100">
+                                        <label class="small text-muted text-uppercase fw-bold">{% trans "Matin" %}</label>
+                                        <p class="mt-2 mb-1"><strong>Petit-déj :</strong> {{ plan.breakfast|linebreaksbr|default:"-" }}</p>
+                                        <p class="mb-0 text-info"><strong>Collation :</strong> {{ plan.morning_snack|default:"-" }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="p-3 bg-white rounded shadow-sm h-100">
+                                        <label class="small text-muted text-uppercase fw-bold">{% trans "Midi" %}</label>
+                                        <p class="mt-2 mb-1"><strong>Déjeuner :</strong> {{ plan.lunch|linebreaksbr|default:"-" }}</p>
+                                        <p class="mb-0 text-info"><strong>Collation :</strong> {{ plan.afternoon_snack|default:"-" }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="p-3 bg-white rounded shadow-sm h-100">
+                                        <label class="small text-muted text-uppercase fw-bold">{% trans "Soir" %}</label>
+                                        <p class="mt-2 mb-1"><strong>Dîner :</strong> {{ plan.dinner|linebreaksbr|default:"-" }}</p>
+                                        <p class="mb-0 text-info"><strong>Collation :</strong> {{ plan.evening_snack|default:"-" }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5 bg-light rounded shadow-sm">
+                <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                <p class="text-muted">Aucun plan alimentaire n'a encore été défini.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-soft-info { background-color: rgba(13, 202, 240, 0.1); }
+    .bg-soft-primary { background-color: rgba(13, 110, 253, 0.1); }
+    .bg-danger-subtle { background-color: rgba(220, 53, 69, 0.1); }
+    .nav-pills .nav-link.active { background-color: #4e73df; box-shadow: 0 4px 15px rgba(78, 115, 223, 0.3); }
+    .nav-pills .nav-link { color: #5a5c69; font-weight: 500; }
+    .border-left-primary { border-left: 0.25rem solid #4e73df !important; }
+    .page-link { border: none; color: #4e73df; font-weight: bold; }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- GRAPHIQUE ---
+        const ctx = document.getElementById('weightChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [{% for c in chart_history %}"{{ c.date_consultation|date:'d/m/y' }}",{% endfor %}],
+                datasets: [{
+                    label: 'Poids (kg)',
+                    data: [{% for c in chart_history %}{{ c.weight|default:0 }},{% endfor %}],
+                    borderColor: '#4e73df',
+                    backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#4e73df',
+                    pointRadius: 4,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: { 
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { 
+                    y: { beginAtZero: false, grid: { drawBorder: false } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // --- PERSISTENCE DES ONGLETS ---
+        const triggerTabList = [].slice.call(document.querySelectorAll('#recordTabs button'))
+        triggerTabList.forEach(function (triggerEl) {
+            triggerEl.addEventListener('click', function (event) {
+                localStorage.setItem('activeTab', event.target.id)
+            })
+        })
+
+        const activeTabId = localStorage.getItem('activeTab')
+        if (activeTabId) {
+            const tabEl = document.querySelector('#' + activeTabId)
+            if (tabEl) {
+                bootstrap.Tab.getInstance(tabEl)?.show() || new bootstrap.Tab(tabEl).show()
+            }
+        }
+
+        // Script pour gérer l'édition dynamique
+        const editModal = document.getElementById('editFoodModal');
+        editModal.addEventListener('show.bs.modal', function (event) {
+            // Le bouton qui a déclenché la modale
+            const button = event.relatedTarget;
+            
+            // Extraire les infos des attributs data-*
+            const entryId = button.getAttribute('data-id');
+            const moment = button.getAttribute('data-moment');
+            const desc = button.getAttribute('data-desc');
+            const beverage = button.getAttribute('data-beverage') === 'true';
+
+            // Mettre à jour l'action du formulaire (l'URL)
+            const form = document.getElementById('editFoodForm');
+            form.action = `/edit-food/${entryId}/`; // Vérifiez que votre URL correspond à ce schéma
+
+            // Remplir les champs
+            const selectMoment = editModal.querySelector('select[name="meal_time"]');
+            const inputDesc = editModal.querySelector('#edit_desc');
+            const checkBev = editModal.querySelector('#edit_beverage');
+
+            selectMoment.value = moment;
+            inputDesc.value = desc;
+            checkBev.checked = beverage;
+        });
+    });
+</script>
+
+<div class="modal fade" id="addFoodModal" tabindex="-1" aria-labelledby="addFoodModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="addFoodModalLabel"><i class="fas fa-utensils me-2"></i>Notez votre repas</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'add_food_entry' %}">
+                {% csrf_token %}
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Quel repas ?</label>
+                        {{ food_form.meal_time }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Description du contenu</label>
+                        {{ food_form.description }}
+                        <div class="form-text mt-2 text-muted small">
+                            Soyez précis (ex: 2 bananes vapeur, sauce tomate, poisson grillé).
+                        </div>
+                    </div>
+                    <div class="form-check form-switch mt-4">
+                        {{ food_form.beverage }}
+                        <label class="form-check-label ms-2 fw-bold text-danger">J'ai consommé une boisson sucrée</label>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light border-0">
+                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-success rounded-pill px-4">Enregistrer le repas</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editFoodModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Modifier mon repas</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" id="editFoodForm" action="">
+                {% csrf_token %}
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Quel repas ?</label>
+                        {{ food_form.meal_time }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Description du contenu</label>
+                        <textarea name="description" id="edit_desc" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="form-check form-switch mt-4">
+                        <input type="checkbox" name="beverage" id="edit_beverage" class="form-check-input">
+                        <label class="form-check-label ms-2 fw-bold text-danger">Boisson sucrée consommée</label>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light border-0">
+                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">Sauvegarder les changements</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

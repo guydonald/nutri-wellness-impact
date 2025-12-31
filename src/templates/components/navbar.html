@@ -1,0 +1,156 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{% load account %}
+{% load i18n %}
+
+
+<style>
+    .navbar {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #edf2f7;
+        background-color: #ffffff !important;
+    }
+    .navbar-nav .nav-link {
+        color: #4a5568 !important;
+        font-weight: 600;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .navbar-nav .nav-link:hover {
+        color: #4e73df !important;
+        transform: translateY(-1px);
+    }
+    .nav-svg {
+        width: 17px;
+        height: 17px;
+        fill: currentColor;
+    }
+    .dropdown-menu {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    .btn-auth {
+        font-size: 0.85rem;
+        font-weight: 700;
+    }
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-light sticky-top py-3">
+    <div class="container px-4">
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+            <img src="{% static 'img/logo.png' %}" alt="Logo" style="height: 35px; margin-right: 10px;">
+            <span class="fw-bolder text-primary">Nutri-Wellness</span>
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navContent">
+            <ul class="navbar-nav ms-auto align-items-center">
+                
+                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">{% trans "Accueil" %}</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'resume' %}">{% trans "Résumé" %}</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'project' %}">{% trans "Projets" %}</a></li>
+                <li class="nav-item">
+                    <a class="nav-link text-info" href="{% url 'community_feed' %}">
+                        <svg class="nav-svg" viewBox="0 0 16 16"><path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/></svg>
+                        {% trans "Communauté" %}
+                    </a>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">{% trans "Contact" %}</a></li>
+
+                <span class="mx-2 text-gray-300 d-none d-lg-inline">|</span>
+
+                {% if user.is_authenticated %}
+                    {% if user.role == "patient" %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'my_medical_record' %}">
+                                <svg class="nav-svg text-success" viewBox="0 0 16 16"><path d="M8.5 4.5a.5.5 0 0 0-1 0v.634l-.549-.317a.5.5 0 1 0-.5.866L7 6l-.549.317a.5.5 0 1 0 .5.866l.549-.317V7.5a.5.5 0 1 0 1 0v-.634l.549.317a.5.5 0 1 0 .5-.866L9 6l.549-.317a.5.5 0 1 0-.5-.866l-.549.317zM5.5 9a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1z"/><path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1"/></svg>
+                                {% trans "Santé" %}
+                            </a>
+                        </li>
+                    {% elif user.role == "dietitian" %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dietitian_dashboard' %}">
+                                <svg class="nav-svg text-primary" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm5 0v12h6V2zm1 1h4v10H6zm-5 0v10h3V3zm11 0v10h3V3z"/></svg>
+                                {% trans "Cabinet" %}
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    <li class="nav-item dropdown ms-lg-2">
+                        <a class="nav-link dropdown-toggle" href="#" id="profileDrop" data-bs-toggle="dropdown">
+                            <img src="{% static 'img/undraw_profile.svg' %}" class="rounded-circle border" width="25" height="25">
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 animated--fade-in">
+                            <li class="px-3 py-2 fw-bold small text-muted text-uppercase">{{ user.username }}</li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'patient_profile' %}">{% trans "Profil" %}</a></li>
+                            <li><a class="dropdown-item text-danger" href="{% url 'account_logout' %}">{% trans "Déconnexion" %}</a></li>
+                        </ul>
+                    </li>
+
+                {% else %}
+                    <div class="ms-lg-3 d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-primary rounded-pill px-3 btn-auth" id="openLogin">{% trans "Connexion" %}</button>
+                        <a class="btn btn-sm btn-primary rounded-pill px-3 btn-auth text-white" href="{% url 'account_signup' %}">{% trans "Inscription" %}</a>
+                    </div>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = new bootstrap.Modal(document.getElementById('authModal'));
+    const modalBody = document.getElementById('authModalBody');
+    const modalTitle = document.getElementById('authModalLabel');
+
+    // Fonction pour charger un template dans le modal
+    function loadForm(url, title) {
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Erreur lors du chargement du formulaire");
+                }
+                return response.text();
+            })
+            .then(html => {
+                modalTitle.textContent = title;
+                modalBody.innerHTML = html;
+                modal.show();
+            })
+            .catch(error => {
+                modalBody.innerHTML = "<p>Une erreur est survenue.</p>";
+                console.error(error);
+            });
+    }
+
+    // Connexion
+    document.getElementById('openLogin').addEventListener('click', () => {
+        loadForm("{% url 'account_login' %}", "");
+    });
+
+    
+});
+</script>
+
+<!-- Modal -->
+<div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="authModalLabel" class="modal-title">Authentification</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body" id="authModalBody">
+        <!-- Le contenu sera chargé ici dynamiquement -->
+      </div>
+    </div>
+  </div>
+</div>

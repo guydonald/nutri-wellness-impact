@@ -1,0 +1,35 @@
+{% extends "account/base_manage.html" %}
+{% load allauth i18n %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}
+    {% trans "Déconnexion" %}
+{% endblock head_title %}
+
+{% block content %}
+<div class="container min-vh-100 d-flex justify-content-center align-items-center bg-light">
+    <div class="card shadow-lg rounded-4 p-4 w-100" style="max-width: 500px;">
+        <div class="card-body text-center">
+
+            <h1 class="fw-bold text-danger mb-3">
+                {% trans "Confirm logout" %}
+            </h1>
+
+            <p class="mb-4">
+                {% trans "Are you sure you want to log out? ?" %}
+            </p>
+
+            {% url 'account_logout' as action_url %}
+            <form method="post" action="{{ action_url }}">
+                {% csrf_token %}
+                {{ redirect_field }}
+
+                <button type="submit" class="btn btn-outline-danger btn-lg w-100">
+                    {% trans "Log out" %}
+                </button>
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endblock content %}

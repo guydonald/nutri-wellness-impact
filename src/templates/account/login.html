@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load allauth account %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}
+    {% trans "Connexion" %}
+{% endblock head_title %}
+
+{% block content %}
+<div class="container min-vh-80 mt-5 d-flex justify-content-center align-items-center bg-light">
+    <div class="card shadow-lg p-4 rounded-4">
+        <h1 class="text-2xl font-bold text-center">{% trans "Login to your account" %}</h1>
+
+        {% if not SOCIALACCOUNT_ONLY %}
+            <p class="text-sm text-center text-gray-600">
+                {% blocktranslate %}
+                    Don't have an account yet?
+                    <a href="{{ signup_url }}" class="text-blue-600 hover:underline">Create an account</a>
+                {% endblocktranslate %}
+            </p>
+
+            {% url 'account_login' as login_url %}
+            <form method="post" action="{{ login_url }}" class="space-y-4 border rounded-4 p-4">
+                {% csrf_token %}
+                {{form|crispy}}
+
+                <button type="submit" class="btn btn-primary w-100 mt-2">
+                    {% trans "Log in" %}
+                </button>
+            </form>
+        {% endif %}
+
+        {% if LOGIN_BY_CODE_ENABLED or PASSKEY_LOGIN_ENABLED %}
+            <div class="divider">or</div>
+            <div class="space-y-2">
+                {% if PASSKEY_LOGIN_ENABLED %}
+                    <button type="submit" form="mfa_login" id="passkey_login" class="btn btn-outline btn-primary">
+                        {% trans "Login with an access key" %}
+                    </button>
+                {% endif %}
+                {% if LOGIN_BY_CODE_ENABLED %}
+                    <a href="{{ request_login_code_url }}" class="btn btn-outline btn-primary">
+                        {% trans "Receive a login code" %}
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if SOCIALACCOUNT_ENABLED %}
+            <hr class="my-4">
+            <div class="divider text-center">or via</div>
+            {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_body %}
+    {{ block.super }}
+    {% if PASSKEY_LOGIN_ENABLED %}
+        {% include "mfa/webauthn/snippets/login_script.html" with button_id="passkey_login" %}
+    {% endif %}
+{% endblock extra_body %}

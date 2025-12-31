@@ -1,0 +1,26 @@
+<div class="modal-header bg-primary text-white">
+    <h5 class="modal-title">Notez votre repas</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+</div>
+
+<div class="modal-body">
+    <form method="post" action="{% url 'add_food_entry' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Quel repas ?</label>
+            {{ form.meal_time }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Description du contenu</label>
+            {{ form.description }}
+            <small class="text-muted">Soyez précis (ex: 2 bananes vapeur, sauce tomate, poisson grillé).</small>
+        </div>
+        <div class="mb-3 form-check">
+            {{ form.beverage }}
+            <label class="form-check-label">J'ai consommé une boisson sucrée</label>
+        </div>
+        <div class="d-grid">
+            <button type="submit" class="btn btn-success">Enregistrer le repas</button>
+        </div>
+    </form>
+</div>

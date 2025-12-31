@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% load i18n allauth account crispy_forms_tags %}
+
+<h2 class="text-center mb-3">{% trans "Créer un compte" %}</h2>
+
+<form method="post" action="{% url 'account_signup' %}" id="signupForm">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-success w-100">{% trans "S'inscrire" %}</button>
+</form>
+<p class="mt-3 text-center text-muted">
+    {% trans "Déjà un compte ?" %}
+    <a href="#" id="switchToLogin">{% trans "Se connecter" %}</a>
+</p>

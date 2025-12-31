@@ -1,0 +1,6 @@
+{% load allauth %}
+<span {% if attrs.title %}title="{{ attrs.title }}"{% endif %}
+      class="badge {% if 'success' in attrs.tags %}badge-success{% elif 'error' in attrs.tags %}badge-error{% else %}badge-secondary{% endif %} px-3 py-1 text-sm font-semibold">
+    {% slot %}
+    {% endslot %}
+</span>
