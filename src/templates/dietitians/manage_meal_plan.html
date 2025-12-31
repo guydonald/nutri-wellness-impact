@@ -1,0 +1,69 @@
+{% extends "bases.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %} {% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 text-gray-800">
+            <i class="fas fa-calendar-check text-success me-2"></i>{% trans "Planification Hebdomadaire" %}
+        </h2>
+        <span class="badge bg-light text-dark border p-2">
+            <i class="fas fa-user me-1"></i> {{ patient.get_full_name }}
+        </span>
+    </div>
+
+    <form method="post" class="shadow-sm border-0">
+        {% csrf_token %}
+        {{ formset.management_form }}
+
+        <div class="row g-3">
+            {% for form in formset %}
+            <div class="col-12 mb-4"> <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-primary text-white py-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold"><i class="far fa-calendar-alt me-2"></i>{{ form.instance.get_day_display }}</span>
+                            {{ form.id }} <div class="d-none">{{ form.day }}</div> </div>
+                    </div>
+                    <div class="card-body bg-white p-3">
+                        <div class="row">
+                            <div class="col-md-4 border-end">
+                                <h6 class="text-uppercase text-muted small fw-bold mb-3"><i class="fas fa-sun me-1 text-warning"></i> Matin</h6>
+                                {{ form.breakfast|as_crispy_field }}
+                                {{ form.morning_snack|as_crispy_field }}
+                            </div>
+                            <div class="col-md-4 border-end">
+                                <h6 class="text-uppercase text-muted small fw-bold mb-3"><i class="fas fa-cloud-sun me-1 text-info"></i> Midi</h6>
+                                {{ form.lunch|as_crispy_field }}
+                                {{ form.afternoon_snack|as_crispy_field }}
+                            </div>
+                            <div class="col-md-4">
+                                <h6 class="text-uppercase text-muted small fw-bold mb-3"><i class="fas fa-moon me-1 text-primary"></i> Soir</h6>
+                                {{ form.dinner|as_crispy_field }}
+                                {{ form.evening_snack|as_crispy_field }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="card card-body shadow-sm sticky-bottom mt-4 border-0">
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'patient_record' patient.id %}" class="btn btn-outline-secondary rounded-pill px-4">
+                    {% trans "Annuler" %}
+                </a>
+                <button type="submit" class="btn btn-success rounded-pill px-5 shadow">
+                    <i class="fas fa-save me-2"></i>{% trans "Enregistrer le programme complet" %}
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    /* Pour rendre les zones de texte un peu plus petites et élégantes */
+    textarea.textarea { height: 80px !important; resize: none; font-size: 0.9rem; }
+    .card { transition: transform 0.2s; }
+    .card:hover { transform: translateY(-5px); }
+</style>
+{% endblock %}

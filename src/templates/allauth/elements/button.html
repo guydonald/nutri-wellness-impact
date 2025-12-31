@@ -1,0 +1,23 @@
+{% load allauth %}
+{% comment %} djlint:off {% endcomment %}
+
+<{% if attrs.href %}a{% else %}button{% endif %}
+    {% if attrs.href %}href="{{ attrs.href }}"{% endif %}
+    class="btn m-3
+        {% if "primary" in attrs.tags %}
+            btn-primary
+        {% elif "accent" in attrs.tags %}
+            btn-success
+        {% else %}
+            btn-secondary
+        {% endif %}
+        hover:scale-105 transition-transform"
+    {% if attrs.form %}form="{{ attrs.form }}"{% endif %}
+    {% if attrs.id %}id="{{ attrs.id }}"{% endif %}
+    {% if attrs.name %}name="{{ attrs.name }}"{% endif %}
+    {% if attrs.value %}value="{{ attrs.value }}"{% endif %}
+    {% if attrs.type %}type="{{ attrs.type }}"{% endif %}
+>
+    {% slot %}
+    {% endslot %}
+</{% if attrs.href %}a{% else %}button{% endif %}>

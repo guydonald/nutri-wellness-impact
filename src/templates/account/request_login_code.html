@@ -1,0 +1,43 @@
+{% extends "account/base_entrance.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load allauth account %}
+
+{% block head_title %}
+    {% translate "Connexion sans mot de passe" %}
+{% endblock head_title %}
+
+{% block content %}
+<div class="container min-vh-100 d-flex justify-content-center align-items-center bg-light">
+    <div class="card shadow-lg rounded-4 p-4 w-100" style="max-width: 500px;">
+        <div class="card-body text-center">
+
+            <h1 class="text-primary fw-bold mb-3">
+                {% trans "Recevez un code de connexion" %}
+            </h1>
+
+            <p class="text-muted mb-4">
+                {% blocktranslate %}Entrez votre adresse e-mail, nous vous enverrons un code à usage unique pour vous connecter en toute sécurité sans mot de passe.{% endblocktranslate %}
+            </p>
+
+            {% url 'account_request_login_code' as login_url %}
+            <form method="post" action="{{ login_url }}">
+                {% csrf_token %}
+                {{ form|crispy }}
+                {{ redirect_field }}
+
+                <button type="submit" class="btn btn-success w-100 mt-3">
+                    {% trans "Demander le code" %}
+                </button>
+            </form>
+
+            <hr class="my-4">
+
+            {% url 'account_login' as login_url %}
+            <a href="{{ login_url }}" class="btn btn-outline-primary w-100">
+                {% trans "Autres options de connexion" %}
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

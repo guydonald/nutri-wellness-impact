@@ -1,0 +1,53 @@
+{% extends "account/base_entrance.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load allauth account %}
+
+{% block head_title %}
+    {% trans "Confirmation du code" %}
+{% endblock head_title %}
+
+{% block content %}
+<div class="container min-vh-100 d-flex justify-content-center align-items-center">
+    <div class="card border-0 shadow-lg rounded-4 p-4" style="max-width: 400px; width: 100%;">
+        {% block title %}
+        <h1 class="text-center text-primary mb-3">
+            {% trans "Validez votre adresse e-mail" %}
+        </h1>
+        {% endblock %}
+
+        {% block recipient %}
+        <p class="text-muted text-center mb-3">
+            {% blocktranslate %}Un code a été envoyé à <a href="mailto:{{ email }}">{{ email }}</a>. Il expirera bientôt, veuillez le saisir rapidement.{% endblocktranslate %}
+        </p>
+        {% endblock %}
+
+        <form method="post" action="{% block action_url %}{% endblock %}" novalidate>
+            {% csrf_token %}
+            {{ form|crispy }}
+            {{ redirect_field }}
+
+            <button type="submit" class="btn btn-success w-100 mt-3">
+                {% trans "Confirmer" %}
+            </button>
+        </form>
+
+        <p class="text-center text-muted mt-3">
+            {% trans "Vous n'avez pas reçu le code ?" %}
+            <a href="{% url 'account_email_verification_sent' %}" class="text-decoration-underline">
+                {% trans "Renvoyer le mail" %}
+            </a>
+        </p>
+
+        {% if not cancel_url %}
+        <form id="logout-from-stage" method="post" action="{% url 'account_logout' %}">
+            <input type="hidden" name="next" value="{% url 'account_login' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger w-100 mt-2">
+                {% trans "Annuler et se déconnecter" %}
+            </button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}
