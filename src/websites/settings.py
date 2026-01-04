@@ -1,23 +1,41 @@
 from pathlib import Path
 from django.utils.translation import gettext_lazy as _
 import os
+<<<<<<< HEAD
+=======
+import environ
+>>>>>>> fix-settings
 
 
 SITE_ID = 1
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+<<<<<<< HEAD
+=======
+env = environ.Env()
+environ.Env.read_env(env_file=str(BASE_DIR / "websites" / ".env"))
+>>>>>>> fix-settings
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+<<<<<<< HEAD
 SECRET_KEY = 'django-insecure-dombq04k=vdkh#)_8@&o_#pke6xq0q^nl*urkkom0v^o@(2_2%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
+=======
+SECRET_KEY = env("SECRET_KEY")
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = env.bool("DEBUG", False)
+
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+>>>>>>> fix-settings
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -221,6 +239,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 # En production, activez : SECURE_SSL_REDIRECT = True
 
+<<<<<<< HEAD
 EMAIL_HOST = "smtp.zoho.com"
 EMAIL_HOST_USER = "guydon@zohomail.com"
 EMAIL_USE_TLS = False
@@ -229,3 +248,13 @@ DEFAULT_FROM_EMAIL = "guydon@zohomail.com"
 EMAIL_PORT = 465
 EMAIL_HOST_PASSWORD = "WCT9KMBd1XwC"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+=======
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS")
+DEFAULT_FROM_EMAIL = env("EMAIL_HOST_USER")
+EMAIL_PORT = env("EMAIL_PORT")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+EMAIL_BACKEND = env("EMAIL_BACKEND")
+>>>>>>> fix-settings
