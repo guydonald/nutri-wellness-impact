@@ -1,0 +1,26 @@
+<div class="modal-header bg-primary text-white">
+    <h5 class="modal-title">Write down your meal</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+</div>
+
+<div class="modal-body">
+    <form method="post" action="{% url 'add_food_entry' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">What meal ?</label>
+            {{ form.meal_time }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Content description</label>
+            {{ form.description }}
+            <small class="text-muted">Be specific (e.g., 2 steamed bananas, tomato sauce, grilled fish).</small>
+        </div>
+        <div class="mb-3 form-check">
+            {{ form.beverage }}
+            <label class="form-check-label">I consumed a sugary drink.</label>
+        </div>
+        <div class="d-grid">
+            <button type="submit" class="btn btn-success">Save the meal</button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,57 @@
+{% extends "account/base_entrance.html" %}
+{% load i18n %}
+{% load account %}
+{% load allauth %}
+
+{% block head_title %}
+    {% trans "Confirm Email Address" %}
+{% endblock head_title %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow-lg p-4 rounded" style="max-width: 500px; width: 100%;">
+        <div class="card-body text-center">
+            
+            {% if confirmation %}
+                {# CAS 1 : L'utilisateur a cliqué sur le lien dans l'e-mail (Clé présente dans l'URL) #}
+                <h1 class="fw-bold mb-3">{% trans "Confirm Email Address" %}</h1>
+                {% user_display confirmation.email_address.user as user_display %}
+                
+                {% if can_confirm %}
+                    <p class="mb-4">
+                        {% blocktrans with confirmation.email_address.email as email %}
+                            Please confirm that <a href="mailto:{{ email }}" class="text-primary">{{ email }}</a>
+                            is an email address for user <strong>{{ user_display }}</strong>.
+                        {% endblocktrans %}
+                    </p>
+
+                    <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-lg w-100 mt-3">
+                            {% trans 'Confirm' %}
+                        </button>
+                    </form>
+                {% else %}
+                    <p class="text-danger fw-bold">{% trans "Unable to confirm email." %}</p>
+                {% endif %}
+
+            {% else %}
+                {# CAS 2 : Pas de clé dans l'URL (on affiche le formulaire de saisie du code) #}
+                
+                {% if error %}
+                    {# Si on a tenté un code et qu'il est faux #}
+                    <h1 class="fw-bold mb-3 text-danger">{% trans "Invalid Code" %}</h1>
+                    <div class="alert alert-danger">{{ error }}</div>
+                    <p>{% trans "Please try again with the code sent to your email." %}</p>
+                    {% include "account/partials/email_verification_code.html" %}
+                {% else %}
+                    {# Premier affichage de la page sans clé #}
+                    {% include "account/partials/email_verification_code.html" %}
+                {% endif %}
+
+            {% endif %}
+            
+        </div>
+    </div>
+</div>
+{% endblock content %}

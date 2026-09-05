@@ -1,0 +1,53 @@
+<div class="modal-header bg-info text-white">
+    <h5 class="modal-title">Profil Détaillé de {{ patient.get_full_name|default:patient.username }}</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+</div>
+
+<div class="modal-body">
+    {% if profile %}
+        <h5><i class="fas fa-id-card"></i> Compte de Base</h5>
+        <p style="padding-left: 5%;"><strong>Email :</strong> {{ patient.email }}</p>
+        <p style="padding-left: 5%;"><strong>Profession :</strong> {{ profile.occupation|default:"Non spécifié" }}</p>
+        <p style="padding-left: 5%;"><strong>Rôle :</strong> <span class="badge bg-success">{{ patient.role|capfirst }}</span></p>
+        <hr>
+
+        <h5><i class="fas fa-chart-line"></i> Mesures Physiques</h5>
+        <div class="row">
+            <div class="col-6"><p style="padding-left: 5%;"><strong>Âge :</strong> {{ profile.age|default:"-" }} ans</p></div>
+            <div class="col-6"><p style="padding-left: 5%;"><strong>Sexe :</strong> {{ profile.get_gender_display|default:"-" }}</p></div>
+            <div class="col-6"><p style="padding-left: 5%;"><strong>Taille :</strong> {{ profile.height|default:"-" }} m</p></div>
+            <div class="col-6"><p style="padding-left: 5%;"><strong>Poids :</strong> {{ profile.weight|default:"-" }} kg</p></div>
+            <div class="col-6"><p style="padding-left: 5%;"><strong>IMC :</strong> {{ profile.bmi|default:"N/A" }}</p></div>
+            <div class="col-6"><p style="padding-left: 5%;"><strong>Activité :</strong> {{ profile.get_activity_level_display|default:"-" }}</p></div>
+        </div>
+        <hr>
+
+        <h6><i class="fas fa-briefcase-medical"></i> Historique Médical</h6>
+        <p style="padding-left: 5%;"><strong>Diagnostic :</strong> {{ profile.diagnosis|default:"Non spécifié" }}</p>
+        <p style="padding-left: 5%;"><strong>Médicaments :</strong> {{ profile.medications|default:"Aucun" }}</p>
+        <p style="padding-left: 5%;"><strong>Historique medicale :</strong> {{ profile.medical_history|default:"Aucun" }}</p>
+        <p style="padding-left: 5%;"><strong>Antécédents CV :</strong> 
+            {% if profile.family_history_cvd %}
+                <span class="badge bg-danger">Oui</span>
+            {% else %}
+                <span class="badge bg-success">Non</span>
+            {% endif %}
+        </p>
+        <p style="padding-left: 5%;"><strong>Allergie :</strong> 
+            {% if profile.allergies %}
+                <span class="badge bg-danger">Oui</span>
+            {% else %}
+                <span class="badge bg-success">Non</span>
+            {% endif %}
+        </p>
+
+    {% else %}
+        <div class="alert alert-warning">
+            Le profil détaillé de ce patient n'a pas encore été renseigné.
+        </div>
+    {% endif %}
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+</div>

@@ -1,0 +1,117 @@
+{% extends "bases.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 fw-bold text-primary">{% trans "Conseils & Communauté" %}</h2>
+        {% if user.role == 'dietitian' %}
+            <button class="btn btn-primary rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#createPostModal">
+                <i class="fas fa-plus me-2"></i>{% trans "Nouvelle publication" %}
+            </button>
+        {% endif %}
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for post in posts %}
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm hover-card">
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="{{ post.title }}">
+                {% elif post.get_youtube_id %}
+                    <div class="bg-dark d-flex align-items-center justify-content-center text-white" style="height: 200px;">
+                        <i class="fab fa-youtube fa-3x text-danger"></i>
+                    </div>
+                {% else %}
+                    <div class="bg-light d-flex align-items-center justify-content-center text-muted" style="height: 200px;">
+                        <i class="fas fa-newspaper fa-3x"></i>
+                    </div>
+                {% endif %}
+                
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-dark">{{ post.title|truncatechars:50 }}</h5>
+                    <p class="card-text text-muted small">
+                        {{ post.content|truncatewords:20 }}
+                    </p>
+                </div>
+                <div class="card-footer bg-white border-0 pb-3">
+                    <small class="text-muted"><i class="far fa-comment me-1"></i> {{ post.comments.count }}</small>
+        
+                    <div class="d-flex gap-2">
+                        {% if user.role == 'dietitian' %}
+                        <button class="btn btn-outline-danger btn-sm rounded-pill" 
+                                onclick="confirmDelete('{% url 'delete_post' post.pk %}', '{{ post.title|escapejs }}')">
+                            <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/></svg>
+                        </button>
+                        {% endif %}
+
+                        <a href="{% url 'post_detail' post.pk %}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                            {% trans "Lire la suite" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% if user.role == 'dietitian' %}
+<div class="modal fade" id="createPostModal" tabindex="-1" aria-labelledby="createPostModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold" id="createPostModalLabel">
+                    <i class="fas fa-edit me-2"></i>{% trans "Créer une publication" %}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'create_post' %}" enctype="multipart/form-data">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    {{ post_form|crispy }}
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">{% trans "Annuler" %}</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">{% trans "Publier" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-body text-center py-4">
+                <div class="text-danger mb-3">
+                    <svg width="48" height="48" fill="currentColor" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/><path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/></svg>
+                </div>
+                <h5 class="fw-bold">{% trans "Supprimer ?" %}</h5>
+                <p class="text-muted small">{% trans "Voulez-vous supprimer" %} <br><strong id="deleteItemName"></strong> ?</p>
+                <form id="deleteForm" method="post">
+                    {% csrf_token %}
+                    <div class="d-flex gap-2 justify-content-center mt-4">
+                        <button type="button" class="btn btn-light rounded-pill px-3" data-bs-dismiss="modal">{% trans "Annuler" %}</button>
+                        <button type="submit" class="btn btn-danger rounded-pill px-3">{% trans "Confirmer" %}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+function confirmDelete(url, name) {
+    document.getElementById('deleteForm').action = url;
+    document.getElementById('deleteItemName').innerText = name;
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+</script>
+<style>
+    .hover-card { transition: all 0.3s ease; }
+    .hover-card:hover { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+</style>
+{% endblock %}

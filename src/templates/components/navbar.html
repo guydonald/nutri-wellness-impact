@@ -1,0 +1,180 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{% load account %}
+{% load i18n %}
+
+
+<style>
+    :root {
+        --nutri-green: #427c34;
+        --nutri-red: #d62828;
+    }
+    .navbar {
+        transition: all 0.3s ease;
+        border-bottom: 2px solid #f0f4f0;
+        background-color: #ffffff !important;
+    }
+    .navbar-brand span {
+        color: var(--nutri-green) !important;
+        letter-spacing: -0.5px;
+    }
+    
+    @media (max-width: 991.98px) {
+        .navbar-nav {
+            padding-top: 1rem;
+            align-items: flex-start !important;
+        }
+        .nav-item {
+            width: 100%;
+            padding: 0.5rem 0;
+        }
+        .auth-buttons-mobile {
+            flex-direction: column;
+            width: 100%;
+            gap: 10px !important;
+            margin-top: 1rem;
+        }
+        .auth-buttons-mobile .btn {
+            width: 100%;
+        }
+        .dropdown-menu {
+            border: none;
+            background: #f8f9fa;
+            box-shadow: none !important;
+        }
+    }
+    .navbar-nav .nav-link {
+        color: #2d3748 !important;
+        font-weight: 600;
+        transition: 0.2s;
+        font-size: 0.95rem;
+    }
+    .navbar-nav .nav-link:hover {
+        color: var(--nutri-green) !important;
+    }
+    .btn-auth-outline {
+        border: 2px solid var(--nutri-green);
+        color: var(--nutri-green);
+        font-weight: 700;
+    }
+    .btn-auth-full {
+        background-color: var(--nutri-green);
+        color: white;
+        font-weight: 700;
+        transition: all 0.2s ease;
+        border: none;
+    }
+    .btn-auth-full:hover {
+        background-color: #35632a;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(66, 124, 52, 0.2);
+    }
+    .dropdown-item {
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+    .dropdown-item:hover {
+        background-color: #f0fdf4;
+        color: var(--nutri-green);
+    }
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white py-3 shadow-sm sticky-top">
+    <div class="container px-4">
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'index' %}">
+            <img src="{% static 'img/logo.png' %}" alt="Logo" style="height: 38px; width: auto;" class="me-2">
+            <span class="fw-bolder text-primary">Nutri-Wellness impact</span>
+        </a>
+        
+        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navContent">
+            <ul class="navbar-nav ms-auto align-items-center">
+                
+                <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">{% trans "Home" %}</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'resume' %}">{% trans "Summary" %}</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'project' %}">{% trans "Projects" %}</a></li>
+                <li class="nav-item">
+                    {% if user.is_authenticated %}
+                        <a class="nav-link" href="{% url 'community_feed' %}">{% trans "Community" %}</a>
+                    {% else %}
+                        <a class="nav-link" style="cursor:pointer;" 
+                           hx-get="{% url 'account_login' %}" hx-target="#authModalContent" 
+                           data-bs-toggle="modal" data-bs-target="#authModal">
+                           {% trans "Community" %}
+                        </a>
+                    {% endif %}
+                </li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">{% trans "Contact" %}</a></li>
+
+                <span class="mx-2 text-gray-300 d-none d-lg-inline">|</span>
+
+                {% if user.is_authenticated %}
+                    {% if user.role == "patient" %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'my_medical_record' %}">
+                               <i class="fas fa-file-medical me-2"></i><b>My Tracking</b>
+                            </a>
+                        </li>
+                    {% elif user.role == "dietitian" %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dietitian_dashboard' %}">
+                                <i class="fas fa-columns me-2"></i>{% trans "Office" %}
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    <li class="nav-item dropdown ms-lg-2">
+                        <a class="nav-link dropdown-toggle" href="#" id="profileDrop" data-bs-toggle="dropdown">
+                            <img src="{% static 'img/undraw_profile.svg' %}" class="rounded-circle border" width="25" height="25">
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 animated--fade-in">
+                            <li class="px-3 py-2 fw-bold small text-muted text-uppercase"><strong class="d-block small text-truncate" style="color: var(--nutri-green);">{{ user.first_name|default:user.username }}</strong></li>
+                            <li><hr class="dropdown-divider"></li>
+                            {% if user.role == "patient" %}
+                            <li>
+                                <a class="dropdown-item rounded-3 py-2" href="{% if user.role == 'patient' %}{% url 'patient_profile' %}{% else %}#{% endif %}">
+                                    <i class="fas fa-id-card me-2 text-muted"></i>Profile Details
+                                </a>
+                            </li>
+                            {% endif %}
+                            <li>
+                                <a class="dropdown-item rounded-3 py-2" href="javascript:void(0);"
+                                   hx-get="{% url 'account_change_password' %}" hx-target="#authModalContent"
+                                   data-bs-toggle="modal" data-bs-target="#authModal">
+                                    <i class="fas fa-key me-2 text-muted"></i> Change Password
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item rounded-3 py-2 text-danger" href="javascript:void(0);"
+                                   hx-get="{% url 'account_logout' %}" hx-target="#authModalContent"
+                                   data-bs-toggle="modal" data-bs-target="#authModal">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                </a>
+                            </li>                            
+                        </ul>
+                    </li>
+
+                {% else %}
+                    <div class="auth-buttons-mobile d-flex gap-2 ms-lg-3">
+                        <a class="btn btn-sm btn-auth-outline rounded-pill px-4 py-2" 
+                           hx-get="{% url 'account_login' %}" hx-target="#authModalContent" 
+                           data-bs-toggle="modal" data-bs-target="#authModal">
+                           Login
+                        </a>
+                        <a class="btn btn-sm btn-auth-full rounded-pill px-4 py-2" 
+                           hx-get="{% url 'account_signup' %}" hx-target="#authModalContent" 
+                           data-bs-toggle="modal" data-bs-target="#authModal">
+                           Sign Up
+                        </a>
+                    </div>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+

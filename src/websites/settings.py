@@ -1,0 +1,267 @@
+from pathlib import Path
+from django.utils.translation import gettext_lazy as _
+import os
+# import pymysql
+# pymysql.install_as_MySQLdb()
+
+import environ
+
+SITE_ID = 1
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+env = environ.Env()
+environ.Env.read_env(env_file=str(BASE_DIR / "websites" / ".env"))
+
+SECRET_KEY = env("SECRET_KEY")
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = env.bool("DEBUG", False)
+
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# Application definition
+
+INSTALLED_APPS = [
+#    'unfold',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'users.apps.UsersConfig',
+    'patients',
+    'forum',
+#    'community',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+
+    "crispy_forms",
+    "crispy_bootstrap5",
+]
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
+    'django.middleware.locale.LocaleMiddleware',
+
+    # Ton nouveau middleware (Remplace 'patients' par le nom de ton app)
+    'patients.middleware.ProfileCompletionMiddleware',
+]
+
+ROOT_URLCONF = 'websites.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': ['templates'],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = 'websites.wsgi.application'
+
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        'APP': {
+            'client_id': '123',
+            'secret': '456',
+            'key': ''
+        }
+    }
+}
+
+
+# Database
+# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': env("ENGINE"),
+        'NAME': env("DB_NAME"),
+        'USER': env("DB_USER"),
+        'PASSWORD': env("DB_PASSWORD"),
+        'HOST': env("DB_HOST"),
+        'PORT': env("DB_PORT"),
+    }
+}
+
+
+# Password validation
+# https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+
+# Internationalization
+# https://docs.djangoproject.com/en/6.0/topics/i18n/
+
+LANGUAGE_CODE = 'en-us' # Langue par défaut
+TIME_ZONE = 'UTC'
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
+
+LANGUAGES = [
+    ('fr', _('Français')),
+    ('en', _('English')),
+]
+
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale/',
+]
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/6.0/howto/static-files/
+
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "websites/static")]
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# 🔐 Modèle personnalisé
+AUTH_USER_MODEL = env("AUTH_USER_MODEL")
+
+# 🎨 Formulaires
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+# 🧩 Adapter et formulaire Allauth
+ACCOUNT_ADAPTER = "users.adapters.MonAdaptateurCompte"
+MFA_ADAPTER = "allauth.mfa.adapter.DefaultMFAAdapter"
+
+ACCOUNT_FORMS = {'signup': 'users.forms.CustomSignupForm'}
+
+# 🔑 Authentification
+ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+
+# 🧾 Champs obligatoires à l'inscription
+ACCOUNT_SIGNUP_FIELDS = [
+    "email*",
+    "password1",
+    "password2",
+]
+
+# ✅ Email obligatoire et vérification
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_PHONE_VERIFICATION_ENABLED = False
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'home'
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = "/accounts/login/"
+ACCOUNT_EMAIL_CONFIRMATION_REDIRECT_URL = 'home'  # ou vers une page intermédiaire si besoin
+
+# 🔐 Redirections après actions
+LOGIN_REDIRECT_URL = 'home'
+ACCOUNT_LOGIN_REDIRECT_URL = 'home'
+ACCOUNT_SIGNUP_REDIRECT_URL = '/accounts/confirm-email/'
+ACCOUNT_LOGOUT_REDIRECT_URL = "/"
+
+# ⏱️ Codes de sécurité
+ACCOUNT_LOGIN_BY_CODE_ENABLED = True
+ACCOUNT_LOGIN_BY_CODE_TIMEOUT = 300
+ACCOUNT_LOGIN_BY_CODE_MAX_ATTEMPTS = 3
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = True
+
+ACCOUNT_EMAIL_VERIFICATION_BY_CODE_ENABLED = True
+ACCOUNT_EMAIL_VERIFICATION_BY_CODE_TIMEOUT = 600
+ACCOUNT_EMAIL_VERIFICATION_BY_CODE_MAX_ATTEMPTS = 3
+
+ACCOUNT_PASSWORD_RESET_BY_CODE_TIMEOUT = 600
+ACCOUNT_PASSWORD_RESET_BY_CODE_MAX_ATTEMPTS = 3
+
+# 🧠 Sécurité anti-abus
+ACCOUNT_PREVENT_ENUMERATION = True
+ACCOUNT_RATE_LIMITS = {
+    "login": "5/m",
+    "signup": "3/m",
+    "confirm_email": "3/m",
+    "request_login_code": "3/m",
+    "login_failed": "5/m",  # remplace les anciens LIMIT/TIMEOUT
+}
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'Strict'
+
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'Strict'
+
+
+# En production, activez : SECURE_SSL_REDIRECT = True
+
+"""
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS")
+DEFAULT_FROM_EMAIL = env("EMAIL_HOST_USER")
+EMAIL_PORT = env("EMAIL_PORT")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+EMAIL_BACKEND = env("EMAIL_BACKEND")
+
+
+UNFOLD = {
+    "SITE_TITLE": "NutriWellness Admin",
+    "SITE_HEADER": "NutriWellnessImpact",
+    "SHOW_HISTORY": True,
+    "SHOW_VIEW_ON_SITE": True,
+}"""
+
+EMAIL_HOST = "smtp.zoho.com"
+EMAIL_HOST_USER = "contact@nutri-wellnessimpact.com"
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+DEFAULT_FROM_EMAIL = "contact@nutri-wellnessimpact.com"
+EMAIL_PORT = 587
+EMAIL_HOST_PASSWORD = "H5wF8epYMWyx"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

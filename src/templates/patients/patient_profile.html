@@ -1,0 +1,74 @@
+{% extends "bases.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-4 text-primary">Patient Profile Details</h2>
+    
+    <div class="row">
+        
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Account Information</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Full Name:</strong> {{ user.get_full_name|default:"Not specified" }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Role :</strong> <span class="badge bg-success">{{ user.role|capfirst }}</span></p>
+                    <p><strong>Member since:</strong> {{ user.date_joined|date:"d F Y" }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Clinical and Physical Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Personal Statistics</h6>
+                            <p><strong>Âge :</strong> {{ profile.age|default:"-" }} ans</p>
+                            <p><strong>Sexe :</strong> {{ profile.get_gender_display|default:"-" }}</p>
+                            <p><strong>Occupation :</strong> {{ profile.occupation|default:"-" }}</p>
+                            <p><strong>Niveau d'activité :</strong> {{ profile.get_activity_level_display|default:"-" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Physical Measurements</h6>
+                            <p><strong>Taille :</strong> {{ profile.height|default:"-" }} m</p>
+                            <p><strong>Poids :</strong> {{ profile.weight|default:"-" }} kg</p>
+                            <p><strong>IMC :</strong> {{ profile.bmi|default:"Non calculé" }}</p>
+                            <p><strong>Tour de taille :</strong> {{ profile.waist_circumference|default:"-" }} cm</p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <h6>Medical History</h6>
+                    <p><strong>Diagnostic :</strong> {{ profile.diagnosis|default:"-" }} (le {{ profile.diagnosis_date|default:"-" }})</p>
+                    <p><strong>Antécédents :</strong> {{ profile.medical_history|default:"-" }}</p>
+                    <p><strong>Médicaments :</strong> {{ profile.medications|default:"-" }}</p>
+                    <p><strong>Allergies :</strong> 
+                        {% if profile.allergies %}
+                            <span class="badge bg-danger">Yes</span>
+                        {% else %}
+                            <span class="badge bg-success">No</span>
+                        {% endif %}
+                    </p>
+                    <p><strong>Antécédents CV :</strong> 
+                        {% if profile.family_history_cvd %}
+                            <span class="badge bg-danger">Yes</span>
+                        {% else %}
+                            <span class="badge bg-success">No</span>
+                        {% endif %}
+                    </p>
+                    
+                    <a href="{% url 'patient_profile_update' %}" class="btn btn-sm btn-warning mt-3">Update my physical and medical profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

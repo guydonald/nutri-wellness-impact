@@ -1,0 +1,84 @@
+{% load static %}
+
+<style>
+    /* Optimisation des images dans les cartes projets */
+    .project-card-img {
+        width: 100%;
+        height: 300px; /* Hauteur fixe pour l'harmonie */
+        object-fit: cover; /* Évite de déformer l'image */
+        transition: transform 0.5s ease;
+    }
+    
+    .card:hover .project-card-img {
+        transform: scale(1.05);
+    }
+
+    .project-image-container {
+        overflow: hidden;
+        flex: 1; /* Prend une part égale avec le texte */
+    }
+
+    .project-text-container {
+        flex: 1.2; /* Donne un peu plus de place au texte */
+    }
+
+    @media (min-width: 992px) {
+        .project-card-img {
+            height: 100%; /* S'adapte à la hauteur du texte sur PC */
+            min-height: 400px;
+        }
+    }
+</style>
+
+<section class="py-5">
+    <div class="container px-5 mb-5">
+        <div class="text-center mb-5">
+            <h1 class="display-5 fw-bolder mb-0"><span class="text-success d-inline">Our Digital Solutions</span></h1>
+            <p class="lead text-muted mt-3">Tools designed for clinical expertise and daily support.</p>
+        </div>
+        
+        <div class="row gx-5 justify-content-center">
+            <div class="col-lg-11 col-xl-10">
+                
+                <div class="card overflow-hidden shadow rounded-4 border-0 mb-5">
+                    <div class="card-body p-0">
+                        <div class="d-flex flex-column flex-lg-row align-items-stretch">
+                            <div class="p-5 project-text-container">
+                                <div class="badge bg-success bg-gradient text-white mb-2">Expertise Clinique</div>
+                                <h2 class="fw-bolder">Clinical Care & Monitoring</h2>
+                                <p>This platform is the heart of our monitoring system. It allows the dietitian to record the <strong>anthropometric and biochemical assessments</strong> comprehensive. Thanks to the integration of the <strong>nutritional diagnosis (PES format)</strong>, we ensure scientific care for patients suffering from cardiac and metabolic pathologies.</p>
+                                <ul class="small text-muted list-unstyled">
+                                    <li><i class="bi bi-check2 text-success me-2"></i>Monitoring of blood pressure and lipid profile</li>
+                                    <li><i class="bi bi-check2 text-success me-2"></i>Centralized medical history</li>
+                                </ul>
+                            </div>
+                            <div class="project-image-container">
+                                <img class="project-card-img" src="{% static 'img/damefruits.jpg' %}" alt="Suivi clinique" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card overflow-hidden shadow rounded-4 border-0 mb-5">
+                    <div class="card-body p-0">
+                        <div class="d-flex flex-column flex-lg-row-reverse align-items-stretch">
+                            <div class="p-5 project-text-container">
+                                <div class="badge bg-success bg-gradient text-white mb-2">Daily Support</div>
+                                <h2 class="fw-bolder">Nutri-Content & Meal Plans</h2>
+                                <p>This is where the dietitian publishes the <strong>personalized nutrition programs</strong>. The application provides access to structured meal plans (like our 7-day menus) including local alternatives such as <strong>Ndole, Millet or Yam</strong>, while respecting glycemic indices to stabilize diabetes.</p>
+                                <ul class="small text-muted list-unstyled">
+                                    <li><i class="bi bi-check2 text-success me-2"></i>Weekly menus adapted</li>
+                                    <li><i class="bi bi-check2 text-success me-2"></i>Continuing Nutrition Education</li>
+                                </ul>
+                            </div>
+                            <div class="project-image-container">
+                                <img class="project-card-img" src="{% static 'img/fruits.jpg' %}" alt="Plan de repas" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,20 @@
+{% extends "account/base_confirm_code.html" %}
+{% load i18n %}
+{% load allauth account %}
+
+{% block head_title %}
+    {% trans "Vérification de l'e-mail" %}
+{% endblock head_title %}
+
+{% block title %}
+    {% trans "Saisissez le code reçu par e-mail" %}
+{% endblock title %}
+
+{% block recipient %}
+    <a href="mailto:{{ email }}">{{ email }}</a>
+{% endblock recipient %}
+
+
+{% block extra_tags %}
+    email,verification
+{% endblock extra_tags %}

@@ -1,0 +1,127 @@
+{% load static %}
+
+<section class="py-5">
+    <div class="container px-5">
+        <div class="bg-white rounded-4 shadow-lg overflow-hidden">
+            <div class="row g-0">
+                
+                <div class="col-lg-5 bg-success bg-gradient text-white p-5">
+                    <h2 class="fw-bolder mb-4">Contact Information</h2>
+                    <p class="mb-5">Ready to start your journey towards sustainable wellness? Reach out for a personalized consultation.</p>
+                    
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="feature bg-white text-success rounded-3 me-3">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+                        <div>
+                            <p class="mb-0 small fw-bold">Location</p>
+                            <p class="mb-0">Online & On-site (Cameroon)</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="feature bg-white text-success rounded-3 me-3">
+                            <i class="bi bi-envelope-check"></i>
+                        </div>
+                        <div>
+                            <p class="mb-0 small fw-bold">Expertise</p>
+                            <p class="mb-0">Clinical Nutrition & Dietetics</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-5">
+                        <p class="small text-white-50">"Healthy nutrition is not about restriction, but about making informed choices."</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-7 p-5">
+                    <div class="mb-4">
+                        <h2 class="fw-bolder">Send us a message</h2>
+                        <p class="text-muted">Fill out the form below and we'll get back to you within 24 hours.</p>
+                    </div>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm border-0 mb-4" role="alert">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-check-circle-fill me-2"></i>
+                                    <div>{{ message }}</div>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    <form method="post" action="{% url 'contact' %}">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input class="form-control border-0 bg-light" name="name" id="name" type="text" placeholder="Full name" required />
+                                    <label for="name">Full name</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input class="form-control border-0 bg-light" name="phone" id="phone" type="tel" placeholder="Phone" required />
+                                    <label for="phone">Phone number</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input class="form-control border-0 bg-light" name="email" id="email" type="email" placeholder="Email" required />
+                            <label for="email">Email address</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <textarea class="form-control border-0 bg-light" name="message" id="message" placeholder="How can we help you?" style="height: 12rem" required></textarea>
+                            <label for="message">Describe your health goals or questions...</label>
+                        </div>
+
+                        <div class="d-grid">
+                            <button class="btn btn-success btn-lg shadow-sm py-3" type="submit">
+                                <i class="bi bi-send me-2"></i>Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Style pour les petits icônes d'info */
+    .feature {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 3rem;
+        width: 3rem;
+        font-size: 1.5rem;
+    }
+    
+    /* Effet Focus sur les champs */
+    .form-control:focus {
+        background-color: #fff !important;
+        box-shadow: 0 0 0 0.25rem rgba(30, 48, 243, 0.1);
+        border: 1px solid #1e30f3 !important;
+    }
+</style>
+
+<script>
+    // Attendre que le document soit chargé
+    document.addEventListener('DOMContentLoaded', function() {
+        // Trouver toutes les alertes après 5 secondes
+        setTimeout(function() {
+            let alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                // Utiliser l'API native de Bootstrap pour fermer l'alerte proprement
+                let bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000); // 5000 millisecondes = 5 secondes
+    });
+</script>

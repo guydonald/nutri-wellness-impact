@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block navbar %}
+    {% include "components/navbar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-4 text-warning">Modification de votre Profil</h2>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Informations de Compte (Nom, Email)</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">{{ user_form.first_name|as_crispy_field }}</div>
+                    <div class="col-md-6">{{ user_form.last_name|as_crispy_field }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Détails Physiques et Médicaux</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">{{ profile_form.age|as_crispy_field }}</div>
+                    <div class="col-md-4">{{ profile_form.gender|as_crispy_field }}</div>
+                    <div class="col-md-4">{{ profile_form.occupation|as_crispy_field }}</div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">{{ profile_form.height|as_crispy_field }}</div>
+                    <div class="col-md-6">{{ profile_form.weight|as_crispy_field }}</div>
+                </div>
+
+                <h6>Santé et Historique</h6>
+                {{ profile_form.activity_level|as_crispy_field }}
+                {{ profile_form.diagnosis|as_crispy_field }}
+                {{ profile_form.diagnosis_date|as_crispy_field }}
+                {{ profile_form.medical_history|as_crispy_field }}
+                {{ profile_form.medications|as_crispy_field }}
+
+                <div class="row">
+                    <div class="col-md-6">{{ profile_form.allergies|as_crispy_field }}</div>
+                    <div class="col-md-6">{{ profile_form.family_history_cvd|as_crispy_field }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <button type="submit" class="btn btn-warning btn-lg w-100">Sauvegarder les modifications</button>
+        <a href="{% url 'patient_profile' %}" class="btn btn-outline-secondary mt-2 w-100">Annuler et retourner au profil</a>
+    </form>
+</div>
+{% endblock %}

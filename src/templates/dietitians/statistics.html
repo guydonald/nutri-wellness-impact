@@ -1,0 +1,130 @@
+{% extends "bases.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h2 class="text-primary fw-bold">Analyse de la Patientèle</h2>
+        <a href="{% url 'dietitian_dashboard' %}" class="btn btn-outline-secondary">Retour Liste</a>
+    </div>
+
+    <div class="row text-center mb-5">
+        <div class="col-md-3">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Âge Moyen</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ averages.avg_age|floatformat:1|default:"0" }} ans</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">IMC Moyen</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ averages.avg_bmi|floatformat:1|default:"0" }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Poids Moyen</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ averages.avg_weight|floatformat:1|default:"0" }} kg</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Répartition par Sexe</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="genderChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-danger">Présence d'Allergies</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="allergyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-success">Niveau d'Activité Physique</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="activityChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-info">Top Professions</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="occChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const commonOptions = { responsive: true, maintainAspectRatio: false };
+
+    // Sexe
+    new Chart(document.getElementById('genderChart'), {
+        type: 'doughnut',
+        data: {
+            labels: {{ gender_labels|safe }},
+            datasets: [{ data: {{ gender_data|safe }}, backgroundColor: ['#4e73df', '#f6c23e'] }]
+        }
+    });
+
+    // Allergies
+    new Chart(document.getElementById('allergyChart'), {
+        type: 'pie',
+        data: {
+            labels: {{ allergy_labels|safe }},
+            datasets: [{ data: {{ allergy_data|safe }}, backgroundColor: ['#e74a3b', '#858796'] }]
+        }
+    });
+
+    // Activité
+    new Chart(document.getElementById('activityChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ activity_labels|safe }},
+            datasets: [{ 
+                label: 'Nombre de Patients', 
+                data: {{ activity_data|safe }},
+                backgroundColor: '#1cc88a' 
+            }]
+        }
+    });
+
+    // Professions
+    new Chart(document.getElementById('occChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ occ_labels|safe }},
+            datasets: [{ label: 'Patients', data: {{ occ_data|safe }}, backgroundColor: '#36b9cc' }]
+        },
+        options: { indexAxis: 'y' } // Barres horizontales
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% load allauth %}
+
+<form method="{{ attrs.method }}"
+      {% if attrs.action %}action="{{ attrs.action }}"{% endif %}
+      class="needs-validation bg-white border m-3 rounded-4 p-4 shadow-sm mx-auto"
+      style="max-width: 500px;" novalidate>
+
+    <div class="mb-4">
+        {% slot body %}
+        {% endslot %}
+    </div>
+
+    <div class="d-grid gap-2 mt-3">
+        {% slot actions %}
+        {% endslot %}
+    </div>
+</form>
