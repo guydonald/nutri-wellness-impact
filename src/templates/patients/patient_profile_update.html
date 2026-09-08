@@ -1,71 +1,105 @@
 {% extends "base.html" %}
-{% load crispy_forms_tags %}
+{% load crispy_forms_tags i18n %}
 
 {% block navbar %}
     {% include "components/navbar.html" %}
 {% endblock %}
 
 {% block content %}
+<style>
+    :root { --nutri-green: #5a8f3d; --nutri-green-dark: #2f5e2f; --nutri-green-light: #eaf3e3; --nutri-orange: #f4a020; }
+    .edit-card {
+        background: #fff;
+        border-radius: 22px;
+        border: 1px solid #eef2ec;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+    .edit-card-head {
+        padding: 1.2rem 1.5rem;
+        font-weight: 700;
+        display: flex; align-items: center; gap: 0.6rem;
+        color: #fff;
+    }
+    .head-green { background: linear-gradient(135deg, var(--nutri-green), var(--nutri-green-dark)); }
+    .head-orange { background: linear-gradient(135deg, var(--nutri-orange), #d88a10); }
+    .btn-nutri {
+        background: var(--nutri-green); color: #fff; border: none;
+        border-radius: 14px; font-weight: 700; transition: all 0.25s ease;
+    }
+    .btn-nutri:hover { background: var(--nutri-green-dark); color: #fff; transform: translateY(-2px); }
+    .btn-cancel {
+        background: transparent; color: #7a8a72; border: 2px solid #e4ebe0;
+        border-radius: 14px; font-weight: 700; transition: all 0.2s ease;
+    }
+    .btn-cancel:hover { background: #f8faf6; color: #2d3748; }
+</style>
+
 <div class="container py-5">
-    <h2 class="mb-4 text-warning">Modification de votre Profil</h2>
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <h2 class="fw-bolder mb-4" style="color: var(--nutri-green-dark);">
+                <i class="bi bi-pencil-square me-2"></i>{% trans "Edit your profile" %}
+            </h2>
 
-    {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}" role="alert">
-                    {{ message }}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} border-0 shadow-sm rounded-3" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="edit-card">
+                    <div class="edit-card-head head-green">
+                        <i class="bi bi-person-vcard"></i>{% trans "Account Information" %}
+                    </div>
+                    <div class="p-4">
+                        <div class="row">
+                            <div class="col-md-6">{{ user_form.first_name|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ user_form.last_name|as_crispy_field }}</div>
+                        </div>
+                    </div>
                 </div>
-            {% endfor %}
+
+                <div class="edit-card">
+                    <div class="edit-card-head head-orange">
+                        <i class="bi bi-heart-pulse"></i>{% trans "Physical and Medical Details" %}
+                    </div>
+                    <div class="p-4">
+                        <div class="row">
+                            <div class="col-md-4">{{ profile_form.age|as_crispy_field }}</div>
+                            <div class="col-md-4">{{ profile_form.gender|as_crispy_field }}</div>
+                            <div class="col-md-4">{{ profile_form.occupation|as_crispy_field }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">{{ profile_form.height|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ profile_form.weight|as_crispy_field }}</div>
+                        </div>
+                        <h6 class="fw-bold mt-3 mb-3" style="color: var(--nutri-green-dark);">{% trans "Health and History" %}</h6>
+                        {{ profile_form.activity_level|as_crispy_field }}
+                        {{ profile_form.diagnosis|as_crispy_field }}
+                        {{ profile_form.diagnosis_date|as_crispy_field }}
+                        {{ profile_form.medical_history|as_crispy_field }}
+                        {{ profile_form.medications|as_crispy_field }}
+                        <div class="row">
+                            <div class="col-md-6">{{ profile_form.allergies|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ profile_form.family_history_cvd|as_crispy_field }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-3 mt-4">
+                    <button type="submit" class="btn btn-nutri btn-lg flex-grow-1 py-3">
+                        <i class="bi bi-check-lg me-2"></i>{% trans "Save changes" %}
+                    </button>
+                    <a href="{% url 'patient_profile' %}" class="btn btn-cancel btn-lg px-4 py-3">
+                        {% trans "Cancel" %}
+                    </a>
+                </div>
+            </form>
         </div>
-    {% endif %}
-
-    <form method="post">
-        {% csrf_token %}
-
-        <div class="card shadow mb-4">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Informations de Compte (Nom, Email)</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">{{ user_form.first_name|as_crispy_field }}</div>
-                    <div class="col-md-6">{{ user_form.last_name|as_crispy_field }}</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card shadow mb-4">
-            <div class="card-header bg-info text-white">
-                <h5 class="mb-0">Détails Physiques et Médicaux</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-4">{{ profile_form.age|as_crispy_field }}</div>
-                    <div class="col-md-4">{{ profile_form.gender|as_crispy_field }}</div>
-                    <div class="col-md-4">{{ profile_form.occupation|as_crispy_field }}</div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-6">{{ profile_form.height|as_crispy_field }}</div>
-                    <div class="col-md-6">{{ profile_form.weight|as_crispy_field }}</div>
-                </div>
-
-                <h6>Santé et Historique</h6>
-                {{ profile_form.activity_level|as_crispy_field }}
-                {{ profile_form.diagnosis|as_crispy_field }}
-                {{ profile_form.diagnosis_date|as_crispy_field }}
-                {{ profile_form.medical_history|as_crispy_field }}
-                {{ profile_form.medications|as_crispy_field }}
-
-                <div class="row">
-                    <div class="col-md-6">{{ profile_form.allergies|as_crispy_field }}</div>
-                    <div class="col-md-6">{{ profile_form.family_history_cvd|as_crispy_field }}</div>
-                </div>
-            </div>
-        </div>
-        
-        <button type="submit" class="btn btn-warning btn-lg w-100">Sauvegarder les modifications</button>
-        <a href="{% url 'patient_profile' %}" class="btn btn-outline-secondary mt-2 w-100">Annuler et retourner au profil</a>
-    </form>
+    </div>
 </div>
 {% endblock %}

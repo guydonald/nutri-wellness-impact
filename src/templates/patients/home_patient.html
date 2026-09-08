@@ -1,8 +1,9 @@
 {% extends 'bases.html' %}
-{% load static %}
+{% load static i18n %}
 {% block content %}
 
-<h1>Welcome to my site</h1>
-        
+<div class="container py-5 text-center">
+    <h1 class="fw-bolder" style="color:#2f5e2f;">{% trans "Welcome to your space" %}</h1>
+</div>
 
 {% endblock %}

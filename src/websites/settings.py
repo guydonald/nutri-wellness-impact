@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'patients',
     'forum',
-#    'community',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -53,13 +52,13 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "allauth.account.middleware.AccountMiddleware",
-    'django.middleware.locale.LocaleMiddleware',
 
     # Ton nouveau middleware (Remplace 'patients' par le nom de ton app)
     'patients.middleware.ProfileCompletionMiddleware',
@@ -75,6 +74,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
+                'django.template.context_processors.i18n',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -222,18 +222,20 @@ ACCOUNT_RATE_LIMITS = {
     "request_login_code": "3/m",
     "login_failed": "5/m",  # remplace les anciens LIMIT/TIMEOUT
 }
-SECURE_SSL_REDIRECT = True
+# Sécurité HTTPS : active uniquement en production (DEBUG = False)
+SECURE_SSL_REDIRECT = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
 CSRF_COOKIE_HTTPONLY = True
-CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = 'Strict'
 
 SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = 'Strict'
 
 

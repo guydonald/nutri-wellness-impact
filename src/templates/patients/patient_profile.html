@@ -1,74 +1,161 @@
 {% extends "bases.html" %}
-{% load static %}
+{% load static i18n %}
 
 {% block content %}
+<style>
+    :root {
+        --nutri-green: #5a8f3d;
+        --nutri-green-dark: #2f5e2f;
+        --nutri-green-light: #eaf3e3;
+        --nutri-red: #d62828;
+        --nutri-orange: #f4a020;
+    }
+    .profile-header {
+        background: linear-gradient(135deg, var(--nutri-green) 0%, var(--nutri-green-dark) 100%);
+        border-radius: 26px;
+        color: #fff;
+        padding: 2.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    .profile-header::after {
+        content: '';
+        position: absolute;
+        width: 220px; height: 220px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 50%;
+        top: -60px; right: -40px;
+    }
+    .profile-avatar {
+        width: 90px; height: 90px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.2);
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 2.5rem;
+        border: 3px solid rgba(255,255,255,0.4);
+    }
+    .info-card {
+        background: #fff;
+        border-radius: 22px;
+        border: 1px solid #eef2ec;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+    .info-card:hover { box-shadow: 0 16px 36px rgba(47, 94, 47, 0.10); }
+    .info-card-header {
+        padding: 1.2rem 1.5rem;
+        border-bottom: 1px solid #f0f4ee;
+        font-weight: 700;
+        display: flex; align-items: center; gap: 0.6rem;
+    }
+    .info-icon {
+        width: 40px; height: 40px; border-radius: 12px;
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 1.1rem;
+    }
+    .icon-green { background: var(--nutri-green-light); color: var(--nutri-green-dark); }
+    .icon-orange { background: #fef3e0; color: var(--nutri-orange); }
+    .data-row {
+        display: flex; justify-content: space-between;
+        padding: 0.6rem 0;
+        border-bottom: 1px dashed #eef2ec;
+    }
+    .data-row:last-child { border-bottom: none; }
+    .data-label { color: #7a8a72; font-size: 0.9rem; }
+    .data-value { font-weight: 600; color: #2d3748; text-align: right; }
+    .stat-box {
+        background: var(--nutri-green-light);
+        border-radius: 16px;
+        padding: 1rem;
+        text-align: center;
+    }
+    .stat-box .val { font-size: 1.4rem; font-weight: 800; color: var(--nutri-green-dark); }
+    .stat-box .lbl { font-size: 0.75rem; color: #7a8a72; text-transform: uppercase; }
+    .btn-nutri {
+        background: var(--nutri-green); color: #fff; border: none;
+        border-radius: 50px; font-weight: 700; transition: all 0.25s ease;
+    }
+    .btn-nutri:hover { background: var(--nutri-green-dark); color: #fff; transform: translateY(-2px); }
+    .badge-role { background: rgba(255,255,255,0.25); color: #fff; border-radius: 50px; padding: 0.3rem 1rem; }
+</style>
+
 <div class="container py-5">
-    <h2 class="mb-4 text-primary">Patient Profile Details</h2>
-    
-    <div class="row">
-        
-        <div class="col-lg-5 mb-4">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Account Information</h5>
+
+    <!-- En-tête profil -->
+    <div class="profile-header mb-4 position-relative">
+        <div class="row align-items-center position-relative" style="z-index:1;">
+            <div class="col-auto">
+                <div class="profile-avatar"><i class="bi bi-person"></i></div>
+            </div>
+            <div class="col">
+                <h2 class="fw-bolder mb-1">{{ user.get_full_name|default:user.email }}</h2>
+                <p class="mb-2 opacity-75"><i class="bi bi-envelope me-2"></i>{{ user.email }}</p>
+                <span class="badge-role"><i class="bi bi-shield-check me-1"></i>{{ user.role|capfirst }}</span>
+                <span class="ms-2 small opacity-75"><i class="bi bi-calendar3 me-1"></i>{% trans "Member since" %} {{ user.date_joined|date:"d F Y" }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistiques rapides -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3"><div class="stat-box"><div class="val">{{ profile.age|default:"-" }}</div><div class="lbl">{% trans "Age" %}</div></div></div>
+        <div class="col-6 col-md-3"><div class="stat-box"><div class="val">{{ profile.weight|default:"-" }}</div><div class="lbl">{% trans "Weight (kg)" %}</div></div></div>
+        <div class="col-6 col-md-3"><div class="stat-box"><div class="val">{{ profile.height|default:"-" }}</div><div class="lbl">{% trans "Height (cm)" %}</div></div></div>
+        <div class="col-6 col-md-3"><div class="stat-box"><div class="val">{{ profile.bmi|default:"-" }}</div><div class="lbl">{% trans "BMI" %}</div></div></div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Infos personnelles -->
+        <div class="col-lg-5">
+            <div class="info-card">
+                <div class="info-card-header">
+                    <span class="info-icon icon-green"><i class="bi bi-person-vcard"></i></span>
+                    {% trans "Personal Information" %}
                 </div>
-                <div class="card-body">
-                    <p><strong>Full Name:</strong> {{ user.get_full_name|default:"Not specified" }}</p>
-                    <p><strong>Email:</strong> {{ user.email }}</p>
-                    <p><strong>Role :</strong> <span class="badge bg-success">{{ user.role|capfirst }}</span></p>
-                    <p><strong>Member since:</strong> {{ user.date_joined|date:"d F Y" }}</p>
+                <div class="card-body p-4">
+                    <div class="data-row"><span class="data-label">{% trans "Gender" %}</span><span class="data-value">{{ profile.get_gender_display|default:"-" }}</span></div>
+                    <div class="data-row"><span class="data-label">{% trans "Occupation" %}</span><span class="data-value">{{ profile.occupation|default:"-" }}</span></div>
+                    <div class="data-row"><span class="data-label">{% trans "Activity level" %}</span><span class="data-value">{{ profile.get_activity_level_display|default:"-" }}</span></div>
+                    <div class="data-row"><span class="data-label">{% trans "Waist circumference" %}</span><span class="data-value">{{ profile.waist_circumference|default:"-" }} cm</span></div>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-7 mb-4">
-            <div class="card shadow">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">Clinical and Physical Details</h5>
+        <!-- Infos médicales -->
+        <div class="col-lg-7">
+            <div class="info-card">
+                <div class="info-card-header">
+                    <span class="info-icon icon-orange"><i class="bi bi-heart-pulse"></i></span>
+                    {% trans "Medical History" %}
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h6>Personal Statistics</h6>
-                            <p><strong>Âge :</strong> {{ profile.age|default:"-" }} ans</p>
-                            <p><strong>Sexe :</strong> {{ profile.get_gender_display|default:"-" }}</p>
-                            <p><strong>Occupation :</strong> {{ profile.occupation|default:"-" }}</p>
-                            <p><strong>Niveau d'activité :</strong> {{ profile.get_activity_level_display|default:"-" }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <h6>Physical Measurements</h6>
-                            <p><strong>Taille :</strong> {{ profile.height|default:"-" }} m</p>
-                            <p><strong>Poids :</strong> {{ profile.weight|default:"-" }} kg</p>
-                            <p><strong>IMC :</strong> {{ profile.bmi|default:"Non calculé" }}</p>
-                            <p><strong>Tour de taille :</strong> {{ profile.waist_circumference|default:"-" }} cm</p>
-                        </div>
+                <div class="card-body p-4">
+                    <div class="data-row"><span class="data-label">{% trans "Diagnosis" %}</span><span class="data-value">{{ profile.diagnosis|default:"-" }}</span></div>
+                    <div class="data-row"><span class="data-label">{% trans "Diagnosis date" %}</span><span class="data-value">{{ profile.diagnosis_date|default:"-" }}</span></div>
+                    <div class="data-row"><span class="data-label">{% trans "Medical history" %}</span><span class="data-value">{{ profile.medical_history|default:"-" }}</span></div>
+                    <div class="data-row"><span class="data-label">{% trans "Medications" %}</span><span class="data-value">{{ profile.medications|default:"-" }}</span></div>
+                    <div class="data-row">
+                        <span class="data-label">{% trans "Allergies" %}</span>
+                        <span class="data-value">
+                            {% if profile.allergies %}<span class="badge bg-danger-subtle text-danger">{% trans "Yes" %}</span>
+                            {% else %}<span class="badge bg-success-subtle text-success">{% trans "No" %}</span>{% endif %}
+                        </span>
                     </div>
-
-                    <hr>
-
-                    <h6>Medical History</h6>
-                    <p><strong>Diagnostic :</strong> {{ profile.diagnosis|default:"-" }} (le {{ profile.diagnosis_date|default:"-" }})</p>
-                    <p><strong>Antécédents :</strong> {{ profile.medical_history|default:"-" }}</p>
-                    <p><strong>Médicaments :</strong> {{ profile.medications|default:"-" }}</p>
-                    <p><strong>Allergies :</strong> 
-                        {% if profile.allergies %}
-                            <span class="badge bg-danger">Yes</span>
-                        {% else %}
-                            <span class="badge bg-success">No</span>
-                        {% endif %}
-                    </p>
-                    <p><strong>Antécédents CV :</strong> 
-                        {% if profile.family_history_cvd %}
-                            <span class="badge bg-danger">Yes</span>
-                        {% else %}
-                            <span class="badge bg-success">No</span>
-                        {% endif %}
-                    </p>
-                    
-                    <a href="{% url 'patient_profile_update' %}" class="btn btn-sm btn-warning mt-3">Update my physical and medical profile</a>
+                    <div class="data-row">
+                        <span class="data-label">{% trans "Family history of CVD" %}</span>
+                        <span class="data-value">
+                            {% if profile.family_history_cvd %}<span class="badge bg-danger-subtle text-danger">{% trans "Yes" %}</span>
+                            {% else %}<span class="badge bg-success-subtle text-success">{% trans "No" %}</span>{% endif %}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="text-end mt-4">
+        <a href="{% url 'patient_profile_update' %}" class="btn btn-nutri px-4 py-2">
+            <i class="bi bi-pencil-square me-2"></i>{% trans "Update my profile" %}
+        </a>
     </div>
 </div>
 {% endblock %}

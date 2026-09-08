@@ -4,21 +4,21 @@
 <div class="modal-header border-0 pt-4 px-4 pb-0">
     <div class="w-100 text-center">
         <img src="{% static 'img/logo.png' %}" alt="Logo" style="height: 60px;" class="mb-3">
-        <h4 class="fw-bold mb-0" style="color: var(--nutri-red);">{% trans "Déconnexion" %}</h4>
+        <h4 class="fw-bold mb-0" style="color: var(--nutri-red);">{% trans "Logout" %}</h4>
     </div>
     <button type="button" class="btn-close position-absolute end-0 top-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 
 <div class="modal-body p-4 text-center">
-    <p>{% trans "Êtes-vous sûr de vouloir vous déconnecter de Nutri-Wellness ?" %}</p>
-    
+    <p>{% trans "Are you sure you want to log out of Nutri-Wellness?" %}</p>
+
     <form method="POST" action="{% url 'account_logout' %}">
         {% csrf_token %}
         <button class="btn btn-danger w-100 rounded-pill py-2 mt-3" type="submit" style="background-color: var(--nutri-red); border: none;">
-            {% trans "Oui, me déconnecter" %}
+            {% trans "Yes, log me out" %}
         </button>
         <button type="button" class="btn btn-link w-100 mt-2 text-muted text-decoration-none" data-bs-dismiss="modal">
-            {% trans "Annuler" %}
+            {% trans "Cancel" %}
         </button>
     </form>
 </div>

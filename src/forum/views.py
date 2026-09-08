@@ -6,12 +6,13 @@ from .models import Post, Comment
 from .forms import PostForm, CommentForm
 from django.contrib import messages
 
+
 @login_required
 def community_feed(request):
     posts = Post.objects.all().prefetch_related('comments__user')
     comment_form = CommentForm()
-    post_form = PostForm() # Pour la modale
-    
+    post_form = PostForm()  # Pour la modale
+
     if request.method == 'POST' and 'submit_comment' in request.POST:
         post_id = request.POST.get('post_id')
         post = get_object_or_404(Post, id=post_id)
@@ -21,20 +22,20 @@ def community_feed(request):
             comment.post = post
             comment.user = request.user
             comment.save()
-            messages.success(request, _("Commentaire ajouté !"))
+            messages.success(request, _("Comment added!"))
             return redirect('community_feed')
 
     return render(request, 'community/feed.html', {
         'posts': posts,
         'comment_form': comment_form,
-        'post_form': post_form, # Passé ici pour la modale
+        'post_form': post_form,
     })
 
 
 @login_required
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
-    # On récupère uniquement les commentaires "parents" (ceux qui n'ont pas de parent_id)
+    # On recupere uniquement les commentaires "parents" (sans parent_id)
     comments = post.comments.filter(parent=None)
     comment_form = CommentForm()
 
@@ -44,15 +45,15 @@ def post_detail(request, pk):
             comment = form.save(commit=False)
             comment.post = post
             comment.user = request.user
-            
-            # On vérifie si c'est une réponse
+
+            # On verifie si c'est une reponse
             parent_id = request.POST.get('parent_id')
             if parent_id:
                 parent_obj = Comment.objects.get(id=parent_id)
                 comment.parent = parent_obj
-                
+
             comment.save()
-            messages.success(request, _("Message envoyé !"))
+            messages.success(request, _("Message sent!"))
             return redirect('post_detail', pk=post.pk)
 
     return render(request, 'community/post_detail.html', {
@@ -60,6 +61,7 @@ def post_detail(request, pk):
         'comments': comments,
         'comment_form': comment_form
     })
+
 
 @login_required
 def create_post(request):
@@ -69,7 +71,7 @@ def create_post(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
-            messages.success(request, _("Votre article a été publié avec succès !"))
+            messages.success(request, _("Your post has been published successfully!"))
     return redirect('community_feed')
 
 
@@ -77,21 +79,22 @@ def create_post(request):
 @require_POST
 def delete_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
-    # Sécurité : Seule la diététicienne peut supprimer un post (ou l'auteur)
+    # Securite : seul le dieteticien ou l'auteur peut supprimer
     if request.user.role == 'dietitian' or request.user == post.author:
         post.delete()
-        messages.success(request, _("Publication supprimée."))
+        messages.success(request, _("Post deleted."))
     return redirect('community_feed')
+
 
 @login_required
 @require_POST
 def delete_comment(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
-    # Sécurité : L'auteur du commentaire ou la diététicienne
+    # Securite : l'auteur du commentaire ou le dieteticien
     if request.user == comment.user or request.user.role == 'dietitian':
         post_pk = comment.post.pk
         comment.delete()
-        messages.success(request, _("Commentaire supprimé."))
+        messages.success(request, _("Comment deleted."))
         return redirect('post_detail', pk=post_pk)
     return redirect('community_feed')
 
@@ -100,11 +103,13 @@ def delete_comment(request, pk):
 def toggle_pin_post(request, pk):
     if request.user.role != 'dietitian':
         return redirect('community_feed')
-    
+
     post = get_object_or_404(Post, pk=pk)
-    post.is_pinned = not post.is_pinned # Inverse l'état (True -> False ou inversement)
+    post.is_pinned = not post.is_pinned  # Inverse l'etat
     post.save()
-    
-    status = "épinglé" if post.is_pinned else "désépinglé"
-    messages.success(request, f"Le post a été {status}.")
+
+    if post.is_pinned:
+        messages.success(request, _("The post has been pinned."))
+    else:
+        messages.success(request, _("The post has been unpinned."))
     return redirect('community_feed')

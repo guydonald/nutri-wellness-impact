@@ -9,6 +9,7 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy, reverse
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 from django.views.decorators.http import require_POST
 
@@ -17,12 +18,15 @@ from allauth.account.models import EmailAddress, EmailConfirmation
 from allauth.account.stages import LoginStageController, EmailVerificationStage
 from allauth.account.internal import flows
 from allauth.account.views import (
-    LoginView, SignupView, EmailView, LogoutView, 
-    ConfirmEmailView, PasswordChangeView, PasswordResetView, 
+    LoginView, SignupView, EmailView, LogoutView,
+    ConfirmEmailView, PasswordChangeView, PasswordResetView,
     PasswordResetDoneView, PasswordResetFromKeyView, EmailVerificationSentView
 )
 
-# Create your views here.
+
+# ============================================================
+# PAGES PUBLIQUES
+# ============================================================
 def index_home(request):
     return render(request, 'index.html')
 
@@ -44,7 +48,7 @@ def index_contact(request):
         Nom: {name}
         Email: {email}
         Téléphone: {phone}
-        
+
         Message:
         {message}
         """
@@ -52,17 +56,20 @@ def index_contact(request):
         send_mail(
             subject,
             body,
-            settings.DEFAULT_FROM_EMAIL,   # expéditeur
-            ["contact@nutri-wellness.com"],  # destinataire
+            settings.DEFAULT_FROM_EMAIL,               # expediteur
+            ["contact@nutri-wellnessimpact.com"],      # destinataire (corrige : bon domaine)
             fail_silently=False,
         )
 
-        messages.success(request, "Your message has been sent successfully! We will get back to you soon.")
+        messages.success(request, _("Your message has been sent successfully! We will get back to you soon."))
         return redirect('contact')
 
     return render(request, "contact.html")
 
 
+# ============================================================
+# BASE AUTH (logique HTMX partagee)
+# ============================================================
 class BaseAuthView:
     def get_template_names(self):
         if self.request.headers.get('HX-Request'):
@@ -70,30 +77,28 @@ class BaseAuthView:
         return [self.template_name]
 
     def form_valid(self, form):
-        # On appelle le comportement normal (qui crée la session)
+        # Comportement normal (cree la session)
         response = super().form_valid(form)
-        
-        # Si c'est HTMX, au lieu de renvoyer un code 302 (redirection standard),
-        # on renvoie un code 204 avec le header de redirection HTMX
+        # En HTMX : code 204 + header de redirection HTMX au lieu du 302 standard
         if self.request.headers.get('HX-Request'):
             return HttpResponse(status=204, headers={'HX-Redirect': self.get_success_url()})
         return response
+
     def get_success_url(self):
         return reverse("index")
+
 
 class CustomLoginView(BaseAuthView, LoginView):
     template_name = "account/login.html"
     ajax_template_name = "account/partials/login_form.html"
 
     def form_valid(self, form):
-        # 1. On force la connexion pour créer la session
+        # 1. Force la connexion pour creer la session
         auth_login(self.request, form.user)
-        
         if self.request.headers.get('HX-Request'):
-            # 2. On redirige vers l'URL nommée 'home' (qui est ton home_redirect_view)
-            success_url = reverse("home") 
+            # 2. Redirige vers 'home' (home_redirect_view)
+            success_url = reverse("home")
             return HttpResponse(status=204, headers={'HX-Redirect': success_url})
-        
         return super().form_valid(form)
 
 
@@ -102,42 +107,44 @@ class CustomSignupView(BaseAuthView, SignupView):
     ajax_template_name = "account/partials/signup_form.html"
 
     def form_valid(self, form):
-        # 1. On laisse la classe parente gérer la sauvegarde UNIQUE et l'envoi d'email
+        # La classe parente gere la sauvegarde et l'envoi de l'email
         response = super().form_valid(form)
-        
-        # 2. Si c'est du HTMX, au lieu de rediriger, on renvoie le fragment OTP
+        # En HTMX : renvoie le fragment de saisie du code
         if self.request.headers.get('HX-Request'):
-            # IMPORTANT : Allauth a déjà créé self.user lors du super().form_valid(form)
             html = render_to_string("account/partials/email_verification_code.html", request=self.request)
             return HttpResponse(html)
-        
         return response
+
 
 class CustomLogoutView(BaseAuthView, LogoutView):
     template_name = "account/logout.html"
     ajax_template_name = "account/partials/logout_confirm.html"
+
     def get_next_redirect_url(self):
         return reverse_lazy("home")
+
 
 class CustomPasswordChangeView(BaseAuthView, PasswordChangeView):
     template_name = "account/password_change.html"
     ajax_template_name = "account/partials/password_change_form.html"
-    
+
     def form_valid(self, form):
         PasswordChangeView.form_valid(self, form)
         if self.request.headers.get('HX-Request'):
-            # On renvoie le fragment de succès (que nous allons créer juste en dessous)
             return render(self.request, "account/partials/password_change_done_inner.html")
         return redirect(self.success_url)
+
 
 class CustomPasswordResetView(BaseAuthView, PasswordResetView):
     template_name = "account/password_reset.html"
     ajax_template_name = "account/partials/password_reset_form.html"
     success_url = reverse_lazy("account_reset_password_done")
 
+
 class CustomPasswordResetDoneView(BaseAuthView, PasswordResetDoneView):
     template_name = "account/password_reset_done.html"
     ajax_template_name = "account/partials/password_reset_done_inner.html"
+
 
 class CustomPasswordResetFromKeyView(BaseAuthView, PasswordResetFromKeyView):
     template_name = "account/password_reset_from_key.html"
@@ -145,61 +152,66 @@ class CustomPasswordResetFromKeyView(BaseAuthView, PasswordResetFromKeyView):
     success_url = reverse_lazy("index")
 
     def form_valid(self, form):
-        # 1. On exécute le changement de mot de passe (logique Allauth)
         response = super(PasswordResetFromKeyView, self).form_valid(form)
-        
-        # 2. Si c'est du HTMX, on renvoie le fragment de succès au lieu de rediriger
         if self.request.headers.get('HX-Request'):
             return render(self.request, "account/partials/password_reset_from_key_done_inner.html")
-        
         return response
-        
+
+
 class CustomEmailVerificationSentView(BaseAuthView, EmailVerificationSentView):
     template_name = "account/verification_sent.html"
     ajax_template_name = "account/partials/email_verification_code.html"
 
+
 class CustomConfirmEmailView(TemplateView):
     template_name = "account/email_confirm.html"
-    ajax_template_name = "account/partials/email_verification_code.html" # Fragment pour la modale
+    ajax_template_name = "account/partials/email_verification_code.html"  # Fragment pour la modale
 
     def get_template_names(self):
         if self.request.headers.get('HX-Request'):
             return [self.ajax_template_name]
         return [self.template_name]
 
+    @staticmethod
+    def _normalize(code):
+        # Enleve tirets/espaces et met en majuscules pour une comparaison robuste.
+        # allauth 65+ genere des codes au format XXXX-XXXX (RFC 8628).
+        return (code or "").replace("-", "").replace(" ", "").strip().upper()
+
     def post(self, request, *args, **kwargs):
-        code_saisi = request.POST.get('code', '').strip().upper()
+        code_saisi = self._normalize(request.POST.get('code', ''))
         process = flows.email_verification_by_code.EmailVerificationProcess.resume(request)
         stage = LoginStageController.enter(request, EmailVerificationStage.key)
-        
-        if process and process.code == code_saisi:
+
+        code_attendu = self._normalize(process.code) if process else None
+
+        if process and code_attendu and code_attendu == code_saisi:
             process.finish()
             EmailAddress.objects.filter(email=process.state.get("email")).update(verified=True)
-            if stage: stage.exit()
-            
-            messages.success(request, "Congratulations, your account is validated !")
-            
+            if stage:
+                stage.exit()
+
+            messages.success(request, _("Congratulations, your account has been validated!"))
+
             if request.headers.get('HX-Request'):
-                # Redirection forcée de toute la page vers le login
                 return HttpResponse(status=204, headers={'HX-Redirect': reverse('account_login')})
             return redirect('account_login')
-        
-        # SI LE CODE EST FAUX :
+
+        # Code faux ou expire
         if request.headers.get('HX-Request'):
-            # On renvoie juste le fragment avec l'erreur
-            return render(request, self.ajax_template_name, {'error': "Invalid or expired code."})
-            
-        messages.error(request, "Invalid code.")
+            return render(request, self.ajax_template_name, {'error': _("Invalid or expired code.")})
+
+        messages.error(request, _("Invalid code."))
         return self.render_to_response(self.get_context_data())
 
-# --- VUE EMAIL (CORRIGÉE) ---
+
 class CustomEmailView(BaseAuthView, EmailView):
-    template_name = "account/email_confirm.html" # Correction du nom du fichier
+    template_name = "account/email_confirm.html"
     ajax_template_name = "account/partials/email_verification_code.html"
 
     def form_valid(self, form):
         response = super().form_valid(form)
         if self.request.headers.get('HX-Request'):
-            messages.success(self.request, "A new code has been sent!")
+            messages.success(self.request, _("A new code has been sent!"))
             return render(self.request, self.ajax_template_name)
         return response

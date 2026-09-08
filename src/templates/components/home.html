@@ -1,139 +1,210 @@
 {% load static %}
+{% load i18n %}
 
-<!-- Header-->
-<header class="py-5">
-    <div class="container px-5 pb-5">
+<style>
+    :root {
+        --nutri-green: #5a8f3d;
+        --nutri-green-dark: #2f5e2f;
+        --nutri-green-light: #eaf3e3;
+        --nutri-red: #d62828;
+        --nutri-orange: #f4a020;
+    }
+
+    /* ===== HERO ===== */
+    .hero-section {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #ffffff 0%, var(--nutri-green-light) 100%);
+    }
+    .hero-blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(60px);
+        opacity: 0.35;
+        z-index: 0;
+    }
+    .hero-blob-1 { width: 380px; height: 380px; background: var(--nutri-green); top: -120px; right: -80px; }
+    .hero-blob-2 { width: 300px; height: 300px; background: var(--nutri-orange); bottom: -120px; left: -60px; opacity: 0.20; }
+
+    .hero-badge {
+        background: rgba(90, 143, 61, 0.12);
+        color: var(--nutri-green-dark);
+        font-weight: 700;
+        letter-spacing: 1px;
+        border-radius: 50px;
+        padding: 0.5rem 1.2rem;
+        display: inline-block;
+    }
+    .hero-title {
+        background: linear-gradient(120deg, var(--nutri-green-dark), var(--nutri-green));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1.1;
+    }
+    .btn-nutri {
+        background: var(--nutri-green);
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        font-weight: 700;
+        transition: all 0.25s ease;
+        box-shadow: 0 6px 18px rgba(90, 143, 61, 0.25);
+    }
+    .btn-nutri:hover {
+        background: var(--nutri-green-dark);
+        color: #fff;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 24px rgba(90, 143, 61, 0.35);
+    }
+    .btn-nutri-outline {
+        background: transparent;
+        color: var(--nutri-green-dark);
+        border: 2px solid var(--nutri-green);
+        border-radius: 50px;
+        font-weight: 700;
+        transition: all 0.25s ease;
+    }
+    .btn-nutri-outline:hover {
+        background: var(--nutri-green);
+        color: #fff;
+        transform: translateY(-3px);
+    }
+
+    /* Visuel illustratif hero */
+    .hero-visual {
+        position: relative;
+        z-index: 1;
+    }
+    .hero-img-main {
+        width: 100%;
+        max-width: 480px;
+        border-radius: 30px;
+        object-fit: cover;
+        aspect-ratio: 1/1;
+        box-shadow: 0 25px 60px rgba(47, 94, 47, 0.25);
+        animation: float 6s ease-in-out infinite;
+    }
+    .hero-float-card {
+        position: absolute;
+        background: #fff;
+        border-radius: 18px;
+        padding: 0.9rem 1.2rem;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        z-index: 2;
+    }
+    .hero-float-card i { font-size: 1.6rem; }
+    .hero-card-1 { top: 12%; left: -3%; animation: float 5s ease-in-out infinite; }
+    .hero-card-2 { bottom: 14%; right: -3%; animation: float 5s ease-in-out infinite 1.5s; }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-16px); }
+    }
+
+    /* ===== ANIMATIONS AU SCROLL ===== */
+    .reveal {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* ===== ABOUT ===== */
+    .about-section { background: #fff; }
+    .value-card {
+        background: #fff;
+        border-radius: 22px;
+        padding: 2.2rem 1.8rem;
+        height: 100%;
+        border: 1px solid #eef2ec;
+        transition: all 0.3s ease;
+    }
+    .value-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 18px 40px rgba(47, 94, 47, 0.12);
+        border-color: transparent;
+    }
+    .value-icon {
+        width: 64px; height: 64px;
+        border-radius: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        margin-bottom: 1.2rem;
+    }
+    .icon-green { background: var(--nutri-green-light); color: var(--nutri-green-dark); }
+    .icon-red   { background: #fdecec; color: var(--nutri-red); }
+    .icon-orange{ background: #fef3e0; color: var(--nutri-orange); }
+
+    .section-heading {
+        color: var(--nutri-green-dark);
+        font-weight: 800;
+    }
+    .social-btn {
+        width: 52px; height: 52px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        transition: all 0.25s ease;
+        background: var(--nutri-green-light);
+        color: var(--nutri-green-dark);
+    }
+    .social-btn:hover {
+        background: var(--nutri-green);
+        color: #fff;
+        transform: translateY(-4px);
+    }
+</style>
+
+<!-- ===== HERO ===== -->
+<header class="hero-section py-5">
+    <div class="hero-blob hero-blob-1"></div>
+    <div class="hero-blob hero-blob-2"></div>
+    <div class="container px-5 py-4 position-relative">
         <div class="row gx-5 align-items-center">
-            <div class="col-xxl-5">
-                <!-- Header text content-->
-                <div class="text-center text-xxl-start">
-                    <div class="badge bg-success text-white mb-4"><div class="text-uppercase">Nutrition &middot; Health &middot; Well-being</div></div>
-                    <div class="fs-3 fw-light text-muted">Using food as a tool for better health</div>
-                    <h1 class="display-3 fw-bolder mb-5"><span class="text-success d-inline">Enhance Health Through Nutrition</span></h1>
-                    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xxl-start mb-3">
-                        <a class="btn btn-success btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" href="{% url 'resume' %}">Resume</a>
-                        <a class="btn btn-outline-dark btn-lg px-5 py-3 fs-6 fw-bolder" href="{% url 'project' %}">Projects</a>
+            <div class="col-lg-6">
+                <div class="text-center text-lg-start reveal">
+                    <span class="hero-badge mb-4 text-uppercase small">
+                        {% trans "Nutrition · Health · Well-being" %}
+                    </span>
+                    <div class="fs-4 fw-light text-muted mt-4 mb-2">{% trans "Using food as a tool for better health" %}</div>
+                    <h1 class="display-3 fw-bolder mb-4 hero-title">{% trans "Enhance Health Through Nutrition" %}</h1>
+                    <p class="lead text-muted mb-4">{% trans "Personalized nutritional follow-up and simple tools to transform your daily well-being." %}</p>
+                    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-lg-start">
+                        <a class="btn btn-nutri btn-lg px-5 py-3" href="{% url 'resume' %}">
+                            <i class="bi bi-person-badge me-2"></i>{% trans "Our Journey" %}
+                        </a>
+                        <a class="btn btn-nutri-outline btn-lg px-5 py-3" href="{% url 'project' %}">
+                            <i class="bi bi-grid me-2"></i>{% trans "Projects" %}
+                        </a>
                     </div>
                 </div>
             </div>
-            <div class="col-xxl-7">
-                <!-- Header profile picture-->
-                <div class="d-flex justify-content-center mt-5 mt-xxl-0">
-                    <div class="profile bg-success">
-                        <!-- TIP: For best results, use a photo with a transparent background like the demo example below-->
-                        <!-- Watch a tutorial on how to do this on YouTube (link)-->
-                        <img src="{% static 'img/profile.png' %}" alt="Profil" class="profile-img">
-                        <div class="dots-1">
-                            <!-- SVG Dots-->
-                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 191.6 1215.4" style="enable-background: new 0 0 191.6 1215.4" xml:space="preserve">
-                                <g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)">
-                                    <path d="M227.7,12788.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,12801.6,289.7,12808.6,227.7,12788.6z"></path>
-                                    <path d="M1507.7,12788.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,12801.6,1569.7,12808.6,1507.7,12788.6z"></path>
-                                    <path d="M227.7,11508.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,11521.6,289.7,11528.6,227.7,11508.6z"></path>
-                                    <path d="M1507.7,11508.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,11521.6,1569.7,11528.6,1507.7,11508.6z"></path>
-                                    <path d="M227.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,10241.6,289.7,10248.6,227.7,10228.6z"></path>
-                                    <path d="M1507.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,10241.6,1569.7,10248.6,1507.7,10228.6z"></path>
-                                    <path d="M227.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,8961.6,289.7,8968.6,227.7,8948.6z"></path>
-                                    <path d="M1507.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,8961.6,1569.7,8968.6,1507.7,8948.6z"></path>
-                                    <path d="M227.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,7681.6,289.7,7688.6,227.7,7668.6z"></path>
-                                    <path d="M1507.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,7681.6,1569.7,7688.6,1507.7,7668.6z"></path>
-                                    <path d="M227.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,6401.6,289.7,6408.6,227.7,6388.6z"></path>
-                                    <path d="M1507.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,6401.6,1569.7,6408.6,1507.7,6388.6z"></path>
-                                    <path d="M227.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,5121.6,289.7,5128.6,227.7,5108.6z"></path>
-                                    <path d="M1507.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,5121.6,1569.7,5128.6,1507.7,5108.6z"></path>
-                                    <path d="M227.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,3841.6,289.7,3848.6,227.7,3828.6z"></path>
-                                    <path d="M1507.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,3841.6,1569.7,3848.6,1507.7,3828.6z"></path>
-                                    <path d="M227.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,2561.6,289.7,2568.6,227.7,2548.6z"></path>
-                                    <path d="M1507.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,2561.6,1569.7,2568.6,1507.7,2548.6z"></path>
-                                    <path d="M227.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,1281.6,289.7,1288.6,227.7,1268.6z"></path>
-                                    <path d="M1507.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,1281.6,1569.7,1288.6,1507.7,1268.6z"></path>
-                                </g>
-                            </svg>
-                            <!-- END of SVG dots-->
+            <div class="col-lg-6 mt-5 mt-lg-0">
+                <div class="hero-visual d-flex justify-content-center reveal">
+                    <img src="{% static 'img/fruits.jpg' %}" alt="{% trans 'Healthy nutrition' %}" class="hero-img-main">
+                    <div class="hero-float-card hero-card-1">
+                        <i class="bi bi-heart-pulse text-danger"></i>
+                        <div>
+                            <div class="fw-bolder small">{% trans "Clinical Care" %}</div>
+                            <div class="text-muted" style="font-size:0.75rem;">{% trans "Evidence-based" %}</div>
                         </div>
-                        <div class="dots-2" style="color: green;">
-                            <!-- SVG Dots-->
-                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 191.6 1215.4" style="enable-background: new 0 0 191.6 1215.4" xml:space="preserve">
-                                <g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)">
-                                    <path d="M227.7,12788.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,12801.6,289.7,12808.6,227.7,12788.6z"></path>
-                                    <path d="M1507.7,12788.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,12801.6,1569.7,12808.6,1507.7,12788.6z"></path>
-                                    <path d="M227.7,11508.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,11521.6,289.7,11528.6,227.7,11508.6z"></path>
-                                    <path d="M1507.7,11508.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,11521.6,1569.7,11528.6,1507.7,11508.6z"></path>
-                                    <path d="M227.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,10241.6,289.7,10248.6,227.7,10228.6z"></path>
-                                    <path d="M1507.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,10241.6,1569.7,10248.6,1507.7,10228.6z"></path>
-                                    <path d="M227.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,8961.6,289.7,8968.6,227.7,8948.6z"></path>
-                                    <path d="M1507.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,8961.6,1569.7,8968.6,1507.7,8948.6z"></path>
-                                    <path d="M227.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,7681.6,289.7,7688.6,227.7,7668.6z"></path>
-                                    <path d="M1507.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,7681.6,1569.7,7688.6,1507.7,7668.6z"></path>
-                                    <path d="M227.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,6401.6,289.7,6408.6,227.7,6388.6z"></path>
-                                    <path d="M1507.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,6401.6,1569.7,6408.6,1507.7,6388.6z"></path>
-                                    <path d="M227.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,5121.6,289.7,5128.6,227.7,5108.6z"></path>
-                                    <path d="M1507.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,5121.6,1569.7,5128.6,1507.7,5108.6z"></path>
-                                    <path d="M227.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,3841.6,289.7,3848.6,227.7,3828.6z"></path>
-                                    <path d="M1507.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,3841.6,1569.7,3848.6,1507.7,3828.6z"></path>
-                                    <path d="M227.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,2561.6,289.7,2568.6,227.7,2548.6z"></path>
-                                    <path d="M1507.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,2561.6,1569.7,2568.6,1507.7,2548.6z"></path>
-                                    <path d="M227.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,1281.6,289.7,1288.6,227.7,1268.6z"></path>
-                                    <path d="M1507.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,1281.6,1569.7,1288.6,1507.7,1268.6z"></path>
-                                </g>
-                            </svg>
-                            <!-- END of SVG dots-->
-                        </div>
-                        <div class="dots-3">
-                            <!-- SVG Dots-->
-                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 191.6 1215.4" style="enable-background: new 0 0 191.6 1215.4" xml:space="preserve">
-                                <g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)">
-                                    <path d="M227.7,12788.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,12801.6,289.7,12808.6,227.7,12788.6z"></path>
-                                    <path d="M1507.7,12788.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,12801.6,1569.7,12808.6,1507.7,12788.6z"></path>
-                                    <path d="M227.7,11508.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,11521.6,289.7,11528.6,227.7,11508.6z"></path>
-                                    <path d="M1507.7,11508.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,11521.6,1569.7,11528.6,1507.7,11508.6z"></path>
-                                    <path d="M227.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,10241.6,289.7,10248.6,227.7,10228.6z"></path>
-                                    <path d="M1507.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,10241.6,1569.7,10248.6,1507.7,10228.6z"></path>
-                                    <path d="M227.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,8961.6,289.7,8968.6,227.7,8948.6z"></path>
-                                    <path d="M1507.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,8961.6,1569.7,8968.6,1507.7,8948.6z"></path>
-                                    <path d="M227.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,7681.6,289.7,7688.6,227.7,7668.6z"></path>
-                                    <path d="M1507.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,7681.6,1569.7,7688.6,1507.7,7668.6z"></path>
-                                    <path d="M227.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,6401.6,289.7,6408.6,227.7,6388.6z"></path>
-                                    <path d="M1507.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,6401.6,1569.7,6408.6,1507.7,6388.6z"></path>
-                                    <path d="M227.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,5121.6,289.7,5128.6,227.7,5108.6z"></path>
-                                    <path d="M1507.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,5121.6,1569.7,5128.6,1507.7,5108.6z"></path>
-                                    <path d="M227.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,3841.6,289.7,3848.6,227.7,3828.6z"></path>
-                                    <path d="M1507.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,3841.6,1569.7,3848.6,1507.7,3828.6z"></path>
-                                    <path d="M227.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,2561.6,289.7,2568.6,227.7,2548.6z"></path>
-                                    <path d="M1507.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,2561.6,1569.7,2568.6,1507.7,2548.6z"></path>
-                                    <path d="M227.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,1281.6,289.7,1288.6,227.7,1268.6z"></path>
-                                    <path d="M1507.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,1281.6,1569.7,1288.6,1507.7,1268.6z"></path>
-                                </g>
-                            </svg>
-                            <!-- END of SVG dots-->
-                        </div>
-                        <div class="dots-4">
-                            <!-- SVG Dots-->
-                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 191.6 1215.4" style="enable-background: new 0 0 191.6 1215.4" xml:space="preserve">
-                                <g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)">
-                                    <path d="M227.7,12788.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,12801.6,289.7,12808.6,227.7,12788.6z"></path>
-                                    <path d="M1507.7,12788.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,12801.6,1569.7,12808.6,1507.7,12788.6z"></path>
-                                    <path d="M227.7,11508.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,11521.6,289.7,11528.6,227.7,11508.6z"></path>
-                                    <path d="M1507.7,11508.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,11521.6,1569.7,11528.6,1507.7,11508.6z"></path>
-                                    <path d="M227.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,10241.6,289.7,10248.6,227.7,10228.6z"></path>
-                                    <path d="M1507.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,10241.6,1569.7,10248.6,1507.7,10228.6z"></path>
-                                    <path d="M227.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,8961.6,289.7,8968.6,227.7,8948.6z"></path>
-                                    <path d="M1507.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,8961.6,1569.7,8968.6,1507.7,8948.6z"></path>
-                                    <path d="M227.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,7681.6,289.7,7688.6,227.7,7668.6z"></path>
-                                    <path d="M1507.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,7681.6,1569.7,7688.6,1507.7,7668.6z"></path>
-                                    <path d="M227.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,6401.6,289.7,6408.6,227.7,6388.6z"></path>
-                                    <path d="M1507.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,6401.6,1569.7,6408.6,1507.7,6388.6z"></path>
-                                    <path d="M227.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,5121.6,289.7,5128.6,227.7,5108.6z"></path>
-                                    <path d="M1507.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,5121.6,1569.7,5128.6,1507.7,5108.6z"></path>
-                                    <path d="M227.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,3841.6,289.7,3848.6,227.7,3828.6z"></path>
-                                    <path d="M1507.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,3841.6,1569.7,3848.6,1507.7,3828.6z"></path>
-                                    <path d="M227.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,2561.6,289.7,2568.6,227.7,2548.6z"></path>
-                                    <path d="M1507.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,2561.6,1569.7,2568.6,1507.7,2548.6z"></path>
-                                    <path d="M227.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,1281.6,289.7,1288.6,227.7,1268.6z"></path>
-                                    <path d="M1507.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,1281.6,1569.7,1288.6,1507.7,1268.6z"></path>
-                                </g>
-                            </svg>
-                            <!-- END of SVG dots-->
+                    </div>
+                    <div class="hero-float-card hero-card-2">
+                        <i class="bi bi-apple" style="color: var(--nutri-green);"></i>
+                        <div>
+                            <div class="fw-bolder small">{% trans "Meal Plans" %}</div>
+                            <div class="text-muted" style="font-size:0.75rem;">{% trans "Local & balanced" %}</div>
                         </div>
                     </div>
                 </div>
@@ -141,40 +212,88 @@
         </div>
     </div>
 </header>
-<!-- About Section-->
-<section class="bg-light py-5 shadow-inner">
-    <div class="container px-5">
-        <div class="row gx-5 justify-content-center">
-            <div class="col-xxl-10">
-                <div class="text-center my-5">
-                    
-                    <h2 class="display-5 fw-bolder"><span class="text-success d-inline">ABOUT US</span></h2>
-                    <p class="lead fw-normal text-success mb-4">
-                        <strong>Nutrition is the foundation of health and wellness.</strong> The foods we eat every day directly influence how our bodies grow, function, heal, and protect themselves against disease.
-                    </p>
-                    <p class="text-muted mb-5">
-                        We are nutrition experts working with other healthcare professionals to give daily support on how to maintain a healthy lifestyle. From boosting immunity and energy levels to managing chronic conditions such as diabetes, hypertension, and obesity, proper nutrition plays a vital role in overall well-being.
-                    </p>
 
-                    <h2 class="display-6 fw-bolder"><span class="text-success d-inline">OUR PHILOSOPHY</span></h2>
-                    <p class="text-muted mb-4">
-                        At Nutri-Wellness Impact, we emphasize balanced, evidence-based nutrition that nourishes the body at every stage of life. 
-                        Healthy nutrition is not about restriction, but about making informed choices. When nutrition is aligned with lifestyle, culture, and individual health needs, it becomes a powerful tool for lifelong health transformation.
-                    </p>
+<!-- ===== ABOUT ===== -->
+<section class="about-section py-5">
+    <div class="container px-5 py-4">
+        <div class="text-center mb-5 reveal">
+            <span class="hero-badge mb-3 text-uppercase small">{% trans "About Us" %}</span>
+            <h2 class="display-5 section-heading mt-3">{% trans "Nutrition is the foundation of health" %}</h2>
+            <p class="lead text-muted mx-auto mt-3" style="max-width: 760px;">
+                {% blocktrans %}The foods we eat every day directly influence how our bodies grow, function, heal, and protect themselves against disease. We work alongside healthcare professionals to give daily support for a healthy lifestyle.{% endblocktrans %}
+            </p>
+        </div>
 
-                    
-
-                    <h2 class="display-5 fw-bolder mt-5"><span class="text-success d-inline">AIM (OBJECTIVE)</span></h2>
-                    <p class="lead fw-light mb-4">Our aim is to support our clients with personalized follow-up and simple tools to improve overall well-being, and living a purposeful life.</p>
-                    
-                    <div class="d-flex justify-content-center fs-2 gap-4 mt-4">
-                        <a class="text-success" href="https://whatsapp.com/channel/0029Vb6iP5VBKfhxOdvfum3I" target="_blank"><i class="bi bi-whatsapp"></i></a>
-                        <a class="text-gradient" href="#!"><i class="bi bi-linkedin"></i></a>
-                        <a class="text-gradient" href="#!"><i class="bi bi-facebook"></i></a>
-                    </div>
-
+        <div class="row g-4 mb-5">
+            <div class="col-md-4 reveal">
+                <div class="value-card text-center">
+                    <div class="value-icon icon-green mx-auto"><i class="bi bi-shield-plus"></i></div>
+                    <h4 class="fw-bolder">{% trans "Prevention & Immunity" %}</h4>
+                    <p class="text-muted mb-0">{% trans "Boosting immunity and energy levels through balanced, everyday nutrition." %}</p>
                 </div>
+            </div>
+            <div class="col-md-4 reveal">
+                <div class="value-card text-center">
+                    <div class="value-icon icon-red mx-auto"><i class="bi bi-heart-pulse"></i></div>
+                    <h4 class="fw-bolder">{% trans "Chronic Disease Care" %}</h4>
+                    <p class="text-muted mb-0">{% trans "Managing diabetes, hypertension and obesity with clinical follow-up." %}</p>
+                </div>
+            </div>
+            <div class="col-md-4 reveal">
+                <div class="value-card text-center">
+                    <div class="value-icon icon-orange mx-auto"><i class="bi bi-basket"></i></div>
+                    <h4 class="fw-bolder">{% trans "Local Food Culture" %}</h4>
+                    <p class="text-muted mb-0">{% trans "Meal plans built on local foods like Ndole, Millet and Yam." %}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Philosophy + Aim -->
+        <div class="row gx-5 align-items-center justify-content-center reveal">
+            <div class="col-lg-10">
+                <div class="value-card" style="background: linear-gradient(135deg, var(--nutri-green-light), #ffffff);">
+                    <div class="row align-items-center">
+                        <div class="col-md-6 mb-4 mb-md-0">
+                            <h3 class="section-heading fw-bolder">{% trans "Our Philosophy" %}</h3>
+                            <p class="text-muted mb-0">
+                                {% blocktrans %}Healthy nutrition is not about restriction, but about making informed choices. When nutrition is aligned with lifestyle, culture and individual health needs, it becomes a powerful tool for lifelong transformation.{% endblocktrans %}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h3 class="section-heading fw-bolder">{% trans "Our Aim" %}</h3>
+                            <p class="text-muted mb-0">
+                                {% blocktrans %}To support our clients with personalized follow-up and simple tools to improve overall well-being, and to live a purposeful life.{% endblocktrans %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Socials -->
+        <div class="text-center mt-5 reveal">
+            <p class="text-muted mb-3">{% trans "Follow us" %}</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a class="social-btn" href="https://whatsapp.com/channel/0029Vb6iP5VBKfhxOdvfum3I" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i></a>
+                <a class="social-btn" href="#!"><i class="bi bi-linkedin"></i></a>
+                <a class="social-btn" href="#!"><i class="bi bi-facebook"></i></a>
             </div>
         </div>
     </div>
 </section>
+
+<!-- Animation d'apparition au scroll -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const reveals = document.querySelectorAll('.reveal');
+        const obs = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        reveals.forEach(function (el) { obs.observe(el); });
+    });
+</script>

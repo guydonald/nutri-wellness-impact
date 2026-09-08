@@ -4,10 +4,11 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 import uuid
 
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, role="patient", password=None, **extra_fields):
         if not email:
-            raise ValueError("Email is required")
+            raise ValueError(_("Email is required"))
         email = self.normalize_email(email)
         user = self.model(email=email, role=role, **extra_fields)
         user.set_password(password)
@@ -19,26 +20,28 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", True)
         return self.create_user(email, role, password, **extra_fields)
 
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     username = models.CharField(max_length=150, blank=True, null=True)
     email = models.EmailField(unique=True, max_length=254)
-    first_name = models.CharField(max_length=150, blank=True)
-    last_name = models.CharField(max_length=150, blank=True)
+    first_name = models.CharField(max_length=150, blank=True, verbose_name=_("First name"))
+    last_name = models.CharField(max_length=150, blank=True, verbose_name=_("Last name"))
     role = models.CharField(
         max_length=20,
         choices=[
             ('patient', _('Patient')),
             ('dietitian', _('Dietitian')),
         ],
-        default='patient'
+        default='patient',
+        verbose_name=_("Role")
     )
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
-    phone_number = models.CharField(max_length=20, blank=True, null=True)
-    profile_picture = models.ImageField(upload_to="profiles/", blank=True, null=True)
+    phone_number = models.CharField(max_length=20, blank=True, null=True, verbose_name=_("Phone number"))
+    profile_picture = models.ImageField(upload_to="profiles/", blank=True, null=True, verbose_name=_("Profile picture"))
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["role"]
@@ -46,7 +49,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     def __str__(self):
-        return f"{self.email} ({_(self.role)})"
+        # get_role_display() renvoie le libelle traduit du choix (au lieu de _(self.role))
+        return f"{self.email} ({self.get_role_display()})"
 
     def get_full_name(self):
         full_name = f"{self.first_name} {self.last_name}".strip()
@@ -54,4 +58,3 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.first_name or self.email
-

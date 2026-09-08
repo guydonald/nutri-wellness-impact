@@ -3,9 +3,10 @@
 <div class="modal-header border-0 pt-4 px-4 pb-0 justify-content-center">
     <div class="text-center">
         <img src="{% static 'img/logo.png' %}" alt="Nutri-Wellness" style="height: 60px;" class="mb-3">
-        <h4 class="fw-bold mb-0" style="color: var(--nutri-green);">{% trans "Vérification du compte" %}</h4>
-        <p class="text-muted small mt-2">{% trans "Entrez le code envoyé par e-mail." %}</p>
+        <h4 class="fw-bold mb-0" style="color: var(--nutri-green);">{% trans "Account Verification" %}</h4>
+        <p class="text-muted small mt-2">{% trans "Enter the code sent to your email." %}</p>
     </div>
+    <button type="button" class="btn-close position-absolute end-0 top-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 
 <div class="modal-body p-4 text-center">
@@ -15,93 +16,104 @@
 
     <form id="otp-form" hx-post="{% url 'account_confirm_email_no_key' %}" hx-target="#authModalContent">
         {% csrf_token %}
-        <div class="d-flex justify-content-center gap-2 mb-4">
-            <input type="text" class="otp-field" maxlength="1" inputmode="numeric">
-            <input type="text" class="otp-field" maxlength="1" inputmode="numeric">
-            <input type="text" class="otp-field" maxlength="1" inputmode="numeric">
-            <input type="text" class="otp-field" maxlength="1" inputmode="numeric">
-            <input type="text" class="otp-field" maxlength="1" inputmode="numeric">
-            <input type="text" class="otp-field" maxlength="1" inputmode="numeric">
+
+        <!-- Champ unique : accepte le format XXXX-XXXX -->
+        <div class="mb-4">
+            <input type="text" id="otp-code" name="code"
+                   class="otp-single"
+                   inputmode="text"
+                   autocomplete="one-time-code"
+                   autocapitalize="characters"
+                   spellcheck="false"
+                   maxlength="9"
+                   placeholder="XXXX-XXXX">
         </div>
-        
-        <input type="hidden" name="code" id="full-code-input">
 
         <button type="submit" id="btn-verify" class="btn btn-auth-full w-100 rounded-pill py-2">
-            {% trans "Vérifier le compte" %}
+            {% trans "Verify account" %}
         </button>
     </form>
+
+    <div class="text-center mt-3">
+        <small class="text-muted">{% trans "Didn't receive the code?" %}
+            <a href="javascript:void(0);"
+               hx-get="{% url 'account_email' %}" hx-target="#authModalContent"
+               style="color: var(--nutri-green); font-weight: bold; text-decoration: none;">
+               {% trans "Resend" %}
+            </a>
+        </small>
+    </div>
 </div>
 
 <style>
-    /* Tailles réduites pour garantir la visibilité dans la modale */
-    .otp-field {
-        width: 32px;  /* Réduit pour tenir sur mobile */
-        height: 42px; /* Réduit */
+    .otp-single {
+        width: 100%;
+        max-width: 280px;
+        height: 60px;
         text-align: center;
-        font-size: 1.1rem;
+        font-size: 1.8rem;
         font-weight: bold;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 6px;
+        letter-spacing: 0.4rem;
+        text-transform: uppercase;
+        border: 2px solid #e2e8f0;
+        border-radius: 14px;
         background-color: #f8fafc;
         transition: all 0.2s;
-        padding: 0;
+        color: var(--nutri-green-dark, #2f5e2f);
     }
-
-    .otp-field:focus {
+    .otp-single::placeholder {
+        color: #cbd5e1;
+        letter-spacing: 0.2rem;
+        font-size: 1.3rem;
+    }
+    .otp-single:focus {
         border-color: var(--nutri-green);
         background-color: #fff;
         outline: none;
-        box-shadow: 0 0 0 3px rgba(66, 124, 52, 0.1);
+        box-shadow: 0 0 0 4px rgba(90, 143, 61, 0.12);
     }
-
-    /* Évite le zoom automatique sur iPhone */
     @media screen and (max-width: 768px) {
-        .otp-field {
-            font-size: 16px; 
-        }
+        .otp-single { font-size: 1.5rem; height: 54px; letter-spacing: 0.3rem; }
     }
 </style>
 
 <script>
 (function() {
-    const inputs = document.querySelectorAll('.otp-field');
-    const hiddenInput = document.getElementById('full-code-input');
+    const input = document.getElementById('otp-code');
     const form = document.getElementById('otp-form');
+    if (!input) return;
 
-    function combineCode() {
-        let code = "";
-        inputs.forEach(input => code += input.value.toUpperCase());
-        hiddenInput.value = code;
+    // Formatage automatique : ajoute le tiret apres 4 caracteres, met en majuscules
+    function formatCode(value) {
+        // Enleve tout sauf lettres et chiffres, met en majuscules
+        let clean = value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        if (clean.length > 4) {
+            clean = clean.slice(0, 4) + '-' + clean.slice(4, 8);
+        }
+        return clean;
     }
 
-    inputs.forEach((input, index) => {
-        // Gestion de la saisie manuelle
-        input.addEventListener('input', (e) => {
-            if (e.target.value.length === 1 && index < inputs.length - 1) inputs[index + 1].focus();
-            combineCode();
-        });
-
-        // Gestion du retour arrière
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace' && !e.target.value && index > 0) inputs[index - 1].focus();
-        });
-
-        // GESTION DU COPIER-COLLER
-        input.addEventListener('paste', (e) => {
-            e.preventDefault();
-            const data = e.clipboardData.getData('text').trim().toUpperCase();
-            if (data.length === 6) {
-                inputs.forEach((inp, i) => inp.value = data[i]);
-                combineCode();
-                // Déclenche HTMX manuellement pour soumettre
-                htmx.trigger(form, 'submit');
-            }
-        });
+    input.addEventListener('input', function(e) {
+        const formatted = formatCode(e.target.value);
+        e.target.value = formatted;
+        // Soumission auto quand le code est complet (8 caracteres + 1 tiret = 9)
+        if (formatted.length === 9) {
+            htmx.trigger(form, 'submit');
+        }
     });
 
-    // Synchronisation avant envoi HTMX
-    document.body.addEventListener('htmx:configRequest', (event) => {
-        if (event.detail.elt.id === 'otp-form') combineCode();
+    // Collage : formate ce qui est colle
+    input.addEventListener('paste', function(e) {
+        e.preventDefault();
+        const data = (e.clipboardData || window.clipboardData).getData('text');
+        const formatted = formatCode(data);
+        input.value = formatted;
+        if (formatted.length === 9) {
+            htmx.trigger(form, 'submit');
+        }
     });
+
+    // Focus automatique a l'ouverture
+    setTimeout(function() { input.focus(); }, 200);
 })();
 </script>

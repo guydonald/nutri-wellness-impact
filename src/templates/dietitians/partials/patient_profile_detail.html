@@ -1,53 +1,47 @@
-<div class="modal-header bg-info text-white">
-    <h5 class="modal-title">Profil Détaillé de {{ patient.get_full_name|default:patient.username }}</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+{% load i18n %}
+<div class="modal-header text-white" style="background: linear-gradient(135deg, #5a8f3d, #2f5e2f);">
+    <h5 class="modal-title"><i class="bi bi-person-vcard me-2"></i>{% trans "Detailed Profile of" %} {{ patient.get_full_name|default:patient.username }}</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 
-<div class="modal-body">
+<div class="modal-body p-4">
     {% if profile %}
-        <h5><i class="fas fa-id-card"></i> Compte de Base</h5>
-        <p style="padding-left: 5%;"><strong>Email :</strong> {{ patient.email }}</p>
-        <p style="padding-left: 5%;"><strong>Profession :</strong> {{ profile.occupation|default:"Non spécifié" }}</p>
-        <p style="padding-left: 5%;"><strong>Rôle :</strong> <span class="badge bg-success">{{ patient.role|capfirst }}</span></p>
-        <hr>
-
-        <h5><i class="fas fa-chart-line"></i> Mesures Physiques</h5>
-        <div class="row">
-            <div class="col-6"><p style="padding-left: 5%;"><strong>Âge :</strong> {{ profile.age|default:"-" }} ans</p></div>
-            <div class="col-6"><p style="padding-left: 5%;"><strong>Sexe :</strong> {{ profile.get_gender_display|default:"-" }}</p></div>
-            <div class="col-6"><p style="padding-left: 5%;"><strong>Taille :</strong> {{ profile.height|default:"-" }} m</p></div>
-            <div class="col-6"><p style="padding-left: 5%;"><strong>Poids :</strong> {{ profile.weight|default:"-" }} kg</p></div>
-            <div class="col-6"><p style="padding-left: 5%;"><strong>IMC :</strong> {{ profile.bmi|default:"N/A" }}</p></div>
-            <div class="col-6"><p style="padding-left: 5%;"><strong>Activité :</strong> {{ profile.get_activity_level_display|default:"-" }}</p></div>
+        <h6 class="fw-bold" style="color:#2f5e2f;"><i class="bi bi-person-badge me-2"></i>{% trans "Basic Account" %}</h6>
+        <div class="ps-3 mb-3">
+            <p class="mb-1"><strong>{% trans "Email:" %}</strong> {{ patient.email }}</p>
+            <p class="mb-1"><strong>{% trans "Occupation:" %}</strong> {{ profile.occupation|default:"-" }}</p>
+            <p class="mb-0"><strong>{% trans "Role:" %}</strong> <span class="badge" style="background:#5a8f3d;">{{ patient.role|capfirst }}</span></p>
         </div>
         <hr>
 
-        <h6><i class="fas fa-briefcase-medical"></i> Historique Médical</h6>
-        <p style="padding-left: 5%;"><strong>Diagnostic :</strong> {{ profile.diagnosis|default:"Non spécifié" }}</p>
-        <p style="padding-left: 5%;"><strong>Médicaments :</strong> {{ profile.medications|default:"Aucun" }}</p>
-        <p style="padding-left: 5%;"><strong>Historique medicale :</strong> {{ profile.medical_history|default:"Aucun" }}</p>
-        <p style="padding-left: 5%;"><strong>Antécédents CV :</strong> 
-            {% if profile.family_history_cvd %}
-                <span class="badge bg-danger">Oui</span>
-            {% else %}
-                <span class="badge bg-success">Non</span>
-            {% endif %}
-        </p>
-        <p style="padding-left: 5%;"><strong>Allergie :</strong> 
-            {% if profile.allergies %}
-                <span class="badge bg-danger">Oui</span>
-            {% else %}
-                <span class="badge bg-success">Non</span>
-            {% endif %}
-        </p>
+        <h6 class="fw-bold" style="color:#2f5e2f;"><i class="bi bi-rulers me-2"></i>{% trans "Physical Measurements" %}</h6>
+        <div class="row ps-3 mb-3">
+            <div class="col-6"><p class="mb-1"><strong>{% trans "Age:" %}</strong> {{ profile.age|default:"-" }}</p></div>
+            <div class="col-6"><p class="mb-1"><strong>{% trans "Gender:" %}</strong> {{ profile.get_gender_display|default:"-" }}</p></div>
+            <div class="col-6"><p class="mb-1"><strong>{% trans "Height:" %}</strong> {{ profile.height|default:"-" }} cm</p></div>
+            <div class="col-6"><p class="mb-1"><strong>{% trans "Weight:" %}</strong> {{ profile.weight|default:"-" }} kg</p></div>
+            <div class="col-6"><p class="mb-1"><strong>{% trans "BMI:" %}</strong> {{ profile.bmi|default:"-" }}</p></div>
+            <div class="col-6"><p class="mb-1"><strong>{% trans "Activity:" %}</strong> {{ profile.get_activity_level_display|default:"-" }}</p></div>
+        </div>
+        <hr>
 
+        <h6 class="fw-bold" style="color:#2f5e2f;"><i class="bi bi-heart-pulse me-2"></i>{% trans "Medical History" %}</h6>
+        <div class="ps-3">
+            <p class="mb-1"><strong>{% trans "Diagnosis:" %}</strong> {{ profile.diagnosis|default:"-" }}</p>
+            <p class="mb-1"><strong>{% trans "Medications:" %}</strong> {{ profile.medications|default:"-" }}</p>
+            <p class="mb-1"><strong>{% trans "Medical history:" %}</strong> {{ profile.medical_history|default:"-" }}</p>
+            <p class="mb-1"><strong>{% trans "Family history of CVD:" %}</strong>
+                {% if profile.family_history_cvd %}<span class="badge bg-danger">{% trans "Yes" %}</span>{% else %}<span class="badge" style="background:#5a8f3d;">{% trans "No" %}</span>{% endif %}
+            </p>
+            <p class="mb-0"><strong>{% trans "Allergies:" %}</strong>
+                {% if profile.allergies %}<span class="badge bg-danger">{% trans "Yes" %}</span>{% else %}<span class="badge" style="background:#5a8f3d;">{% trans "No" %}</span>{% endif %}
+            </p>
+        </div>
     {% else %}
-        <div class="alert alert-warning">
-            Le profil détaillé de ce patient n'a pas encore été renseigné.
-        </div>
+        <div class="alert alert-warning">{% trans "This patient's detailed profile has not been filled in yet." %}</div>
     {% endif %}
 </div>
 
-<div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+<div class="modal-footer bg-light border-0">
+    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">{% trans "Close" %}</button>
 </div>

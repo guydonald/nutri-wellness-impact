@@ -1,24 +1,25 @@
+{% load i18n %}
 <form hx-post="{% url 'send_patient_email' patient.id %}" hx-target="#email-status">
     {% csrf_token %}
-    <div class="modal-header">
-        <h5 class="modal-title">Envoyer un message à {{ patient.get_full_name }}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-header text-white" style="background: linear-gradient(135deg, #5a8f3d, #2f5e2f);">
+        <h5 class="modal-title"><i class="bi bi-envelope me-2"></i>{% trans "Send a message to" %} {{ patient.get_full_name }}</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
-    <div class="modal-body">
+    <div class="modal-body p-4">
         <div id="email-status"></div>
         <div class="mb-3">
-            <label class="form-label">Sujet</label>
-            <input type="text" name="subject" class="form-control" placeholder="ex: Suivi de votre plan alimentaire" required>
+            <label class="form-label fw-bold">{% trans "Subject" %}</label>
+            <input type="text" name="subject" class="form-control" placeholder="{% trans 'e.g.: Follow-up on your meal plan' %}" required>
         </div>
         <div class="mb-3">
-            <label class="form-label">Message</label>
+            <label class="form-label fw-bold">{% trans "Message" %}</label>
             <textarea name="message" class="form-control" rows="5" required></textarea>
         </div>
     </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-        <button type="submit" class="btn btn-primary">
-            <i class="fas fa-paper-plane"></i> Envoyer
+    <div class="modal-footer bg-light border-0">
+        <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+        <button type="submit" class="btn text-white rounded-pill px-4" style="background:#5a8f3d; font-weight:700;">
+            <i class="bi bi-send me-1"></i>{% trans "Send" %}
         </button>
     </div>
 </form>

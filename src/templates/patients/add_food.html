@@ -1,26 +1,29 @@
-<div class="modal-header bg-primary text-white">
-    <h5 class="modal-title">Write down your meal</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+{% load i18n %}
+<div class="modal-header text-white" style="background: linear-gradient(135deg, #5a8f3d, #2f5e2f);">
+    <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>{% trans "Write down your meal" %}</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 
-<div class="modal-body">
+<div class="modal-body p-4">
     <form method="post" action="{% url 'add_food_entry' %}">
         {% csrf_token %}
         <div class="mb-3">
-            <label class="form-label">What meal ?</label>
+            <label class="form-label fw-bold">{% trans "What meal?" %}</label>
             {{ form.meal_time }}
         </div>
         <div class="mb-3">
-            <label class="form-label">Content description</label>
+            <label class="form-label fw-bold">{% trans "Content description" %}</label>
             {{ form.description }}
-            <small class="text-muted">Be specific (e.g., 2 steamed bananas, tomato sauce, grilled fish).</small>
+            <small class="text-muted">{% trans "Be specific (e.g., 2 steamed bananas, tomato sauce, grilled fish)." %}</small>
         </div>
-        <div class="mb-3 form-check">
+        <div class="mb-3 form-check form-switch">
             {{ form.beverage }}
-            <label class="form-check-label">I consumed a sugary drink.</label>
+            <label class="form-check-label ms-2">{% trans "I consumed a sugary drink." %}</label>
         </div>
         <div class="d-grid">
-            <button type="submit" class="btn btn-success">Save the meal</button>
+            <button type="submit" class="btn btn-lg text-white" style="background: #5a8f3d; border-radius: 14px; font-weight:700;">
+                <i class="bi bi-check-lg me-2"></i>{% trans "Save the meal" %}
+            </button>
         </div>
     </form>
 </div>

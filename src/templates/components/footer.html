@@ -1,16 +1,70 @@
 {% load static %}
+{% load i18n %}
 
-<!-- Footer-->
-<footer class="bg-white py-4 mt-auto">
+<style>
+    :root {
+        --nutri-green: #5a8f3d;
+        --nutri-green-dark: #2f5e2f;
+        --nutri-green-light: #eaf3e3;
+    }
+    .site-footer {
+        background: var(--nutri-green-dark);
+        color: rgba(255,255,255,0.85);
+    }
+    .site-footer a { color: rgba(255,255,255,0.8); text-decoration: none; transition: color 0.2s ease; }
+    .site-footer a:hover { color: #fff; }
+    .footer-social {
+        width: 42px; height: 42px; border-radius: 50%;
+        display: inline-flex; align-items: center; justify-content: center;
+        background: rgba(255,255,255,0.12);
+        color: #fff; font-size: 1.1rem;
+        transition: all 0.25s ease;
+    }
+    .footer-social:hover { background: #fff; color: var(--nutri-green-dark); transform: translateY(-3px); }
+    .footer-divider { border-color: rgba(255,255,255,0.15); }
+</style>
+
+<footer class="site-footer py-5 mt-auto">
     <div class="container px-5">
-        <div class="row align-items-center justify-content-between flex-column flex-sm-row">
-            <div class="col-auto"><div class="small m-0">&copy; Nutri-Wellness Impact  {% now "Y" %} – All rights reserved</div></div>
+        <div class="row gy-4 align-items-start">
+            <div class="col-lg-5">
+                <div class="d-flex align-items-center mb-3">
+                    <img src="{% static 'img/logo.png' %}" alt="Logo" style="height: 40px;" class="me-2">
+                    <span class="fw-bolder fs-5 text-white">Nutri-Wellness Impact</span>
+                </div>
+                <p class="small opacity-75 mb-0" style="max-width: 320px;">
+                    {% trans "Using food as a tool for better health and lifelong well-being." %}
+                </p>
+            </div>
+
+            <div class="col-6 col-lg-3">
+                <h6 class="text-white fw-bold mb-3">{% trans "Navigation" %}</h6>
+                <ul class="list-unstyled small">
+                    <li class="mb-2"><a href="{% url 'index' %}">{% trans "Home" %}</a></li>
+                    <li class="mb-2"><a href="{% url 'resume' %}">{% trans "Summary" %}</a></li>
+                    <li class="mb-2"><a href="{% url 'project' %}">{% trans "Projects" %}</a></li>
+                    <li class="mb-2"><a href="{% url 'contact' %}">{% trans "Contact" %}</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-lg-4">
+                <h6 class="text-white fw-bold mb-3">{% trans "Follow us" %}</h6>
+                <div class="d-flex gap-2 mb-3">
+                    <a class="footer-social" href="https://whatsapp.com/channel/0029Vb6iP5VBKfhxOdvfum3I" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i></a>
+                    <a class="footer-social" href="#!"><i class="bi bi-linkedin"></i></a>
+                    <a class="footer-social" href="#!"><i class="bi bi-facebook"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <hr class="footer-divider my-4">
+
+        <div class="row align-items-center justify-content-between flex-column flex-sm-row gy-2">
+            <div class="col-auto"><div class="small opacity-75">&copy; Nutri-Wellness Impact {% now "Y" %} – {% trans "All rights reserved" %}</div></div>
             <div class="col-auto">
-                <a class="small" href="#!">Privacy</a>
-                <span class="mx-1">&middot;</span>
-                <a class="small" href="#!">Terms</a>
-                <span class="mx-1">&middot;</span>
-                <a class="small" href="{% url 'contact' %}">Contact</a>
+                <a class="small" href="#!">{% trans "Privacy" %}</a>
+                <span class="mx-1 opacity-50">&middot;</span>
+                <a class="small" href="#!">{% trans "Terms" %}</a>
             </div>
         </div>
     </div>

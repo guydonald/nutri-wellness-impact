@@ -1,40 +1,41 @@
-<div class="modal-header bg-primary text-white">
-    <h5 class="modal-title">Nouvelle Consultation : {{ patient.get_full_name }}</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+{% load i18n %}
+<div class="modal-header text-white" style="background: linear-gradient(135deg, #5a8f3d, #2f5e2f);">
+    <h5 class="modal-title"><i class="bi bi-clipboard2-plus me-2"></i>{% trans "New Consultation:" %} {{ patient.get_full_name }}</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
-        
-<div class="modal-body">
+
+<div class="modal-body p-4">
     <form method="post" action="{% url 'create_consultation' patient_id=patient.id %}">
         {% csrf_token %}
-        
-        <h5 class="text-info border-bottom pb-2">Données Biochimiques</h5>
-        <div class="row mb-4">
-            <div class="col-md-4">{{ form.blood_pressure.label_tag }}{{ form.blood_pressure }}</div>
-            <div class="col-md-4">{{ form.total_cholesterol.label_tag }}{{ form.total_cholesterol }}</div>
-            <div class="col-md-4">{{ form.hba1c.label_tag }}{{ form.hba1c }}</div>
-            <div class="col-md-4">{{ form.weight.label_tag }}{{ form.weight }}</div>
-        </div>
-        <div class="row mb-4">
+
+        <h6 class="text-uppercase small fw-bold border-bottom pb-2 mb-3" style="color:#2f5e2f;">{% trans "Biochemical Data" %}</h6>
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">{{ form.blood_pressure.label_tag }}{{ form.blood_pressure }}</div>
+            <div class="col-md-3">{{ form.total_cholesterol.label_tag }}{{ form.total_cholesterol }}</div>
+            <div class="col-md-3">{{ form.hba1c.label_tag }}{{ form.hba1c }}</div>
+            <div class="col-md-3">{{ form.weight.label_tag }}{{ form.weight }}</div>
             <div class="col-md-4">{{ form.ldl.label_tag }}{{ form.ldl }}</div>
             <div class="col-md-4">{{ form.hdl.label_tag }}{{ form.hdl }}</div>
             <div class="col-md-4">{{ form.triglycerides.label_tag }}{{ form.triglycerides }}</div>
         </div>
 
-        <h5 class="text-info border-bottom pb-2">Analyse Nutritionnelle (PES)</h5>
+        <h6 class="text-uppercase small fw-bold border-bottom pb-2 mb-3" style="color:#2f5e2f;">{% trans "Nutritional Analysis (PES)" %}</h6>
         <div class="mb-3">
-            <label class="form-label">Diagnostic (Problème, Étiologie, Symptômes)</label>
+            <label class="form-label">{% trans "Diagnosis (Problem, Etiology, Symptoms)" %}</label>
             {{ form.nutritional_diagnosis }}
         </div>
-        
-        <h5 class="text-info border-bottom pb-2">Objectifs & Intervention</h5>
+
+        <h6 class="text-uppercase small fw-bold border-bottom pb-2 mb-3" style="color:#2f5e2f;">{% trans "Goals & Intervention" %}</h6>
         <div class="row">
             <div class="col-md-6 mb-3">{{ form.goals.label_tag }}{{ form.goals }}</div>
             <div class="col-md-6 mb-3">{{ form.intervention_plan.label_tag }}{{ form.intervention_plan }}</div>
         </div>
 
         <div class="mt-4 d-flex justify-content-between">
-            <a href="{% url 'dietitian_dashboard' %}" class="btn btn-secondary">Annuler</a>
-            <button type="submit" class="btn btn-success">Enregistrer la consultation</button>
+            <a href="{% url 'dietitian_dashboard' %}" class="btn btn-secondary rounded-pill px-4">{% trans "Cancel" %}</a>
+            <button type="submit" class="btn text-white rounded-pill px-4" style="background:#5a8f3d; font-weight:700;">
+                <i class="bi bi-check-lg me-1"></i>{% trans "Save consultation" %}
+            </button>
         </div>
     </form>
 </div>

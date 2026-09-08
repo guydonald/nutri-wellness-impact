@@ -1,148 +1,197 @@
 {% load static %}
+{% load i18n %}
 
-<div class="container px-5 my-5">
-    <div class="text-center mb-5">
-        <h1 class="display-5 fw-bolder mb-0"><span class="text-success d-inline">Our Journey</span></h1>
-        <p class="lead text-muted mt-2">Professional background, education, and clinical expertise.</p>
-    </div>
+<style>
+    :root {
+        --nutri-green: #5a8f3d;
+        --nutri-green-dark: #2f5e2f;
+        --nutri-green-light: #eaf3e3;
+        --nutri-red: #d62828;
+        --nutri-orange: #f4a020;
+    }
+    .resume-hero { background: linear-gradient(135deg, #ffffff 0%, var(--nutri-green-light) 100%); }
+    .res-badge {
+        background: rgba(90, 143, 61, 0.12);
+        color: var(--nutri-green-dark);
+        font-weight: 700; letter-spacing: 1px;
+        border-radius: 50px; padding: 0.5rem 1.2rem; display: inline-block;
+    }
+    .res-title {
+        background: linear-gradient(120deg, var(--nutri-green-dark), var(--nutri-green));
+        -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .section-heading { color: var(--nutri-green-dark); font-weight: 800; }
 
-    <div class="row gx-5 justify-content-center">
-        <div class="col-lg-11 col-xl-9 col-xxl-8">
+    /* Timeline */
+    .timeline { position: relative; padding-left: 0; }
+    .timeline-card {
+        background: #fff;
+        border-radius: 22px;
+        border: 1px solid #eef2ec;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    .timeline-card:hover {
+        transform: translateX(6px);
+        box-shadow: 0 16px 36px rgba(47, 94, 47, 0.12);
+        border-color: transparent;
+    }
+    .period-pill {
+        display: inline-block;
+        background: var(--nutri-green-light);
+        color: var(--nutri-green-dark);
+        font-weight: 700;
+        border-radius: 50px;
+        padding: 0.3rem 1rem;
+        font-size: 0.85rem;
+        margin-bottom: 0.8rem;
+    }
+    .res-check { display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.35rem 0; }
+    .res-check i { color: var(--nutri-green); margin-top: 3px; }
 
-            <section>
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h2 class="text-success fw-bolder mb-0">Experience</h2>
-                    <a class="btn btn-outline-success px-3 py-2" href="#!">
-                        <i class="bi bi-download me-2"></i>Download Vision
+    .btn-nutri-outline {
+        background: transparent; color: var(--nutri-green-dark);
+        border: 2px solid var(--nutri-green); border-radius: 50px;
+        font-weight: 700; transition: all 0.25s ease;
+    }
+    .btn-nutri-outline:hover { background: var(--nutri-green); color: #fff; transform: translateY(-2px); }
+
+    .skill-chip {
+        display: flex; align-items: center; gap: 0.6rem;
+        background: #fff;
+        border: 1px solid #eef2ec;
+        border-radius: 16px;
+        padding: 1rem 1.2rem;
+        height: 100%;
+        transition: all 0.25s ease;
+    }
+    .skill-chip:hover {
+        background: var(--nutri-green-light);
+        border-color: var(--nutri-green);
+        transform: translateY(-4px);
+    }
+    .skill-chip i { color: var(--nutri-green); font-size: 1.1rem; }
+
+    .comp-icon {
+        width: 60px; height: 60px; border-radius: 18px;
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 1.6rem;
+        background: #fdecec; color: var(--nutri-red);
+    }
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+
+<section class="resume-hero py-5">
+    <div class="container px-5 py-4">
+        <div class="text-center mb-5 reveal">
+            <span class="res-badge mb-3 text-uppercase small">{% trans "Our Journey" %}</span>
+            <h1 class="display-4 fw-bolder mb-3 mt-3 res-title">{% trans "Our Journey" %}</h1>
+            <p class="lead text-muted mx-auto" style="max-width: 680px;">{% trans "Professional background, education, and clinical expertise." %}</p>
+        </div>
+
+        <div class="row gx-5 justify-content-center">
+            <div class="col-lg-11 col-xl-9">
+
+                <!-- EXPERIENCE -->
+                <div class="d-flex align-items-center justify-content-between mb-4 reveal">
+                    <h2 class="section-heading mb-0"><i class="bi bi-briefcase me-2"></i>{% trans "Experience" %}</h2>
+                    <a class="btn btn-nutri-outline px-3 py-2" href="#!">
+                        <i class="bi bi-download me-2"></i>{% trans "Download Vision" %}
                     </a>
                 </div>
 
-                <div class="card shadow border-0 rounded-4 mb-5">
-                    <div class="card-body p-5">
-                        <div class="row align-items-center gx-5">
-                            <div class="col text-center text-lg-start mb-4 mb-lg-0">
-                                <div class="bg-light p-4 rounded-4">
-                                    <div class="text-success fw-bolder mb-2">2021 - Present</div>
-                                    <div class="small fw-bolder">Clinical Nutritionist</div>
-                                    <div class="small text-muted">Online & On-site Support</div>
-                                </div>
+                <div class="timeline">
+                    <div class="timeline-card reveal">
+                        <div class="row align-items-center gx-4">
+                            <div class="col-lg-4 mb-3 mb-lg-0">
+                                <span class="period-pill">{% trans "2021 - Present" %}</span>
+                                <div class="fw-bolder">{% trans "Clinical Nutritionist" %}</div>
+                                <div class="small text-muted">{% trans "Online & On-site Support" %}</div>
                             </div>
                             <div class="col-lg-8">
-                                <div class="fst-italic text-muted mb-2">Personalized Nutritional Counseling</div>
-                                <div>Providing evidence-based therapy to manage <strong>Non-Communicable Diseases (NCDs)</strong>. We focus on long-term vitality and clinical recovery through personalized follow-up and digital monitoring tools.</div>
+                                <div class="fst-italic text-muted mb-2">{% trans "Personalized Nutritional Counseling" %}</div>
+                                <div class="text-muted">{% blocktrans %}Providing evidence-based therapy to manage <strong>Non-Communicable Diseases (NCDs)</strong>. We focus on long-term vitality and clinical recovery through personalized follow-up and digital monitoring tools.{% endblocktrans %}</div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="card shadow border-0 rounded-4 mb-5">
-                    <div class="card-body p-5">
-                        <div class="row align-items-center gx-5">
-                            <div class="col text-center text-lg-start mb-4 mb-lg-0">
-                                <div class="bg-light p-4 rounded-4">
-                                    <div class="text-success fw-bolder mb-2">2020 - 2021</div>
-                                    <div class="small fw-bolder">Clinical Nutritionist</div>
-                                    <div class="small text-muted">Bafoussam Regional Hospital</div>
-                                </div>
+                    <div class="timeline-card reveal">
+                        <div class="row align-items-center gx-4">
+                            <div class="col-lg-4 mb-3 mb-lg-0">
+                                <span class="period-pill">{% trans "2020 - 2021" %}</span>
+                                <div class="fw-bolder">{% trans "Clinical Nutritionist" %}</div>
+                                <div class="small text-muted">{% trans "Bafoussam Regional Hospital" %}</div>
                             </div>
                             <div class="col-lg-8">
-                                <ul class="list-unstyled mb-0">
-                                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Conducted clinical consultations and nutrition therapy for hospital patients.</li>
-                                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Sensitized individuals on the direct impact of dietary habits on metabolic health.</li>
-                                    <li><i class="bi bi-check2-circle text-success me-2"></i>Collaborated with multidisciplinary healthcare teams to optimize patient outcomes.</li>
-                                </ul>
+                                <div class="res-check"><i class="bi bi-check-circle-fill"></i><span class="text-muted">{% trans "Conducted clinical consultations and nutrition therapy for hospital patients." %}</span></div>
+                                <div class="res-check"><i class="bi bi-check-circle-fill"></i><span class="text-muted">{% trans "Sensitized individuals on the direct impact of dietary habits on metabolic health." %}</span></div>
+                                <div class="res-check"><i class="bi bi-check-circle-fill"></i><span class="text-muted">{% trans "Collaborated with multidisciplinary healthcare teams to optimize patient outcomes." %}</span></div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="card shadow border-0 rounded-4 mb-5">
-                    <div class="card-body p-5">
-                        <div class="row align-items-center gx-5">
-                            <div class="col text-center text-lg-start mb-4 mb-lg-0">
-                                <div class="bg-light p-4 rounded-4">
-                                    <div class="text-success fw-bolder mb-2">2019 - 2020</div>
-                                    <div class="small fw-bolder">Nutrition Analyst</div>
-                                    <div class="small text-muted">Nkongni Medical Center</div>
-                                </div>
+                    <div class="timeline-card reveal">
+                        <div class="row align-items-center gx-4">
+                            <div class="col-lg-4 mb-3 mb-lg-0">
+                                <span class="period-pill">{% trans "2019 - 2020" %}</span>
+                                <div class="fw-bolder">{% trans "Nutrition Analyst" %}</div>
+                                <div class="small text-muted">{% trans "Nkongni Medical Center" %}</div>
                             </div>
                             <div class="col-lg-8">
-                                <p class="mb-2">Managed public health nutrition interventions by identifying determinants of food insecurity and malnutrition.</p>
-                                <div class="small fw-bolder success"><i class="bi bi-info-circle me-1"></i> Impact: Promoted healthy eating habits to improve community health outcomes and dietary diversity.</div>
+                                <p class="text-muted mb-2">{% trans "Managed public health nutrition interventions by identifying determinants of food insecurity and malnutrition." %}</p>
+                                <div class="small fw-bold" style="color: var(--nutri-green-dark);"><i class="bi bi-info-circle me-1"></i>{% trans "Impact: Promoted healthy eating habits to improve community health outcomes and dietary diversity." %}</div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
 
-            <section>
-                <h2 class="text-success fw-bolder mb-4">Education</h2>
-
-                <div class="card shadow border-0 rounded-4 mb-5">
-                    <div class="card-body p-5">
-                        <div class="row align-items-center gx-5">
-                            <div class="col text-center text-lg-start mb-4 mb-lg-0">
-                                <div class="bg-light p-4 rounded-4">
-                                    <div class="text-success fw-bolder mb-2">2018 - 2020</div>
-                                    <div class="small fw-bolder">Bachelor's Degree</div>
-                                    <div class="small text-muted">Nutrition & Dietetics</div>
-                                    <div class="small text-muted">University of Dschang</div>
-                                </div>
-                            </div>
-                            <div class="col-lg-8">
-                                <div>Specialized study of nutritional needs and management of chronic diseases. Developed expertise in clinical monitoring and nutritional interventions for nutrient deficiencies.</div>
-                            </div>
+                <!-- EDUCATION -->
+                <h2 class="section-heading mb-4 mt-5 reveal"><i class="bi bi-mortarboard me-2"></i>{% trans "Education" %}</h2>
+                <div class="timeline-card reveal">
+                    <div class="row align-items-center gx-4">
+                        <div class="col-lg-4 mb-3 mb-lg-0">
+                            <span class="period-pill">{% trans "2018 - 2020" %}</span>
+                            <div class="fw-bolder">{% trans "Bachelor's Degree" %}</div>
+                            <div class="small text-muted">{% trans "Nutrition & Dietetics" %}</div>
+                            <div class="small text-muted">{% trans "University of Dschang" %}</div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="text-muted">{% trans "Specialized study of nutritional needs and management of chronic diseases. Developed expertise in clinical monitoring and nutritional interventions for nutrient deficiencies." %}</div>
                         </div>
                     </div>
                 </div>
-            </section>
 
-            <section>
-                <div class="card shadow border-0 rounded-4 mb-5">
-                    <div class="card-body p-5">
-                        <div class="d-flex align-items-center mb-4">
-                            <div class="feature bg-success bg-secondary text-white rounded-3 me-3">
-                                <i class="bi bi-heart-pulse"></i>
-                            </div>
-                            <h3 class="fw-bolder mb-0"><span class="text-success d-inline">Key Competencies</span></h3>
-                        </div>
-                        
-                        <div class="row row-cols-1 row-cols-md-3 g-3">
-                            <div class="col">
-                                <div class="d-flex align-items-center bg-light rounded-4 p-3 h-100 shadow-sm">
-                                    <span class="small fw-bold">BP & Blood Sugar Monitoring</span>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="d-flex align-items-center bg-light rounded-4 p-3 h-100 shadow-sm">
-                                    <span class="small fw-bold">PES Diagnostic Format</span>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="d-flex align-items-center bg-light rounded-4 p-3 h-100 shadow-sm">
-                                    <span class="small fw-bold">Custom Menu Creation</span>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="d-flex align-items-center bg-light rounded-4 p-3 h-100 shadow-sm">
-                                    <span class="small fw-bold">Anthropometric Evaluation</span>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="d-flex align-items-center bg-light rounded-4 p-3 h-100 shadow-sm">
-                                    <span class="small fw-bold">Digital Health Tools</span>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="d-flex align-items-center bg-light rounded-4 p-3 h-100 shadow-sm">
-                                    <span class="small fw-bold">Clinical Nutrition (SAM/MAM)</span>
-                                </div>
-                            </div>
-                        </div>
+                <!-- COMPETENCIES -->
+                <div class="timeline-card reveal mt-5">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="comp-icon me-3"><i class="bi bi-heart-pulse"></i></div>
+                        <h3 class="section-heading mb-0">{% trans "Key Competencies" %}</h3>
+                    </div>
+                    <div class="row row-cols-1 row-cols-md-3 g-3">
+                        <div class="col"><div class="skill-chip"><i class="bi bi-activity"></i><span class="small fw-bold">{% trans "BP & Blood Sugar Monitoring" %}</span></div></div>
+                        <div class="col"><div class="skill-chip"><i class="bi bi-clipboard2-pulse"></i><span class="small fw-bold">{% trans "PES Diagnostic Format" %}</span></div></div>
+                        <div class="col"><div class="skill-chip"><i class="bi bi-egg-fried"></i><span class="small fw-bold">{% trans "Custom Menu Creation" %}</span></div></div>
+                        <div class="col"><div class="skill-chip"><i class="bi bi-rulers"></i><span class="small fw-bold">{% trans "Anthropometric Evaluation" %}</span></div></div>
+                        <div class="col"><div class="skill-chip"><i class="bi bi-phone"></i><span class="small fw-bold">{% trans "Digital Health Tools" %}</span></div></div>
+                        <div class="col"><div class="skill-chip"><i class="bi bi-heart"></i><span class="small fw-bold">{% trans "Clinical Nutrition (SAM/MAM)" %}</span></div></div>
                     </div>
                 </div>
-            </section>
 
+            </div>
         </div>
     </div>
-</div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const reveals = document.querySelectorAll('.reveal');
+        const obs = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) { entry.target.classList.add('visible'); obs.unobserve(entry.target); }
+            });
+        }, { threshold: 0.1 });
+        reveals.forEach(function (el) { obs.observe(el); });
+    });
+</script>

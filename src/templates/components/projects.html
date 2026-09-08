@@ -1,79 +1,122 @@
 {% load static %}
+{% load i18n %}
 
 <style>
-    /* Optimisation des images dans les cartes projets */
+    :root {
+        --nutri-green: #5a8f3d;
+        --nutri-green-dark: #2f5e2f;
+        --nutri-green-light: #eaf3e3;
+        --nutri-orange: #f4a020;
+    }
+    .projects-hero {
+        background: linear-gradient(135deg, #ffffff 0%, var(--nutri-green-light) 100%);
+    }
+    .proj-badge {
+        background: rgba(90, 143, 61, 0.12);
+        color: var(--nutri-green-dark);
+        font-weight: 700;
+        letter-spacing: 1px;
+        border-radius: 50px;
+        padding: 0.5rem 1.2rem;
+        display: inline-block;
+    }
+    .proj-title {
+        background: linear-gradient(120deg, var(--nutri-green-dark), var(--nutri-green));
+        -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .project-card {
+        border-radius: 26px;
+        overflow: hidden;
+        border: 1px solid #eef2ec;
+        transition: all 0.35s ease;
+        background: #fff;
+    }
+    .project-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 22px 50px rgba(47, 94, 47, 0.16);
+        border-color: transparent;
+    }
     .project-card-img {
         width: 100%;
-        height: 300px; /* Hauteur fixe pour l'harmonie */
-        object-fit: cover; /* Évite de déformer l'image */
-        transition: transform 0.5s ease;
+        height: 300px;
+        object-fit: cover;
+        transition: transform 0.6s ease;
     }
-    
-    .card:hover .project-card-img {
-        transform: scale(1.05);
-    }
-
-    .project-image-container {
-        overflow: hidden;
-        flex: 1; /* Prend une part égale avec le texte */
-    }
-
-    .project-text-container {
-        flex: 1.2; /* Donne un peu plus de place au texte */
-    }
-
+    .project-card:hover .project-card-img { transform: scale(1.06); }
+    .project-image-container { overflow: hidden; flex: 1; }
+    .project-text-container { flex: 1.2; }
     @media (min-width: 992px) {
-        .project-card-img {
-            height: 100%; /* S'adapte à la hauteur du texte sur PC */
-            min-height: 400px;
-        }
+        .project-card-img { height: 100%; min-height: 420px; }
     }
+    .proj-badge-tag {
+        background: var(--nutri-green);
+        color: #fff;
+        border-radius: 50px;
+        padding: 0.35rem 1rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        display: inline-block;
+    }
+    .proj-check {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.6rem;
+        padding: 0.4rem 0;
+    }
+    .proj-check i {
+        color: var(--nutri-green);
+        background: var(--nutri-green-light);
+        border-radius: 50%;
+        padding: 3px;
+        font-size: 0.8rem;
+        margin-top: 2px;
+    }
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 </style>
 
-<section class="py-5">
-    <div class="container px-5 mb-5">
-        <div class="text-center mb-5">
-            <h1 class="display-5 fw-bolder mb-0"><span class="text-success d-inline">Our Digital Solutions</span></h1>
-            <p class="lead text-muted mt-3">Tools designed for clinical expertise and daily support.</p>
+<section class="projects-hero py-5">
+    <div class="container px-5 py-4">
+        <div class="text-center mb-5 reveal">
+            <span class="proj-badge mb-3 text-uppercase small">{% trans "Our Solutions" %}</span>
+            <h1 class="display-4 fw-bolder mb-3 mt-3 proj-title">{% trans "Our Digital Solutions" %}</h1>
+            <p class="lead text-muted mx-auto" style="max-width: 680px;">{% trans "Tools designed for clinical expertise and daily support." %}</p>
         </div>
-        
+
         <div class="row gx-5 justify-content-center">
             <div class="col-lg-11 col-xl-10">
-                
-                <div class="card overflow-hidden shadow rounded-4 border-0 mb-5">
-                    <div class="card-body p-0">
-                        <div class="d-flex flex-column flex-lg-row align-items-stretch">
-                            <div class="p-5 project-text-container">
-                                <div class="badge bg-success bg-gradient text-white mb-2">Expertise Clinique</div>
-                                <h2 class="fw-bolder">Clinical Care & Monitoring</h2>
-                                <p>This platform is the heart of our monitoring system. It allows the dietitian to record the <strong>anthropometric and biochemical assessments</strong> comprehensive. Thanks to the integration of the <strong>nutritional diagnosis (PES format)</strong>, we ensure scientific care for patients suffering from cardiac and metabolic pathologies.</p>
-                                <ul class="small text-muted list-unstyled">
-                                    <li><i class="bi bi-check2 text-success me-2"></i>Monitoring of blood pressure and lipid profile</li>
-                                    <li><i class="bi bi-check2 text-success me-2"></i>Centralized medical history</li>
-                                </ul>
+
+                <div class="project-card shadow-sm mb-5 reveal">
+                    <div class="d-flex flex-column flex-lg-row align-items-stretch">
+                        <div class="p-5 project-text-container">
+                            <span class="proj-badge-tag mb-3">{% trans "Clinical Expertise" %}</span>
+                            <h2 class="fw-bolder mt-3" style="color: var(--nutri-green-dark);">{% trans "Clinical Care & Monitoring" %}</h2>
+                            <p class="text-muted">{% blocktrans %}This platform is the heart of our monitoring system. It allows the dietitian to record comprehensive <strong>anthropometric and biochemical assessments</strong>. Thanks to the integration of the <strong>nutritional diagnosis (PES format)</strong>, we ensure scientific care for patients suffering from cardiac and metabolic pathologies.{% endblocktrans %}</p>
+                            <div class="mt-4">
+                                <div class="proj-check"><i class="bi bi-check-lg"></i><span class="small text-muted">{% trans "Monitoring of blood pressure and lipid profile" %}</span></div>
+                                <div class="proj-check"><i class="bi bi-check-lg"></i><span class="small text-muted">{% trans "Centralized medical history" %}</span></div>
                             </div>
-                            <div class="project-image-container">
-                                <img class="project-card-img" src="{% static 'img/damefruits.jpg' %}" alt="Suivi clinique" />
-                            </div>
+                        </div>
+                        <div class="project-image-container">
+                            <img class="project-card-img" src="{% static 'img/damefruits.jpg' %}" alt="{% trans 'Clinical monitoring' %}" />
                         </div>
                     </div>
                 </div>
 
-                <div class="card overflow-hidden shadow rounded-4 border-0 mb-5">
-                    <div class="card-body p-0">
-                        <div class="d-flex flex-column flex-lg-row-reverse align-items-stretch">
-                            <div class="p-5 project-text-container">
-                                <div class="badge bg-success bg-gradient text-white mb-2">Daily Support</div>
-                                <h2 class="fw-bolder">Nutri-Content & Meal Plans</h2>
-                                <p>This is where the dietitian publishes the <strong>personalized nutrition programs</strong>. The application provides access to structured meal plans (like our 7-day menus) including local alternatives such as <strong>Ndole, Millet or Yam</strong>, while respecting glycemic indices to stabilize diabetes.</p>
-                                <ul class="small text-muted list-unstyled">
-                                    <li><i class="bi bi-check2 text-success me-2"></i>Weekly menus adapted</li>
-                                    <li><i class="bi bi-check2 text-success me-2"></i>Continuing Nutrition Education</li>
-                                </ul>
+                <div class="project-card shadow-sm mb-5 reveal">
+                    <div class="d-flex flex-column flex-lg-row-reverse align-items-stretch">
+                        <div class="p-5 project-text-container">
+                            <span class="proj-badge-tag mb-3" style="background: var(--nutri-orange);">{% trans "Daily Support" %}</span>
+                            <h2 class="fw-bolder mt-3" style="color: var(--nutri-green-dark);">{% trans "Nutri-Content & Meal Plans" %}</h2>
+                            <p class="text-muted">{% blocktrans %}This is where the dietitian publishes the <strong>personalized nutrition programs</strong>. The application provides access to structured meal plans (like our 7-day menus) including local alternatives such as <strong>Ndole, Millet or Yam</strong>, while respecting glycemic indices to stabilize diabetes.{% endblocktrans %}</p>
+                            <div class="mt-4">
+                                <div class="proj-check"><i class="bi bi-check-lg"></i><span class="small text-muted">{% trans "Weekly menus adapted" %}</span></div>
+                                <div class="proj-check"><i class="bi bi-check-lg"></i><span class="small text-muted">{% trans "Continuing Nutrition Education" %}</span></div>
                             </div>
-                            <div class="project-image-container">
-                                <img class="project-card-img" src="{% static 'img/fruits.jpg' %}" alt="Plan de repas" />
-                            </div>
+                        </div>
+                        <div class="project-image-container">
+                            <img class="project-card-img" src="{% static 'img/fruits.jpg' %}" alt="{% trans 'Meal plan' %}" />
                         </div>
                     </div>
                 </div>
@@ -82,3 +125,15 @@
         </div>
     </div>
 </section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const reveals = document.querySelectorAll('.reveal');
+        const obs = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) { entry.target.classList.add('visible'); obs.unobserve(entry.target); }
+            });
+        }, { threshold: 0.1 });
+        reveals.forEach(function (el) { obs.observe(el); });
+    });
+</script>

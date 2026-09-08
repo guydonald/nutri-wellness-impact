@@ -3,21 +3,32 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+<style>
+    :root { --nutri-green:#5a8f3d; --nutri-green-dark:#2f5e2f; --nutri-green-light:#eaf3e3; --nutri-red:#d62828; }
+    .btn-nutri { background:var(--nutri-green); color:#fff; border:none; border-radius:50px; font-weight:700; transition:all .25s ease; }
+    .btn-nutri:hover { background:var(--nutri-green-dark); color:#fff; transform:translateY(-2px); }
+    .breadcrumb-item a { color: var(--nutri-green); text-decoration: none; }
+    .breadcrumb-item.active { color: #7a8a72; }
+    .comment-avatar { width: 40px; height: 40px; background: var(--nutri-green); }
+    .reply-avatar-name { color: var(--nutri-green-dark); }
+    .comment-form-box { background: var(--nutri-green-light); border-radius: 18px; }
+</style>
+
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <nav aria-label="breadcrumb" class="mb-4">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'community_feed' %}">{% trans "Communauté" %}</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'community_feed' %}">{% trans "Community" %}</a></li>
                     <li class="breadcrumb-item active">{{ post.title }}</li>
                 </ol>
             </nav>
 
             <article>
-                <h1 class="fw-bold mb-3">{{ post.title }}</h1>
-                <div class="d-flex align-items-center mb-4 text-muted">
-                    <i class="fas fa-user-circle me-2"></i> {{ post.author.get_full_name }} | 
-                    <i class="far fa-calendar-alt ms-3 me-2"></i> {{ post.created_at|date:"d M Y" }}
+                <h1 class="fw-bold mb-3" style="color: var(--nutri-green-dark);">{{ post.title }}</h1>
+                <div class="d-flex align-items-center mb-4 text-muted small">
+                    <i class="bi bi-person-circle me-2"></i> {{ post.author.get_full_name }}
+                    <i class="bi bi-calendar3 ms-3 me-2"></i> {{ post.created_at|date:"d M Y" }}
                 </div>
 
                 {% if post.get_youtube_id %}
@@ -28,29 +39,25 @@
                     <img src="{{ post.image.url }}" class="img-fluid rounded shadow mb-4 w-100">
                 {% endif %}
 
-                <div class="lead text-dark mb-5" style="white-space: pre-wrap;">
-                    {{ post.content }}
-                </div>
+                <div class="lead text-dark mb-5" style="white-space: pre-wrap;">{{ post.content }}</div>
             </article>
 
             <hr class="my-5">
 
             <section>
-                <h3 class="h5 fw-bold mb-4">{% trans "Discussion" %} ({{ post.comments.count }})</h3>
-                
-                <form method="post" class="mb-5 bg-light p-4 rounded-4 shadow-sm">
+                <h3 class="h5 fw-bold mb-4" style="color: var(--nutri-green-dark);">{% trans "Discussion" %} ({{ post.comments.count }})</h3>
+
+                <form method="post" class="mb-5 comment-form-box p-4 shadow-sm">
                     {% csrf_token %}
-                    <label class="form-label fw-bold">{% trans "Laissez un message" %}</label>
+                    <label class="form-label fw-bold">{% trans "Leave a message" %}</label>
                     {{ comment_form.content|as_crispy_field }}
-                    <button type="submit" class="btn btn-primary rounded-pill px-4 mt-2">
-                        {% trans "Commenter" %}
-                    </button>
+                    <button type="submit" class="btn btn-nutri px-4 mt-2">{% trans "Comment" %}</button>
                 </form>
 
                 {% for comment in comments %}
                 <div class="d-flex mb-4">
                     <div class="flex-shrink-0">
-                        <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <div class="comment-avatar text-white rounded-circle d-flex align-items-center justify-content-center">
                             {{ comment.user.username|default:"U"|slice:":1"|upper }}
                         </div>
                     </div>
@@ -59,33 +66,28 @@
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
                                     <span class="fw-bold">{{ comment.user.get_full_name|default:comment.user.username }}</span>
-                                    <br>
-                                    <small class="text-muted">{{ comment.created_at|timesince }}</small>
+                                    <br><small class="text-muted">{{ comment.created_at|timesince }}</small>
                                 </div>
-                                
                                 {% if user.role == 'dietitian' or user == comment.user %}
-                                <button class="btn btn-sm text-danger border-0 p-1" 
-                                        onclick="confirmDelete('{% url 'delete_comment' comment.pk %}', '{% trans 'ce commentaire' %}')"
-                                        title="{% trans 'Supprimer' %}">
-                                    <svg class="nav-svg" style="width:16px; height:16px;" viewBox="0 0 16 16">
-                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
-                                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
-                                    </svg>
+                                <button class="btn btn-sm text-danger border-0 p-1"
+                                        onclick="confirmDelete('{% url 'delete_comment' comment.pk %}', '{% trans 'this comment' %}')"
+                                        title="{% trans 'Delete' %}">
+                                    <i class="bi bi-trash"></i>
                                 </button>
                                 {% endif %}
                             </div>
                             <p class="mb-1">{{ comment.content }}</p>
-                            
-                            <button class="btn btn-link btn-sm p-0 text-decoration-none" onclick="toggleReply('{{ comment.id }}')">
-                                <i class="fas fa-reply me-1"></i> {% trans "Répondre" %}
+
+                            <button class="btn btn-link btn-sm p-0 text-decoration-none" style="color: var(--nutri-green);" onclick="toggleReply('{{ comment.id }}')">
+                                <i class="bi bi-reply me-1"></i> {% trans "Reply" %}
                             </button>
 
                             <div id="reply-form-{{ comment.id }}" class="d-none mt-2">
                                 <form method="post" class="d-flex gap-2">
                                     {% csrf_token %}
                                     <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                                    <input type="text" name="content" class="form-control form-control-sm rounded-pill" placeholder="{% trans 'Votre réponse...' %}">
-                                    <button type="submit" class="btn btn-primary btn-sm rounded-pill"><i class="fas fa-paper-plane"></i></button>
+                                    <input type="text" name="content" class="form-control form-control-sm rounded-pill" placeholder="{% trans 'Your reply...' %}">
+                                    <button type="submit" class="btn btn-nutri btn-sm rounded-pill"><i class="bi bi-send"></i></button>
                                 </form>
                             </div>
                         </div>
@@ -94,8 +96,8 @@
                         <div class="d-flex mt-3 ms-4 border-start ps-3">
                             <div class="bg-light p-2 rounded-3 w-100 shadow-sm">
                                 <div class="d-flex justify-content-between">
-                                    <span class="fw-bold small text-primary">{{ reply.user.get_full_name }}</span>
-                                    <small class="text-muted small" style="font-size: 0.7rem;">{{ reply.created_at|timesince }}</small>
+                                    <span class="fw-bold small reply-avatar-name">{{ reply.user.get_full_name }}</span>
+                                    <small class="text-muted" style="font-size: 0.7rem;">{{ reply.created_at|timesince }}</small>
                                 </div>
                                 <p class="mb-0 small">{{ reply.content }}</p>
                             </div>
@@ -111,21 +113,16 @@
 
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-sm modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
+        <div class="modal-content border-0 shadow" style="border-radius:20px; overflow:hidden;">
             <div class="modal-body text-center py-4">
-                <div class="text-danger mb-3">
-                    <svg width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/><path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
-                    </svg>
-                </div>
+                <div class="text-danger mb-3"><i class="bi bi-exclamation-circle-fill" style="font-size: 3rem;"></i></div>
                 <h5 class="fw-bold">{% trans "Confirmation" %}</h5>
-                <p class="text-muted small">{% trans "Voulez-vous vraiment supprimer" %} <span id="deleteItemName" class="fw-bold"></span> ?</p>
-                
+                <p class="text-muted small">{% trans "Do you really want to delete" %} <span id="deleteItemName" class="fw-bold"></span> ?</p>
                 <form id="deleteForm" method="post">
                     {% csrf_token %}
                     <div class="d-flex gap-2 justify-content-center mt-4">
-                        <button type="button" class="btn btn-light rounded-pill px-3" data-bs-dismiss="modal">{% trans "Annuler" %}</button>
-                        <button type="submit" class="btn btn-danger rounded-pill px-3">{% trans "Supprimer" %}</button>
+                        <button type="button" class="btn btn-light rounded-pill px-3" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                        <button type="submit" class="btn btn-danger rounded-pill px-3">{% trans "Delete" %}</button>
                     </div>
                 </form>
             </div>
@@ -134,27 +131,16 @@
 </div>
 
 <script>
-// Gère l'affichage du champ de réponse
 function toggleReply(commentId) {
     let form = document.getElementById('reply-form-' + commentId);
     form.classList.toggle('d-none');
 }
-
-// Gère la modale de suppression
 function confirmDelete(url, name) {
     const deleteForm = document.getElementById('deleteForm');
     const deleteItemName = document.getElementById('deleteItemName');
-    
     deleteForm.action = url;
     deleteItemName.innerText = name;
-    
-    const myModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-    myModal.show();
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
 }
 </script>
-
-<style>
-    /* Optionnel : pour que le bouton de suppression ne décale pas tout */
-    .btn-link:focus, .btn-sm:focus { shadow: none !important; }
-</style>
 {% endblock %}
