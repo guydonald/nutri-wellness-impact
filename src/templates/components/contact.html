@@ -1,177 +1,75 @@
 {% load static %}
-{% load i18n %}
 
-<style>
-    :root {
-        --nutri-green: #5a8f3d;
-        --nutri-green-dark: #2f5e2f;
-        --nutri-green-light: #eaf3e3;
-        --nutri-red: #d62828;
-        --nutri-orange: #f4a020;
-    }
-    .contact-section {
-        background: linear-gradient(135deg, #ffffff 0%, var(--nutri-green-light) 100%);
-        position: relative;
-        overflow: hidden;
-    }
-    .contact-blob {
-        position: absolute;
-        border-radius: 50%;
-        filter: blur(70px);
-        opacity: 0.25;
-        z-index: 0;
-    }
-    .contact-blob-1 { width: 340px; height: 340px; background: var(--nutri-green); top: -100px; left: -80px; }
-    .contact-blob-2 { width: 280px; height: 280px; background: var(--nutri-orange); bottom: -100px; right: -60px; opacity: 0.18; }
-
-    .contact-card {
-        border-radius: 28px;
-        overflow: hidden;
-        box-shadow: 0 25px 60px rgba(47, 94, 47, 0.15);
-        position: relative;
-        z-index: 1;
-    }
-    .contact-side {
-        background: linear-gradient(160deg, var(--nutri-green) 0%, var(--nutri-green-dark) 100%);
-        color: #fff;
-    }
-    .contact-feature {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        height: 3.2rem;
-        width: 3.2rem;
-        font-size: 1.5rem;
-        border-radius: 16px;
-        background: rgba(255,255,255,0.15);
-        color: #fff;
-        transition: all 0.25s ease;
-    }
-    .contact-feature-row:hover .contact-feature {
-        background: #fff;
-        color: var(--nutri-green-dark);
-        transform: scale(1.05);
-    }
-    .form-floating > .form-control {
-        border: 1px solid #e4ebe0;
-        border-radius: 14px;
-        background: #f8faf6;
-        transition: all 0.2s ease;
-    }
-    .form-floating > .form-control:focus {
-        background: #fff;
-        border-color: var(--nutri-green);
-        box-shadow: 0 0 0 0.25rem rgba(90, 143, 61, 0.15);
-    }
-    .btn-nutri {
-        background: var(--nutri-green);
-        color: #fff;
-        border: none;
-        border-radius: 14px;
-        font-weight: 700;
-        transition: all 0.25s ease;
-        box-shadow: 0 6px 18px rgba(90, 143, 61, 0.25);
-    }
-    .btn-nutri:hover {
-        background: var(--nutri-green-dark);
-        color: #fff;
-        transform: translateY(-3px);
-        box-shadow: 0 10px 24px rgba(90, 143, 61, 0.35);
-    }
-    .quote-box {
-        border-left: 3px solid rgba(255,255,255,0.4);
-        padding-left: 1rem;
-        font-style: italic;
-    }
-    .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-</style>
-
-<section class="contact-section py-5">
-    <div class="contact-blob contact-blob-1"></div>
-    <div class="contact-blob contact-blob-2"></div>
-    <div class="container px-5 py-4 position-relative">
-        <div class="contact-card bg-white reveal">
+<section class="py-5">
+    <div class="container px-5">
+        <div class="bg-white rounded-4 shadow-lg overflow-hidden">
             <div class="row g-0">
-
-                <div class="col-lg-5 contact-side p-5">
-                    <h2 class="fw-bolder mb-4">{% trans "Contact Information" %}</h2>
-                    <p class="mb-5 opacity-75">{% trans "Ready to start your journey towards sustainable wellness? Reach out for a personalized consultation." %}</p>
-
-                    <div class="d-flex align-items-center mb-4 contact-feature-row">
-                        <div class="contact-feature me-3"><i class="bi bi-geo-alt"></i></div>
+                
+                <div class="col-lg-5 bg-success bg-gradient text-white p-5">
+                    <h2 class="fw-bolder mb-4">Contact Information</h2>
+                    <p class="mb-5">Ready to start your journey towards sustainable wellness? Reach out for a personalized consultation.</p>
+                    
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="feature bg-white text-success rounded-3 me-3">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
                         <div>
-                            <p class="mb-0 small fw-bold text-uppercase opacity-75">{% trans "Location" %}</p>
-                            <p class="mb-0 fw-semibold">{% trans "Online & On-site (Cameroon)" %}</p>
+                            <p class="mb-0 small fw-bold">Location</p>
+                            <p class="mb-0">Online & On-site (Cameroon)</p>
                         </div>
                     </div>
 
-                    <div class="d-flex align-items-center mb-4 contact-feature-row">
-                        <div class="contact-feature me-3"><i class="bi bi-envelope-check"></i></div>
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="feature bg-white text-success rounded-3 me-3">
+                            <i class="bi bi-envelope-check"></i>
+                        </div>
                         <div>
-                            <p class="mb-0 small fw-bold text-uppercase opacity-75">{% trans "Expertise" %}</p>
-                            <p class="mb-0 fw-semibold">{% trans "Clinical Nutrition & Dietetics" %}</p>
+                            <p class="mb-0 small fw-bold">Expertise</p>
+                            <p class="mb-0">Clinical Nutrition & Dietetics</p>
                         </div>
                     </div>
 
-                    <div class="d-flex align-items-center mb-5 contact-feature-row">
-                        <div class="contact-feature me-3"><i class="bi bi-whatsapp"></i></div>
-                        <div>
-                            <p class="mb-0 small fw-bold text-uppercase opacity-75">WhatsApp</p>
-                            <p class="mb-0 fw-semibold">{% trans "Chat with us" %}</p>
-                        </div>
-                    </div>
-
-                    <div class="quote-box mt-5">
-                        <p class="small mb-0">{% trans '"Healthy nutrition is not about restriction, but about making informed choices."' %}</p>
+                    <div class="mt-5">
+                        <p class="small text-white-50">"Healthy nutrition is not about restriction, but about making informed choices."</p>
                     </div>
                 </div>
 
                 <div class="col-lg-7 p-5">
                     <div class="mb-4">
-                        <h2 class="fw-bolder" style="color: var(--nutri-green-dark);">{% trans "Send us a message" %}</h2>
-                        <p class="text-muted">{% trans "Fill out the form below and we'll get back to you within 24 hours." %}</p>
+                        <h2 class="fw-bolder">Send us a message</h2>
+                        <p class="text-muted">Fill out the form below and we'll get back to you within 24 hours.</p>
                     </div>
-
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm border-0 mb-4" role="alert">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-check-circle-fill me-2 text-success"></i>
-                                    <div>{{ message }}</div>
-                                </div>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-
                     <form method="post" action="{% url 'contact' %}">
                         {% csrf_token %}
+                        
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-floating mb-3">
-                                    <input class="form-control" name="name" id="name" type="text" placeholder="{% trans 'Full name' %}" required />
-                                    <label for="name">{% trans "Full name" %}</label>
+                                    <input class="form-control border-0 bg-light" name="name" id="name" type="text" placeholder="Full name" required />
+                                    <label for="name">Full name</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating mb-3">
-                                    <input class="form-control" name="phone" id="phone" type="tel" placeholder="{% trans 'Phone' %}" required />
-                                    <label for="phone">{% trans "Phone number" %}</label>
+                                    <input class="form-control border-0 bg-light" name="phone" id="phone" type="tel" placeholder="Phone" required />
+                                    <label for="phone">Phone number</label>
                                 </div>
                             </div>
                         </div>
+
                         <div class="form-floating mb-3">
-                            <input class="form-control" name="email" id="email" type="email" placeholder="{% trans 'Email' %}" required />
-                            <label for="email">{% trans "Email address" %}</label>
+                            <input class="form-control border-0 bg-light" name="email" id="email" type="email" placeholder="Email" required />
+                            <label for="email">Email address</label>
                         </div>
-                        <div class="form-floating mb-4">
-                            <textarea class="form-control" name="message" id="message" placeholder="{% trans 'How can we help you?' %}" style="height: 11rem" required></textarea>
-                            <label for="message">{% trans "Describe your health goals or questions..." %}</label>
+
+                        <div class="form-floating mb-3">
+                            <textarea class="form-control border-0 bg-light" name="message" id="message" placeholder="How can we help you?" style="height: 12rem" required></textarea>
+                            <label for="message">Describe your health goals or questions...</label>
                         </div>
+
                         <div class="d-grid">
-                            <button class="btn btn-nutri btn-lg py-3" type="submit">
-                                <i class="bi bi-send me-2"></i>{% trans "Send Message" %}
+                            <button class="btn btn-success btn-lg shadow-sm py-3" type="submit">
+                                <i class="bi bi-send me-2"></i>Send Message
                             </button>
                         </div>
                     </form>
@@ -182,20 +80,36 @@
     </div>
 </section>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const reveals = document.querySelectorAll('.reveal');
-        const obs = new IntersectionObserver(function (entries) {
-            entries.forEach(function (entry) {
-                if (entry.isIntersecting) { entry.target.classList.add('visible'); obs.unobserve(entry.target); }
-            });
-        }, { threshold: 0.1 });
-        reveals.forEach(function (el) { obs.observe(el); });
+<style>
+    /* Style pour les petits icônes d'info */
+    .feature {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 3rem;
+        width: 3rem;
+        font-size: 1.5rem;
+    }
+    
+    /* Effet Focus sur les champs */
+    .form-control:focus {
+        background-color: #fff !important;
+        box-shadow: 0 0 0 0.25rem rgba(30, 48, 243, 0.1);
+        border: 1px solid #1e30f3 !important;
+    }
+</style>
 
-        setTimeout(function () {
-            document.querySelectorAll('.alert').forEach(function (alert) {
-                try { new bootstrap.Alert(alert).close(); } catch(e) {}
+<script>
+    // Attendre que le document soit chargé
+    document.addEventListener('DOMContentLoaded', function() {
+        // Trouver toutes les alertes après 5 secondes
+        setTimeout(function() {
+            let alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                // Utiliser l'API native de Bootstrap pour fermer l'alerte proprement
+                let bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
             });
-        }, 5000);
+        }, 5000); // 5000 millisecondes = 5 secondes
     });
 </script>

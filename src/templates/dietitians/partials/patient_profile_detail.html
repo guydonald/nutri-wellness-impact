@@ -1,47 +1,100 @@
 {% load i18n %}
 <div class="modal-header text-white" style="background: linear-gradient(135deg, #5a8f3d, #2f5e2f);">
-    <h5 class="modal-title"><i class="bi bi-person-vcard me-2"></i>{% trans "Detailed Profile of" %} {{ patient.get_full_name|default:patient.username }}</h5>
+    <h5 class="modal-title"><i class="bi bi-person-vcard me-2"></i>{% trans "Detailed Profile of" %} {{ patient.get_full_name|default:patient.email }}</h5>
     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 
-<div class="modal-body p-4">
+<div class="modal-body p-4" style="max-height:70vh; overflow-y:auto;">
     {% if profile %}
-        <h6 class="fw-bold" style="color:#2f5e2f;"><i class="bi bi-person-badge me-2"></i>{% trans "Basic Account" %}</h6>
-        <div class="ps-3 mb-3">
-            <p class="mb-1"><strong>{% trans "Email:" %}</strong> {{ patient.email }}</p>
-            <p class="mb-1"><strong>{% trans "Occupation:" %}</strong> {{ profile.occupation|default:"-" }}</p>
-            <p class="mb-0"><strong>{% trans "Role:" %}</strong> <span class="badge" style="background:#5a8f3d;">{{ patient.role|capfirst }}</span></p>
-        </div>
-        <hr>
+        <style>
+            .d-sec { color:#2f5e2f; font-weight:700; font-size:.9rem; text-transform:uppercase;
+                     letter-spacing:.5px; margin:1.2rem 0 .6rem; padding-bottom:.3rem; border-bottom:1px solid #eef2ec; }
+            .d-sec:first-child { margin-top:0; }
+            .d-row { display:flex; justify-content:space-between; gap:1rem; padding:.35rem 0; font-size:.9rem; }
+            .d-lbl { color:#7a8a72; flex-shrink:0; }
+            .d-val { font-weight:600; text-align:right; }
+        </style>
 
-        <h6 class="fw-bold" style="color:#2f5e2f;"><i class="bi bi-rulers me-2"></i>{% trans "Physical Measurements" %}</h6>
-        <div class="row ps-3 mb-3">
-            <div class="col-6"><p class="mb-1"><strong>{% trans "Age:" %}</strong> {{ profile.age|default:"-" }}</p></div>
-            <div class="col-6"><p class="mb-1"><strong>{% trans "Gender:" %}</strong> {{ profile.get_gender_display|default:"-" }}</p></div>
-            <div class="col-6"><p class="mb-1"><strong>{% trans "Height:" %}</strong> {{ profile.height|default:"-" }} cm</p></div>
-            <div class="col-6"><p class="mb-1"><strong>{% trans "Weight:" %}</strong> {{ profile.weight|default:"-" }} kg</p></div>
-            <div class="col-6"><p class="mb-1"><strong>{% trans "BMI:" %}</strong> {{ profile.bmi|default:"-" }}</p></div>
-            <div class="col-6"><p class="mb-1"><strong>{% trans "Activity:" %}</strong> {{ profile.get_activity_level_display|default:"-" }}</p></div>
-        </div>
-        <hr>
+        <div class="d-sec">{% trans "Basic Account" %}</div>
+        <div class="d-row"><span class="d-lbl">{% trans "Email" %}</span><span class="d-val">{{ patient.email }}</span></div>
+        <div class="d-row"><span class="d-lbl">{% trans "Phone" %}</span><span class="d-val">{{ profile.phone|default:"-" }}</span></div>
+        <div class="d-row"><span class="d-lbl">{% trans "Address" %}</span><span class="d-val">{{ profile.address|default:"-" }}</span></div>
+        <div class="d-row"><span class="d-lbl">{% trans "Occupation" %}</span><span class="d-val">{{ profile.occupation|default:"-" }}</span></div>
+        <div class="d-row"><span class="d-lbl">{% trans "Main pathology" %}</span><span class="d-val">{{ profile.get_pathology_display|default:"-" }}</span></div>
 
-        <h6 class="fw-bold" style="color:#2f5e2f;"><i class="bi bi-heart-pulse me-2"></i>{% trans "Medical History" %}</h6>
-        <div class="ps-3">
-            <p class="mb-1"><strong>{% trans "Diagnosis:" %}</strong> {{ profile.diagnosis|default:"-" }}</p>
-            <p class="mb-1"><strong>{% trans "Medications:" %}</strong> {{ profile.medications|default:"-" }}</p>
-            <p class="mb-1"><strong>{% trans "Medical history:" %}</strong> {{ profile.medical_history|default:"-" }}</p>
-            <p class="mb-1"><strong>{% trans "Family history of CVD:" %}</strong>
-                {% if profile.family_history_cvd %}<span class="badge bg-danger">{% trans "Yes" %}</span>{% else %}<span class="badge" style="background:#5a8f3d;">{% trans "No" %}</span>{% endif %}
-            </p>
-            <p class="mb-0"><strong>{% trans "Allergies:" %}</strong>
-                {% if profile.allergies %}<span class="badge bg-danger">{% trans "Yes" %}</span>{% else %}<span class="badge" style="background:#5a8f3d;">{% trans "No" %}</span>{% endif %}
-            </p>
+        <div class="d-sec">{% trans "Physical Measurements" %}</div>
+        <div class="row">
+            <div class="col-6"><div class="d-row"><span class="d-lbl">{% trans "Age" %}</span><span class="d-val">{{ profile.age|default:"-" }}</span></div></div>
+            <div class="col-6"><div class="d-row"><span class="d-lbl">{% trans "Gender" %}</span><span class="d-val">{{ profile.get_gender_display|default:"-" }}</span></div></div>
+            <div class="col-6"><div class="d-row"><span class="d-lbl">{% trans "Height (cm)" %}</span><span class="d-val">{{ profile.height|default:"-" }}</span></div></div>
+            <div class="col-6"><div class="d-row"><span class="d-lbl">{% trans "Current weight (kg)" %}</span><span class="d-val">{{ profile.weight|default:"-" }}</span></div></div>
+            <div class="col-6"><div class="d-row"><span class="d-lbl">{% trans "Usual weight (kg)" %}</span><span class="d-val">{{ profile.usual_weight|default:"-" }}</span></div></div>
+            <div class="col-6"><div class="d-row"><span class="d-lbl">{% trans "Desired weight (kg)" %}</span><span class="d-val">{{ profile.desired_weight|default:"-" }}</span></div></div>
+            <div class="col-6"><div class="d-row"><span class="d-lbl">{% trans "Waist circumference (cm)" %}</span><span class="d-val">{{ profile.waist_circumference|default:"-" }}</span></div></div>
+            <div class="col-6"><div class="d-row"><span class="d-lbl">{% trans "Hip circumference (cm)" %}</span><span class="d-val">{{ profile.hip_circumference|default:"-" }}</span></div></div>
+            {% if profile.waist_hip_ratio %}
+            <div class="col-6"><div class="d-row"><span class="d-lbl">{% trans "Waist/Hip ratio" %}</span><span class="d-val">{{ profile.waist_hip_ratio }}</span></div></div>
+            {% endif %}
+            <div class="col-6">
+                <div class="d-row"><span class="d-lbl">{% trans "BMI" %}</span>
+                    <span class="d-val">
+                        {% if profile.bmi %}{{ profile.bmi }} <span class="badge bg-{{ profile.bmi_status.color }}">{{ profile.bmi_status.label }}</span>{% else %}-{% endif %}
+                    </span>
+                </div>
+            </div>
+            <div class="col-6"><div class="d-row"><span class="d-lbl">{% trans "Left blood pressure" %}</span><span class="d-val">{{ profile.blood_pressure_left|default:"-" }}</span></div></div>
+            <div class="col-6"><div class="d-row"><span class="d-lbl">{% trans "Right blood pressure" %}</span><span class="d-val">{{ profile.blood_pressure_right|default:"-" }}</span></div></div>
         </div>
+
+        <div class="d-sec">{% trans "Medical History" %}</div>
+        <div class="d-row"><span class="d-lbl">{% trans "Diagnosis" %}</span><span class="d-val">{{ profile.diagnosis|default:"-" }}</span></div>
+        <div class="d-row"><span class="d-lbl">{% trans "Known diseases" %}</span><span class="d-val">{{ profile.known_diseases|default:"-" }}</span></div>
+        <div class="d-row"><span class="d-lbl">{% trans "Previous surgeries" %}</span><span class="d-val">{{ profile.previous_surgeries|default:"-" }}</span></div>
+        <div class="d-row"><span class="d-lbl">{% trans "Medications" %}</span><span class="d-val">{{ profile.medications|default:"-" }}</span></div>
+        <div class="d-row"><span class="d-lbl">{% trans "Food allergies" %}</span><span class="d-val">{{ profile.food_allergies|default:"-" }}</span></div>
+        <div class="d-row"><span class="d-lbl">{% trans "Food intolerances" %}</span><span class="d-val">{{ profile.food_intolerances|default:"-" }}</span></div>
+        <div class="d-row">
+            <span class="d-lbl">{% trans "Family history of CVD" %}</span>
+            <span class="d-val">{% if profile.family_history_cvd %}<span class="badge bg-danger">{% trans "Yes" %}</span>{% else %}<span class="badge" style="background:#5a8f3d;">{% trans "No" %}</span>{% endif %}</span>
+        </div>
+
+        <div class="d-sec">{% trans "Lifestyle" %}</div>
+        <div class="row">
+            <div class="col-6"><div class="d-row"><span class="d-lbl">{% trans "Sleep (hours per night)" %}</span><span class="d-val">{{ profile.sleep_hours|default:"-" }}</span></div></div>
+            <div class="col-6"><div class="d-row"><span class="d-lbl">{% trans "Sleep quality" %}</span><span class="d-val">{{ profile.get_sleep_quality_display|default:"-" }}</span></div></div>
+            <div class="col-6"><div class="d-row"><span class="d-lbl">{% trans "Activity level" %}</span><span class="d-val">{{ profile.get_activity_level_display|default:"-" }}</span></div></div>
+            <div class="col-6"><div class="d-row"><span class="d-lbl">{% trans "Stress level" %}</span><span class="d-val">{{ profile.get_stress_level_display|default:"-" }}</span></div></div>
+            <div class="col-4"><div class="d-row"><span class="d-lbl">{% trans "Smoking" %}</span><span class="d-val">{% if profile.smoking %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</span></div></div>
+            <div class="col-4"><div class="d-row"><span class="d-lbl">{% trans "Alcohol" %}</span><span class="d-val">{% if profile.alcohol %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</span></div></div>
+            <div class="col-4"><div class="d-row"><span class="d-lbl">{% trans "Sweets" %}</span><span class="d-val">{% if profile.sweets %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</span></div></div>
+        </div>
+
+        <div class="d-sec">{% trans "Eating Habits" %}</div>
+        <div class="d-row"><span class="d-lbl">{% trans "Number of meals per day" %}</span><span class="d-val">{{ profile.meals_per_day|default:"-" }}</span></div>
+        <div class="d-row"><span class="d-lbl">{% trans "Usual place for meals" %}</span><span class="d-val">{{ profile.get_meal_place_display|default:"-" }}</span></div>
+        <div class="d-row"><span class="d-lbl">{% trans "Appetite" %}</span><span class="d-val">{{ profile.get_appetite_display|default:"-" }}</span></div>
+        <div class="d-row"><span class="d-lbl">{% trans "Snacking" %}</span><span class="d-val">{{ profile.get_snacking_display|default:"-" }}</span></div>
+        <div class="d-row"><span class="d-lbl">{% trans "Glasses of water per day" %}</span><span class="d-val">{{ profile.water_glasses|default:"-" }}</span></div>
+        <div class="d-row"><span class="d-lbl">{% trans "Specific restrictions (cultural, religious, ethical)" %}</span><span class="d-val">{{ profile.dietary_restrictions|default:"-" }}</span></div>
+
+        <div class="d-sec">{% trans "Goals and Expectations" %}</div>
+        <div class="d-row"><span class="d-lbl">{% trans "Main expectations" %}</span><span class="d-val">{{ profile.main_expectations|default:"-" }}</span></div>
+        <div class="d-row"><span class="d-lbl">{% trans "Timeframe to reach goals" %}</span><span class="d-val">{{ profile.goal_timeframe|default:"-" }}</span></div>
+        <div class="d-row">
+            <span class="d-lbl">{% trans "Motivation level (0-10)" %}</span>
+            <span class="d-val">{% if profile.motivation_level is not None %}<span class="badge" style="background:#5a8f3d;">{{ profile.motivation_level }}/10</span>{% else %}-{% endif %}</span>
+        </div>
+
     {% else %}
         <div class="alert alert-warning">{% trans "This patient's detailed profile has not been filled in yet." %}</div>
     {% endif %}
 </div>
 
 <div class="modal-footer bg-light border-0">
+    {% if profile %}
+    <a href="{% url 'bilan_patient' patient.id %}" class="btn text-white rounded-pill px-4" style="background:#5a8f3d;">
+        <i class="bi bi-pencil me-1"></i>{% trans "Edit assessment" %}
+    </a>
+    {% endif %}
     <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">{% trans "Close" %}</button>
 </div>

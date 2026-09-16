@@ -3,143 +3,133 @@
 
 {% block content %}
 <style>
-    :root {
-        --nutri-green: #5a8f3d;
-        --nutri-green-dark: #2f5e2f;
-        --nutri-green-light: #eaf3e3;
-        --nutri-red: #d62828;
-        --nutri-orange: #f4a020;
-    }
+    :root { --nutri-green:#5a8f3d; --nutri-green-dark:#2f5e2f; --nutri-green-light:#eaf3e3; --nutri-red:#d62828; --nutri-orange:#f4a020; }
     .profile-header {
         background: linear-gradient(135deg, var(--nutri-green) 0%, var(--nutri-green-dark) 100%);
-        border-radius: 26px;
-        color: #fff;
-        padding: 2.5rem;
-        position: relative;
-        overflow: hidden;
+        border-radius: 26px; color:#fff; padding: 2.5rem; position:relative; overflow:hidden;
     }
     .profile-header::after {
-        content: '';
-        position: absolute;
-        width: 220px; height: 220px;
-        background: rgba(255,255,255,0.08);
-        border-radius: 50%;
-        top: -60px; right: -40px;
+        content:''; position:absolute; width:220px; height:220px;
+        background: rgba(255,255,255,.08); border-radius:50%; top:-60px; right:-40px;
     }
     .profile-avatar {
-        width: 90px; height: 90px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.2);
-        display: inline-flex; align-items: center; justify-content: center;
-        font-size: 2.5rem;
-        border: 3px solid rgba(255,255,255,0.4);
+        width:90px; height:90px; border-radius:50%; background:rgba(255,255,255,.2);
+        display:inline-flex; align-items:center; justify-content:center; font-size:2.5rem;
+        border:3px solid rgba(255,255,255,.4);
     }
-    .info-card {
-        background: #fff;
-        border-radius: 22px;
-        border: 1px solid #eef2ec;
-        transition: all 0.3s ease;
-        height: 100%;
-    }
-    .info-card:hover { box-shadow: 0 16px 36px rgba(47, 94, 47, 0.10); }
-    .info-card-header {
-        padding: 1.2rem 1.5rem;
-        border-bottom: 1px solid #f0f4ee;
-        font-weight: 700;
-        display: flex; align-items: center; gap: 0.6rem;
-    }
-    .info-icon {
-        width: 40px; height: 40px; border-radius: 12px;
-        display: inline-flex; align-items: center; justify-content: center;
-        font-size: 1.1rem;
-    }
-    .icon-green { background: var(--nutri-green-light); color: var(--nutri-green-dark); }
-    .icon-orange { background: #fef3e0; color: var(--nutri-orange); }
-    .data-row {
-        display: flex; justify-content: space-between;
-        padding: 0.6rem 0;
-        border-bottom: 1px dashed #eef2ec;
-    }
-    .data-row:last-child { border-bottom: none; }
-    .data-label { color: #7a8a72; font-size: 0.9rem; }
-    .data-value { font-weight: 600; color: #2d3748; text-align: right; }
-    .stat-box {
-        background: var(--nutri-green-light);
-        border-radius: 16px;
-        padding: 1rem;
-        text-align: center;
-    }
-    .stat-box .val { font-size: 1.4rem; font-weight: 800; color: var(--nutri-green-dark); }
-    .stat-box .lbl { font-size: 0.75rem; color: #7a8a72; text-transform: uppercase; }
-    .btn-nutri {
-        background: var(--nutri-green); color: #fff; border: none;
-        border-radius: 50px; font-weight: 700; transition: all 0.25s ease;
-    }
-    .btn-nutri:hover { background: var(--nutri-green-dark); color: #fff; transform: translateY(-2px); }
-    .badge-role { background: rgba(255,255,255,0.25); color: #fff; border-radius: 50px; padding: 0.3rem 1rem; }
+    .info-card { background:#fff; border-radius:22px; border:1px solid #eef2ec; transition:all .3s ease; height:100%; }
+    .info-card:hover { box-shadow: 0 16px 36px rgba(47,94,47,.10); }
+    .info-card-header { padding:1.2rem 1.5rem; border-bottom:1px solid #f0f4ee; font-weight:700; display:flex; align-items:center; gap:.6rem; }
+    .info-icon { width:40px; height:40px; border-radius:12px; display:inline-flex; align-items:center; justify-content:center; font-size:1.1rem; }
+    .icon-green { background:var(--nutri-green-light); color:var(--nutri-green-dark); }
+    .icon-orange { background:#fef3e0; color:var(--nutri-orange); }
+    .icon-red { background:#fdecec; color:var(--nutri-red); }
+    .data-row { display:flex; justify-content:space-between; padding:.6rem 0; border-bottom:1px dashed #eef2ec; gap:1rem; }
+    .data-row:last-child { border-bottom:none; }
+    .data-label { color:#7a8a72; font-size:.9rem; flex-shrink:0; }
+    .data-value { font-weight:600; color:#2d3748; text-align:right; }
+    .stat-box { background:var(--nutri-green-light); border-radius:16px; padding:1rem; text-align:center; }
+    .stat-box .val { font-size:1.4rem; font-weight:800; color:var(--nutri-green-dark); }
+    .stat-box .lbl { font-size:.75rem; color:#7a8a72; text-transform:uppercase; }
+    .btn-nutri { background:var(--nutri-green); color:#fff; border:none; border-radius:50px; font-weight:700; transition:all .25s ease; }
+    .btn-nutri:hover { background:var(--nutri-green-dark); color:#fff; transform:translateY(-2px); }
+    .btn-nutri-outline { background:transparent; color:var(--nutri-green-dark); border:2px solid var(--nutri-green); border-radius:50px; font-weight:700; transition:all .2s ease; }
+    .btn-nutri-outline:hover { background:var(--nutri-green); color:#fff; }
+    .badge-role { background:rgba(255,255,255,.25); color:#fff; border-radius:50px; padding:.3rem 1rem; }
+    .alert-incomplete { background:#fef3e0; border-left:4px solid var(--nutri-orange); border-radius:14px; }
 </style>
 
 <div class="container py-5">
 
-    <!-- En-tête profil -->
-    <div class="profile-header mb-4 position-relative">
+    <!-- En-tete -->
+    <div class="profile-header mb-4">
         <div class="row align-items-center position-relative" style="z-index:1;">
-            <div class="col-auto">
-                <div class="profile-avatar"><i class="bi bi-person"></i></div>
-            </div>
+            <div class="col-auto"><div class="profile-avatar"><i class="bi bi-person"></i></div></div>
             <div class="col">
                 <h2 class="fw-bolder mb-1">{{ user.get_full_name|default:user.email }}</h2>
                 <p class="mb-2 opacity-75"><i class="bi bi-envelope me-2"></i>{{ user.email }}</p>
-                <span class="badge-role"><i class="bi bi-shield-check me-1"></i>{{ user.role|capfirst }}</span>
+                <span class="badge-role"><i class="bi bi-shield-check me-1"></i>{{ user.get_role_display }}</span>
+                {% if profile.pathology and profile.pathology != 'none' %}
+                    <span class="badge-role ms-2"><i class="bi bi-heart-pulse me-1"></i>{{ profile.get_pathology_display }}</span>
+                {% endif %}
                 <span class="ms-2 small opacity-75"><i class="bi bi-calendar3 me-1"></i>{% trans "Member since" %} {{ user.date_joined|date:"d F Y" }}</span>
             </div>
         </div>
     </div>
 
-    <!-- Statistiques rapides -->
+    {% if not profile.is_complete %}
+    <div class="alert-incomplete p-3 mb-4">
+        <i class="bi bi-exclamation-triangle me-2" style="color: var(--nutri-orange);"></i>
+        {% trans "Your assessment form is incomplete. Filling it in helps your dietitian provide better care." %}
+        <a href="{% url 'bilan' %}" class="ms-2 fw-bold" style="color: var(--nutri-green-dark);">{% trans "Complete it now" %}</a>
+    </div>
+    {% endif %}
+
+    <!-- Stats rapides -->
     <div class="row g-3 mb-4">
         <div class="col-6 col-md-3"><div class="stat-box"><div class="val">{{ profile.age|default:"-" }}</div><div class="lbl">{% trans "Age" %}</div></div></div>
         <div class="col-6 col-md-3"><div class="stat-box"><div class="val">{{ profile.weight|default:"-" }}</div><div class="lbl">{% trans "Weight (kg)" %}</div></div></div>
         <div class="col-6 col-md-3"><div class="stat-box"><div class="val">{{ profile.height|default:"-" }}</div><div class="lbl">{% trans "Height (cm)" %}</div></div></div>
-        <div class="col-6 col-md-3"><div class="stat-box"><div class="val">{{ profile.bmi|default:"-" }}</div><div class="lbl">{% trans "BMI" %}</div></div></div>
+        <div class="col-6 col-md-3">
+            <div class="stat-box">
+                <div class="val">{{ profile.bmi|default:"-" }}</div>
+                <div class="lbl">{% trans "BMI" %}</div>
+                {% if profile.bmi %}<span class="badge bg-{{ profile.bmi_status.color }} mt-1">{{ profile.bmi_status.label }}</span>{% endif %}
+            </div>
+        </div>
     </div>
 
     <div class="row g-4">
-        <!-- Infos personnelles -->
-        <div class="col-lg-5">
+        <!-- Informations personnelles -->
+        <div class="col-lg-6">
             <div class="info-card">
                 <div class="info-card-header">
-                    <span class="info-icon icon-green"><i class="bi bi-person-vcard"></i></span>
-                    {% trans "Personal Information" %}
+                    <span class="info-icon icon-green"><i class="bi bi-person-vcard"></i></span>{% trans "Personal Information" %}
                 </div>
                 <div class="card-body p-4">
+                    <div class="data-row"><span class="data-label">{% trans "Date of birth" %}</span><span class="data-value">{{ profile.birth_date|default:"-" }}</span></div>
                     <div class="data-row"><span class="data-label">{% trans "Gender" %}</span><span class="data-value">{{ profile.get_gender_display|default:"-" }}</span></div>
+                    <div class="data-row"><span class="data-label">{% trans "Phone" %}</span><span class="data-value">{{ profile.phone|default:"-" }}</span></div>
+                    <div class="data-row"><span class="data-label">{% trans "Address" %}</span><span class="data-value">{{ profile.address|default:"-" }}</span></div>
                     <div class="data-row"><span class="data-label">{% trans "Occupation" %}</span><span class="data-value">{{ profile.occupation|default:"-" }}</span></div>
                     <div class="data-row"><span class="data-label">{% trans "Activity level" %}</span><span class="data-value">{{ profile.get_activity_level_display|default:"-" }}</span></div>
-                    <div class="data-row"><span class="data-label">{% trans "Waist circumference" %}</span><span class="data-value">{{ profile.waist_circumference|default:"-" }} cm</span></div>
                 </div>
             </div>
         </div>
 
-        <!-- Infos médicales -->
-        <div class="col-lg-7">
+        <!-- Mesures -->
+        <div class="col-lg-6">
             <div class="info-card">
                 <div class="info-card-header">
-                    <span class="info-icon icon-orange"><i class="bi bi-heart-pulse"></i></span>
-                    {% trans "Medical History" %}
+                    <span class="info-icon icon-green"><i class="bi bi-rulers"></i></span>{% trans "Anthropometric Data" %}
+                </div>
+                <div class="card-body p-4">
+                    <div class="data-row"><span class="data-label">{% trans "Usual weight (kg)" %}</span><span class="data-value">{{ profile.usual_weight|default:"-" }}</span></div>
+                    <div class="data-row"><span class="data-label">{% trans "Desired weight (kg)" %}</span><span class="data-value">{{ profile.desired_weight|default:"-" }}</span></div>
+                    <div class="data-row"><span class="data-label">{% trans "Waist circumference (cm)" %}</span><span class="data-value">{{ profile.waist_circumference|default:"-" }}</span></div>
+                    <div class="data-row"><span class="data-label">{% trans "Hip circumference (cm)" %}</span><span class="data-value">{{ profile.hip_circumference|default:"-" }}</span></div>
+                    {% if profile.waist_hip_ratio %}
+                    <div class="data-row"><span class="data-label">{% trans "Waist/Hip ratio" %}</span><span class="data-value">{{ profile.waist_hip_ratio }}</span></div>
+                    {% endif %}
+                    <div class="data-row"><span class="data-label">{% trans "Left blood pressure" %}</span><span class="data-value">{{ profile.blood_pressure_left|default:"-" }}</span></div>
+                    <div class="data-row"><span class="data-label">{% trans "Right blood pressure" %}</span><span class="data-value">{{ profile.blood_pressure_right|default:"-" }}</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Antecedents -->
+        <div class="col-lg-6">
+            <div class="info-card">
+                <div class="info-card-header">
+                    <span class="info-icon icon-red"><i class="bi bi-heart-pulse"></i></span>{% trans "Medical History" %}
                 </div>
                 <div class="card-body p-4">
                     <div class="data-row"><span class="data-label">{% trans "Diagnosis" %}</span><span class="data-value">{{ profile.diagnosis|default:"-" }}</span></div>
-                    <div class="data-row"><span class="data-label">{% trans "Diagnosis date" %}</span><span class="data-value">{{ profile.diagnosis_date|default:"-" }}</span></div>
-                    <div class="data-row"><span class="data-label">{% trans "Medical history" %}</span><span class="data-value">{{ profile.medical_history|default:"-" }}</span></div>
+                    <div class="data-row"><span class="data-label">{% trans "Known diseases" %}</span><span class="data-value">{{ profile.known_diseases|default:"-" }}</span></div>
+                    <div class="data-row"><span class="data-label">{% trans "Previous surgeries" %}</span><span class="data-value">{{ profile.previous_surgeries|default:"-" }}</span></div>
                     <div class="data-row"><span class="data-label">{% trans "Medications" %}</span><span class="data-value">{{ profile.medications|default:"-" }}</span></div>
-                    <div class="data-row">
-                        <span class="data-label">{% trans "Allergies" %}</span>
-                        <span class="data-value">
-                            {% if profile.allergies %}<span class="badge bg-danger-subtle text-danger">{% trans "Yes" %}</span>
-                            {% else %}<span class="badge bg-success-subtle text-success">{% trans "No" %}</span>{% endif %}
-                        </span>
-                    </div>
+                    <div class="data-row"><span class="data-label">{% trans "Food allergies" %}</span><span class="data-value">{{ profile.food_allergies|default:"-" }}</span></div>
+                    <div class="data-row"><span class="data-label">{% trans "Food intolerances" %}</span><span class="data-value">{{ profile.food_intolerances|default:"-" }}</span></div>
                     <div class="data-row">
                         <span class="data-label">{% trans "Family history of CVD" %}</span>
                         <span class="data-value">
@@ -150,9 +140,60 @@
                 </div>
             </div>
         </div>
+
+        <!-- Habitudes de vie -->
+        <div class="col-lg-6">
+            <div class="info-card">
+                <div class="info-card-header">
+                    <span class="info-icon icon-orange"><i class="bi bi-activity"></i></span>{% trans "Lifestyle" %}
+                </div>
+                <div class="card-body p-4">
+                    <div class="data-row"><span class="data-label">{% trans "Sleep (hours per night)" %}</span><span class="data-value">{{ profile.sleep_hours|default:"-" }}</span></div>
+                    <div class="data-row"><span class="data-label">{% trans "Sleep quality" %}</span><span class="data-value">{{ profile.get_sleep_quality_display|default:"-" }}</span></div>
+                    <div class="data-row"><span class="data-label">{% trans "Physical activity type" %}</span><span class="data-value">{{ profile.activity_type|default:"-" }}</span></div>
+                    <div class="data-row"><span class="data-label">{% trans "Stress level" %}</span><span class="data-value">{{ profile.get_stress_level_display|default:"-" }}</span></div>
+                    <div class="data-row">
+                        <span class="data-label">{% trans "Smoking" %}</span>
+                        <span class="data-value">{% if profile.smoking %}<span class="badge bg-danger-subtle text-danger">{% trans "Yes" %}</span>{% else %}<span class="badge bg-success-subtle text-success">{% trans "No" %}</span>{% endif %}</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">{% trans "Alcohol" %}</span>
+                        <span class="data-value">{% if profile.alcohol %}<span class="badge bg-danger-subtle text-danger">{% trans "Yes" %}</span>{% else %}<span class="badge bg-success-subtle text-success">{% trans "No" %}</span>{% endif %}</span>
+                    </div>
+                    <div class="data-row"><span class="data-label">{% trans "Glasses of water per day" %}</span><span class="data-value">{{ profile.water_glasses|default:"-" }}</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Objectifs -->
+        <div class="col-12">
+            <div class="info-card">
+                <div class="info-card-header">
+                    <span class="info-icon icon-green"><i class="bi bi-bullseye"></i></span>{% trans "Goals and Expectations" %}
+                </div>
+                <div class="card-body p-4">
+                    <div class="data-row"><span class="data-label">{% trans "Main expectations" %}</span><span class="data-value">{{ profile.main_expectations|default:"-" }}</span></div>
+                    <div class="data-row"><span class="data-label">{% trans "Timeframe to reach goals" %}</span><span class="data-value">{{ profile.goal_timeframe|default:"-" }}</span></div>
+                    <div class="data-row">
+                        <span class="data-label">{% trans "Motivation level (0-10)" %}</span>
+                        <span class="data-value">
+                            {% if profile.motivation_level is not None %}
+                                <span class="badge" style="background: var(--nutri-green);">{{ profile.motivation_level }}/10</span>
+                            {% else %}-{% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="text-end mt-4">
+    <div class="d-flex gap-2 justify-content-end mt-4 flex-wrap">
+        <a href="{% url 'export_bilan_pdf' user.id %}" class="btn btn-nutri-outline px-4 py-2">
+            <i class="bi bi-file-earmark-pdf me-2"></i>{% trans "Download my assessment" %}
+        </a>
+        <a href="{% url 'bilan' %}" class="btn btn-nutri-outline px-4 py-2">
+            <i class="bi bi-clipboard2-heart me-2"></i>{% trans "My assessment form" %}
+        </a>
         <a href="{% url 'patient_profile_update' %}" class="btn btn-nutri px-4 py-2">
             <i class="bi bi-pencil-square me-2"></i>{% trans "Update my profile" %}
         </a>

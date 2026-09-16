@@ -23,6 +23,44 @@
         <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
     </head>
     <body class="d-flex flex-column h-100">
+
+        <!-- ===== NOTIFICATIONS GLOBALES ===== -->
+        {% if messages %}
+        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1090;">
+            {% for message in messages %}
+            <div class="toast align-items-center border-0 shadow-lg show nutri-toast nutri-toast-{{ message.tags }}"
+                 role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+                <div class="d-flex">
+                    <div class="toast-body d-flex align-items-center gap-2">
+                        {% if message.tags == 'success' %}<i class="bi bi-check-circle-fill"></i>
+                        {% elif message.tags == 'error' %}<i class="bi bi-x-circle-fill"></i>
+                        {% elif message.tags == 'warning' %}<i class="bi bi-exclamation-triangle-fill"></i>
+                        {% else %}<i class="bi bi-info-circle-fill"></i>{% endif %}
+                        <span>{{ message }}</span>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <style>
+            .nutri-toast { color:#fff; border-radius:14px; margin-bottom:.6rem; }
+            .nutri-toast .toast-body { font-weight:600; font-size:.92rem; }
+            .nutri-toast-success { background:#5a8f3d; }
+            .nutri-toast-error   { background:#d62828; }
+            .nutri-toast-warning { background:#f4a020; }
+            .nutri-toast-info,
+            .nutri-toast-debug   { background:#2f5e2f; }
+        </style>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.nutri-toast').forEach(function (el) {
+                    try { new bootstrap.Toast(el, { delay: 5000 }).show(); } catch (e) {}
+                });
+            });
+        </script>
+        {% endif %}
+
         <main class="flex-shrink-0">
             {% block navbar %}{% endblock %}
             {% block content %}{% endblock %}

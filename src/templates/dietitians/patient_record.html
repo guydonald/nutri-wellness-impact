@@ -1,136 +1,177 @@
 {% extends "bases.html" %}
-{% load allauth i18n %}
+{% load i18n %}
 {% block content %}
 
 <style>
     :root { --nutri-green:#5a8f3d; --nutri-green-dark:#2f5e2f; --nutri-green-light:#eaf3e3; --nutri-red:#d62828; --nutri-orange:#f4a020; }
-    .record-title { color: var(--nutri-green-dark); font-weight: 800; }
-    .btn-nutri { background:var(--nutri-green); color:#fff; border:none; border-radius:50px; font-weight:700; transition:all .25s ease; box-shadow:0 4px 14px rgba(90,143,61,.25); }
+    .record-title { color:var(--nutri-green-dark); font-weight:800; }
+    .btn-nutri { background:var(--nutri-green); color:#fff; border:none; border-radius:50px; font-weight:700;
+                 transition:all .25s ease; box-shadow:0 4px 14px rgba(90,143,61,.25); }
     .btn-nutri:hover { background:var(--nutri-green-dark); color:#fff; transform:translateY(-2px); }
+    .btn-nutri-outline { background:transparent; color:var(--nutri-green-dark); border:2px solid var(--nutri-green);
+                         border-radius:50px; font-weight:700; transition:all .2s ease; }
+    .btn-nutri-outline:hover { background:var(--nutri-green); color:#fff; }
     .record-card { border-radius:22px; border:1px solid #eef2ec; }
     .card-head-soft { background:#fff; border-bottom:1px solid #f0f4ee; border-radius:22px 22px 0 0; }
     .section-label { color:var(--nutri-green-dark); font-weight:700; letter-spacing:.5px; }
-    .nav-pills-nutri { background:var(--nutri-green-light); padding:5px; border-radius:50px; display:inline-flex; }
-    .nav-pills-nutri .nav-link { color:var(--nutri-green-dark); font-weight:600; border-radius:50px; }
+
+    .nav-pills-nutri { background:var(--nutri-green-light); padding:5px; border-radius:50px; display:inline-flex; flex-wrap:nowrap; }
+    .nav-pills-nutri .nav-link { color:var(--nutri-green-dark); font-weight:600; border-radius:50px; white-space:nowrap; }
     .nav-pills-nutri .nav-link.active { background:var(--nutri-green); color:#fff; box-shadow:0 4px 12px rgba(90,143,61,.3); }
+
     .consult-card { border-radius:18px; border:1px solid #eef2ec; border-left:4px solid var(--nutri-green); }
-    .bg-soft-green { background-color: rgba(90,143,61,.10); }
-    .bg-danger-subtle2 { background-color: rgba(220,53,69,.1); }
+    .bg-soft-green { background-color:rgba(90,143,61,.10); }
+    .bg-soft-red { background-color:rgba(220,53,69,.1); }
+
     .page-link { border:none; color:var(--nutri-green-dark); font-weight:bold; }
     .pagination .active .page-link { background:var(--nutri-green); border-color:var(--nutri-green); color:#fff; }
-    .accordion-button:not(.collapsed) { background:var(--nutri-green-light); color:var(--nutri-green-dark); }
+    .accordion-button:not(.collapsed) { background:var(--nutri-green-light); color:var(--nutri-green-dark); box-shadow:none; }
     .accordion-button:focus { box-shadow:0 0 0 .2rem rgba(90,143,61,.2); }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 767.98px) {
+        .record-title { font-size:1.15rem; }
+        .nav-pills-nutri { width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+        .nav-pills-nutri .nav-link { font-size:.82rem; padding:.45rem .9rem; }
+        .consult-card .border-start { border-left:none !important; border-top:1px solid #eef2ec; padding-top:1rem; margin-top:1rem; }
+        .card-body { padding:1rem !important; }
+        .top-actions { width:100%; }
+        .top-actions .btn { flex:1 1 auto; font-size:.82rem; }
+        /* tableau en cartes empilees */
+        .mobile-cards thead { display:none; }
+        .mobile-cards tbody tr { display:block; border:1px solid #eef2ec; border-radius:14px; margin-bottom:.8rem; padding:.7rem; }
+        .mobile-cards tbody td { display:flex; justify-content:space-between; align-items:center;
+                                  border:none !important; padding:.35rem 0 !important; text-align:right; }
+        .mobile-cards tbody td::before { content:attr(data-label); color:#7a8a72; font-size:.78rem;
+                                          font-weight:600; text-align:left; margin-right:1rem; flex-shrink:0; }
+        .mobile-cards tbody td:last-child { justify-content:flex-end; padding-top:.6rem !important; border-top:1px dashed #eef2ec !important; }
+        .mobile-cards tbody td:last-child::before { display:none; }
+    }
 </style>
 
-<div class="container py-5">
+<div class="container py-4 py-md-5">
+
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <h2 class="h3 mb-0 record-title">
-            <i class="bi bi-folder2-open me-2"></i>{% trans "Medical File" %}: {{ patient.get_full_name|default:patient.username }}
+            <i class="bi bi-folder2-open me-2"></i>{% trans "Medical File" %}: {{ patient.get_full_name|default:patient.email }}
         </h2>
-        <div class="d-flex gap-2">
-            <a href="{% url 'manage_meal_plan' patient.id %}" class="btn btn-sm btn-nutri shadow-sm px-3">
-                <i class="bi bi-calendar-check me-1"></i>{% trans "Define the Meal Plan" %}
+        <div class="d-flex gap-2 flex-wrap top-actions">
+            <a href="{% url 'manage_meal_plan' patient.id %}" class="btn btn-nutri px-3 py-2">
+                <i class="bi bi-calendar-check me-1"></i><span class="d-none d-sm-inline">{% trans "Define the Meal Plan" %}</span><span class="d-sm-none">{% trans "Plan" %}</span>
             </a>
-            <a href="{% url 'dietitian_dashboard' %}" class="btn btn-sm btn-outline-secondary shadow-sm rounded-pill px-3">
-                <i class="bi bi-arrow-left me-1"></i>{% trans "Patient List" %}
+            <a href="{% url 'bilan_patient' patient.id %}" class="btn btn-nutri-outline px-3 py-2">
+                <i class="bi bi-clipboard2-heart me-1"></i><span class="d-none d-sm-inline">{% trans "Assessment form" %}</span>
+            </a>
+            <div class="btn-group">
+                <button type="button" class="btn btn-nutri-outline px-3 py-2 dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                    <li><a class="dropdown-item" href="{% url 'export_bilan_pdf' patient.id %}"><i class="bi bi-clipboard2-heart me-2"></i>{% trans "Assessment form" %}</a></li>
+                    <li><a class="dropdown-item" href="{% url 'export_suivi_pdf' patient.id %}"><i class="bi bi-graph-up me-2"></i>{% trans "Follow-up sheet" %}</a></li>
+                    <li><a class="dropdown-item" href="{% url 'export_plan_pdf' patient.id %}"><i class="bi bi-calendar-check me-2"></i>{% trans "Meal plan" %}</a></li>
+                </ul>
+            </div>
+            <a href="{% url 'dietitian_dashboard' %}" class="btn btn-nutri-outline px-3 py-2">
+                <i class="bi bi-arrow-left me-1"></i><span class="d-none d-sm-inline">{% trans "Patient List" %}</span>
             </a>
         </div>
     </div>
 
-    <!-- Graphique poids -->
+    <!-- GRAPHIQUE -->
     <div class="card record-card shadow-sm mb-4">
         <div class="card-head-soft py-3 px-4">
             <h6 class="m-0 section-label text-uppercase small"><i class="bi bi-graph-up me-2"></i>{% trans "Weight Evolution" %}</h6>
         </div>
-        <div class="card-body"><div style="height:250px;"><canvas id="weightChart"></canvas></div></div>
+        <div class="card-body"><div style="height:240px;"><canvas id="weightChart"></canvas></div></div>
     </div>
 
-    <!-- Onglets -->
-    <ul class="nav nav-pills-nutri mb-4 shadow-sm" id="recordTabs" role="tablist">
-        <li class="nav-item" role="presentation"><button class="nav-link active px-4" id="medical-tab" data-bs-toggle="tab" data-bs-target="#medical"><i class="bi bi-clipboard2-pulse me-2"></i>{% trans "Consultations" %}</button></li>
-        <li class="nav-item" role="presentation"><button class="nav-link px-4" id="diary-tab" data-bs-toggle="tab" data-bs-target="#diary"><i class="bi bi-egg-fried me-2"></i>{% trans "Food Journal" %}</button></li>
-        <li class="nav-item" role="presentation"><button class="nav-link px-4" id="plan-tab" data-bs-toggle="tab" data-bs-target="#plan"><i class="bi bi-card-checklist me-2"></i>{% trans "Food Plan" %}</button></li>
-    </ul>
+    <!-- ONGLETS -->
+    <div class="mb-4" style="overflow-x:auto;">
+        <ul class="nav nav-pills-nutri shadow-sm" id="recordTabs" role="tablist">
+            <li class="nav-item"><button class="nav-link active px-3 px-md-4" id="medical-tab" data-bs-toggle="tab" data-bs-target="#medical"><i class="bi bi-clipboard2-pulse me-1"></i>{% trans "Consultations" %}</button></li>
+            <li class="nav-item"><button class="nav-link px-3 px-md-4" id="diary-tab" data-bs-toggle="tab" data-bs-target="#diary"><i class="bi bi-egg-fried me-1"></i>{% trans "Food Journal" %}</button></li>
+            <li class="nav-item"><button class="nav-link px-3 px-md-4" id="plan-tab" data-bs-toggle="tab" data-bs-target="#plan"><i class="bi bi-card-checklist me-1"></i>{% trans "Food Plan" %}</button></li>
+        </ul>
+    </div>
 
     <div class="tab-content" id="recordTabsContent">
 
-        <!-- CONSULTATIONS -->
+        <!-- ===== CONSULTATIONS ===== -->
         <div class="tab-pane fade show active" id="medical">
             {% for consult in history %}
-            <div class="card consult-card mb-4 shadow-sm">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center py-3" style="border-radius:18px 18px 0 0;">
-                    <span class="fw-bold text-dark">
+            <div class="card consult-card mb-3 shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center py-3 flex-wrap gap-2" style="border-radius:18px 18px 0 0;">
+                    <span class="fw-bold text-dark small">
                         <i class="bi bi-calendar-event me-2" style="color:var(--nutri-green);"></i>{% trans "Consultation of" %} {{ consult.date_consultation|date:"d F Y" }}
                     </span>
-                    <span class="badge bg-soft-green px-3 py-2 rounded-pill" style="color:var(--nutri-green-dark);">
-                        <i class="bi bi-person-badge me-1"></i>{% trans "Followed by" %} {{ consult.dietitian.get_full_name }}
-                        <button type="button" class="btn btn-sm ms-2 p-0" style="color:var(--nutri-green-dark);"
+                    <span class="d-flex align-items-center gap-1">
+                        <span class="badge bg-soft-green px-3 py-2 rounded-pill" style="color:var(--nutri-green-dark);">
+                            <i class="bi bi-person-badge me-1"></i>{{ consult.dietitian.get_full_name|default:consult.dietitian.email }}
+                        </span>
+                        <button type="button" class="btn btn-sm border-0" style="color:var(--nutri-green-dark);"
                                 data-bs-toggle="modal" data-bs-target="#editConsultModal"
-                                data-id="{{ consult.id }}" data-weight="{{ consult.weight }}" data-pressure="{{ consult.blood_pressure }}"
-                                data-hba1c="{{ consult.hba1c }}" data-chol="{{ consult.total_cholesterol }}"
+                                data-id="{{ consult.id }}" data-weight="{{ consult.weight|default:'' }}"
+                                data-pressure="{{ consult.blood_pressure }}" data-hba1c="{{ consult.hba1c|default:'' }}"
+                                data-chol="{{ consult.total_cholesterol|default:'' }}"
                                 data-diagnosis="{{ consult.nutritional_diagnosis }}" data-plan="{{ consult.intervention_plan }}">
                             <i class="bi bi-pencil"></i>
                         </button>
-                        <a href="{% url 'delete_consultation' consult.id %}" class="btn btn-sm ms-1 p-0 text-danger" data-bs-toggle="modal" data-bs-target="#deleteConsultModal" data-url="{% url 'delete_consultation' consult.id %}">
+                        <button type="button" class="btn btn-sm border-0 text-danger"
+                                data-bs-toggle="modal" data-bs-target="#deleteConsultModal"
+                                data-url="{% url 'delete_consultation' consult.id %}">
                             <i class="bi bi-trash"></i>
-                        </a>
+                        </button>
                     </span>
                 </div>
                 <div class="card-body bg-white">
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-md-5 mb-3 mb-md-0">
                             <h6 class="text-uppercase small fw-bold text-muted mb-3 border-bottom pb-2">{% trans "Clinical Assessment" %}</h6>
                             <div class="row g-3">
-                                <div class="col-6"><small class="text-muted d-block">{% trans "Blood pressure" %}</small><span class="fw-bold"><i class="bi bi-heart-pulse text-danger me-1"></i>{{ consult.blood_pressure|default:"--" }}</span></div>
-                                <div class="col-6"><small class="text-muted d-block">{% trans "Weight" %}</small><span class="fw-bold"><i class="bi bi-speedometer2 me-1" style="color:var(--nutri-green);"></i>{{ consult.weight }} kg</span></div>
+                                <div class="col-6"><small class="text-muted d-block">{% trans "Weight" %}</small><span class="fw-bold">{{ consult.weight|default:"--" }} kg</span></div>
+                                <div class="col-6"><small class="text-muted d-block">{% trans "Blood pressure" %}</small><span class="fw-bold">{{ consult.blood_pressure|default:"--" }}</span></div>
                                 <div class="col-6"><small class="text-muted d-block">{% trans "BMI" %}</small>
-                                    {% if consult.bmi %}<span class="badge bg-{{ consult.bmi_status.color }}">{{ consult.bmi }} - {{ consult.bmi_status.label }}</span>
-                                    {% else %}<span class="text-muted small fst-italic">{% trans "Missing height" %}</span>{% endif %}
+                                    {% if consult.bmi %}<span class="badge bg-{{ consult.bmi_status.color }}">{{ consult.bmi }}</span>{% else %}<span class="text-muted small">--</span>{% endif %}
                                 </div>
-                                <div class="col-6"><small class="text-muted d-block">{% trans "HbA1c" %}</small><span class="fw-bold">{{ consult.hba1c|default:"--" }} %</span></div>
-                                <div class="col-6"><small class="text-muted d-block">{% trans "Cholesterol" %}</small><span class="fw-bold text-truncate d-inline-block" style="max-width:100%;">{{ consult.total_cholesterol|default:"--" }}</span></div>
+                                <div class="col-6"><small class="text-muted d-block">{% trans "Heart rate" %}</small><span class="fw-bold">{{ consult.heart_rate|default:"--" }}</span></div>
                             </div>
                         </div>
                         <div class="col-md-7 border-start">
                             <h6 class="text-uppercase small fw-bold text-muted mb-3 border-bottom pb-2">{% trans "Analysis & Prescription" %}</h6>
-                            <div class="mb-3"><label class="small fw-bold" style="color:var(--nutri-green-dark);">{% trans "Diagnosis (PES):" %}</label><p class="mb-2 text-dark fs-6">{{ consult.nutritional_diagnosis|linebreaksbr }}</p></div>
-                            <div><label class="small fw-bold" style="color:var(--nutri-green);">{% trans "Intervention plan:" %}</label><p class="mb-0 text-dark small">{{ consult.intervention_plan|truncatewords:50 }}</p></div>
+                            <label class="small fw-bold" style="color:var(--nutri-green-dark);">{% trans "Diagnosis (PES):" %}</label>
+                            <p class="mb-2 text-dark small">{{ consult.nutritional_diagnosis|linebreaksbr|default:"--" }}</p>
+                            <label class="small fw-bold" style="color:var(--nutri-green);">{% trans "Intervention plan:" %}</label>
+                            <p class="mb-0 text-dark small">{{ consult.intervention_plan|truncatewords:40|default:"--" }}</p>
                         </div>
                     </div>
                 </div>
             </div>
             {% empty %}
-            <div class="text-center py-5 shadow-sm rounded-4 bg-light border"><i class="bi bi-clipboard2-x fs-1 text-muted mb-3 d-block"></i><p class="text-muted">{% trans "No consultation recorded." %}</p></div>
+            <div class="text-center py-5 shadow-sm rounded-4 bg-light border">
+                <i class="bi bi-clipboard2-x fs-1 text-muted mb-3 d-block"></i>
+                <p class="text-muted mb-0">{% trans "No consultation recorded." %}</p>
+            </div>
             {% endfor %}
 
             {% if history.paginator.num_pages > 1 %}
-            <nav aria-label="Pagination Consultations" class="mt-4">
-                <ul class="pagination justify-content-center shadow-sm">
-                    {% if history.has_previous %}
-                        <li class="page-item"><a class="page-link" href="?page_h=1&page_f={{ food_log.number }}"><i class="bi bi-chevron-double-left"></i> <span class="d-none d-sm-inline">{% trans "Beginning" %}</span></a></li>
-                        <li class="page-item"><a class="page-link" href="?page_h={{ history.previous_page_number }}&page_f={{ food_log.number }}"><span class="d-none d-sm-inline">{% trans "Previous" %}</span></a></li>
-                    {% else %}
-                        <li class="page-item disabled"><span class="page-link text-muted"><i class="bi bi-chevron-double-left"></i></span></li>
-                        <li class="page-item disabled"><span class="page-link text-muted">{% trans "Previous" %}</span></li>
-                    {% endif %}
-                    <li class="page-item active"><span class="page-link px-4 fw-bold">{% trans "Page" %} {{ history.number }} / {{ history.paginator.num_pages }}</span></li>
-                    {% if history.has_next %}
-                        <li class="page-item"><a class="page-link" href="?page_h={{ history.next_page_number }}&page_f={{ food_log.number }}"><span class="d-none d-sm-inline">{% trans "Next" %}</span></a></li>
-                        <li class="page-item"><a class="page-link" href="?page_h={{ history.paginator.num_pages }}&page_f={{ food_log.number }}"><span class="d-none d-sm-inline">{% trans "End" %}</span> <i class="bi bi-chevron-double-right"></i></a></li>
-                    {% else %}
-                        <li class="page-item disabled"><span class="page-link text-muted">{% trans "Next" %}</span></li>
-                        <li class="page-item disabled"><span class="page-link text-muted"><i class="bi bi-chevron-double-right"></i></span></li>
-                    {% endif %}
-                </ul>
-            </nav>
+            <nav class="mt-4"><ul class="pagination pagination-sm justify-content-center shadow-sm flex-wrap">
+                {% if history.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page_h={{ history.previous_page_number }}&page_f={{ food_log.number }}">{% trans "Previous" %}</a></li>
+                {% else %}<li class="page-item disabled"><span class="page-link text-muted">{% trans "Previous" %}</span></li>{% endif %}
+                <li class="page-item active"><span class="page-link px-3">{{ history.number }} / {{ history.paginator.num_pages }}</span></li>
+                {% if history.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page_h={{ history.next_page_number }}&page_f={{ food_log.number }}">{% trans "Next" %}</a></li>
+                {% else %}<li class="page-item disabled"><span class="page-link text-muted">{% trans "Next" %}</span></li>{% endif %}
+            </ul></nav>
             {% endif %}
         </div>
 
-        <!-- JOURNAL -->
+        <!-- ===== JOURNAL ===== -->
         <div class="tab-pane fade" id="diary">
             <div class="card record-card shadow-sm border-0" style="overflow:hidden;">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
+                    <table class="table table-hover align-middle mb-0 mobile-cards">
                         <thead class="bg-soft-green">
                             <tr>
                                 <th class="border-0 px-4">{% trans "Date" %}</th>
@@ -142,12 +183,12 @@
                         <tbody>
                             {% for entry in food_log %}
                             <tr>
-                                <td class="px-4 fw-bold text-muted small">{{ entry.date|date:"d/m/Y" }}</td>
-                                <td><span class="badge rounded-pill bg-soft-green px-3" style="color:var(--nutri-green-dark);">{{ entry.get_meal_time_display }}</span></td>
-                                <td class="text-dark">{{ entry.description }}</td>
-                                <td class="text-center">
-                                    {% if entry.beverage %}<span class="badge bg-danger-subtle2 text-danger rounded-circle p-2"><i class="bi bi-check-lg"></i></span>
-                                    {% else %}<span class="badge bg-light text-muted rounded-circle p-2"><i class="bi bi-x-lg"></i></span>{% endif %}
+                                <td class="px-4 fw-bold text-muted small" data-label="{% trans 'Date' %}">{{ entry.date|date:"d/m/Y" }}</td>
+                                <td data-label="{% trans 'Moment' %}"><span class="badge rounded-pill bg-soft-green px-3" style="color:var(--nutri-green-dark);">{{ entry.get_meal_time_display }}</span></td>
+                                <td class="text-dark" data-label="{% trans 'Description' %}">{{ entry.description }}</td>
+                                <td class="text-center" data-label="{% trans 'Sugary Drink' %}">
+                                    {% if entry.beverage %}<span class="badge bg-soft-red text-danger rounded-pill px-3"><i class="bi bi-check-lg"></i></span>
+                                    {% else %}<span class="badge bg-light text-muted rounded-pill px-3"><i class="bi bi-x-lg"></i></span>{% endif %}
                                 </td>
                             </tr>
                             {% empty %}
@@ -159,43 +200,29 @@
             </div>
 
             {% if food_log.paginator.num_pages > 1 %}
-            <nav aria-label="Pagination Journal" class="mt-4">
-                <ul class="pagination justify-content-center shadow-sm">
-                    {% if food_log.has_previous %}
-                        <li class="page-item"><a class="page-link" href="?page_f=1&page_h={{ history.number }}"><i class="bi bi-chevron-double-left"></i> <span class="d-none d-sm-inline">{% trans "Beginning" %}</span></a></li>
-                        <li class="page-item"><a class="page-link" href="?page_f={{ food_log.previous_page_number }}&page_h={{ history.number }}"><span class="d-none d-sm-inline">{% trans "Previous" %}</span></a></li>
-                    {% else %}
-                        <li class="page-item disabled"><span class="page-link text-muted"><i class="bi bi-chevron-double-left"></i></span></li>
-                        <li class="page-item disabled"><span class="page-link text-muted">{% trans "Previous" %}</span></li>
-                    {% endif %}
-                    <li class="page-item active"><span class="page-link px-4 fw-bold">{% trans "Page" %} {{ food_log.number }} / {{ food_log.paginator.num_pages }}</span></li>
-                    {% if food_log.has_next %}
-                        <li class="page-item"><a class="page-link" href="?page_f={{ food_log.next_page_number }}&page_h={{ history.number }}"><span class="d-none d-sm-inline">{% trans "Next" %}</span></a></li>
-                        <li class="page-item"><a class="page-link" href="?page_f={{ food_log.paginator.num_pages }}&page_h={{ history.number }}"><span class="d-none d-sm-inline">{% trans "End" %}</span> <i class="bi bi-chevron-double-right"></i></a></li>
-                    {% else %}
-                        <li class="page-item disabled"><span class="page-link text-muted">{% trans "Next" %}</span></li>
-                        <li class="page-item disabled"><span class="page-link text-muted"><i class="bi bi-chevron-double-right"></i></span></li>
-                    {% endif %}
-                </ul>
-            </nav>
+            <nav class="mt-4"><ul class="pagination pagination-sm justify-content-center shadow-sm flex-wrap">
+                {% if food_log.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page_f={{ food_log.previous_page_number }}&page_h={{ history.number }}">{% trans "Previous" %}</a></li>
+                {% else %}<li class="page-item disabled"><span class="page-link text-muted">{% trans "Previous" %}</span></li>{% endif %}
+                <li class="page-item active"><span class="page-link px-3">{{ food_log.number }} / {{ food_log.paginator.num_pages }}</span></li>
+                {% if food_log.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page_f={{ food_log.next_page_number }}&page_h={{ history.number }}">{% trans "Next" %}</a></li>
+                {% else %}<li class="page-item disabled"><span class="page-link text-muted">{% trans "Next" %}</span></li>{% endif %}
+            </ul></nav>
             {% endif %}
         </div>
 
-        <!-- PLAN -->
+        <!-- ===== PLAN ===== -->
         <div class="tab-pane fade" id="plan">
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
                 <h4 class="record-title mb-0"><i class="bi bi-card-checklist me-2"></i>{% trans "Weekly Schedule" %}</h4>
-                {% if user.role == 'dietitian' %}
-                    <a href="{% url 'manage_meal_plan' patient.id %}" class="btn btn-nutri btn-sm px-3"><i class="bi bi-pencil me-1"></i>{% trans "Edit plan" %}</a>
-                {% endif %}
+                <a href="{% url 'manage_meal_plan' patient.id %}" class="btn btn-nutri btn-sm px-3"><i class="bi bi-pencil me-1"></i>{% trans "Edit plan" %}</a>
             </div>
-
             {% if meal_plans %}
-            <p class="text-muted small mb-4"><i class="bi bi-arrow-repeat me-1"></i>{% trans "Last updated on" %}: {{ meal_plans.0.updated_at|date:"d/m/Y H:i" }}</p>
             <div class="accordion shadow-sm" id="accordionMealPlan">
                 {% for plan in meal_plans %}
                 <div class="accordion-item border-0 mb-2 shadow-sm" style="border-radius:14px; overflow:hidden;">
-                    <h2 class="accordion-header" id="heading{{ plan.day }}">
+                    <h2 class="accordion-header">
                         <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ plan.day }}">
                             <i class="bi bi-calendar-check me-3"></i>{{ plan.get_day_display }}
                         </button>
@@ -203,9 +230,27 @@
                     <div id="collapse{{ plan.day }}" class="accordion-collapse collapse" data-bs-parent="#accordionMealPlan">
                         <div class="accordion-body bg-light">
                             <div class="row g-3">
-                                <div class="col-md-4"><div class="p-3 bg-white rounded-3 shadow-sm h-100"><label class="small text-muted text-uppercase fw-bold">{% trans "Morning" %}</label><p class="mt-2 mb-1"><strong>{% trans "Breakfast:" %}</strong> {{ plan.breakfast|linebreaksbr|default:"-" }}</p><p class="mb-0" style="color:var(--nutri-green);"><strong>{% trans "Snack:" %}</strong> {{ plan.morning_snack|default:"-" }}</p></div></div>
-                                <div class="col-md-4"><div class="p-3 bg-white rounded-3 shadow-sm h-100"><label class="small text-muted text-uppercase fw-bold">{% trans "Noon" %}</label><p class="mt-2 mb-1"><strong>{% trans "Lunch:" %}</strong> {{ plan.lunch|linebreaksbr|default:"-" }}</p><p class="mb-0" style="color:var(--nutri-green);"><strong>{% trans "Snack:" %}</strong> {{ plan.afternoon_snack|default:"-" }}</p></div></div>
-                                <div class="col-md-4"><div class="p-3 bg-white rounded-3 shadow-sm h-100"><label class="small text-muted text-uppercase fw-bold">{% trans "Evening" %}</label><p class="mt-2 mb-1"><strong>{% trans "Dinner:" %}</strong> {{ plan.dinner|linebreaksbr|default:"-" }}</p><p class="mb-0" style="color:var(--nutri-green);"><strong>{% trans "Snack:" %}</strong> {{ plan.evening_snack|default:"-" }}</p></div></div>
+                                <div class="col-md-4">
+                                    <div class="p-3 bg-white rounded-3 shadow-sm h-100">
+                                        <label class="small text-muted text-uppercase fw-bold">{% trans "Morning" %}</label>
+                                        <p class="mt-2 mb-1 small"><strong>{% trans "Breakfast:" %}</strong> {{ plan.breakfast|linebreaksbr|default:"-" }}</p>
+                                        <p class="mb-0 small" style="color:var(--nutri-green);"><strong>{% trans "Snack:" %}</strong> {{ plan.morning_snack|default:"-" }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="p-3 bg-white rounded-3 shadow-sm h-100">
+                                        <label class="small text-muted text-uppercase fw-bold">{% trans "Noon" %}</label>
+                                        <p class="mt-2 mb-1 small"><strong>{% trans "Lunch:" %}</strong> {{ plan.lunch|linebreaksbr|default:"-" }}</p>
+                                        <p class="mb-0 small" style="color:var(--nutri-green);"><strong>{% trans "Snack:" %}</strong> {{ plan.afternoon_snack|default:"-" }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="p-3 bg-white rounded-3 shadow-sm h-100">
+                                        <label class="small text-muted text-uppercase fw-bold">{% trans "Evening" %}</label>
+                                        <p class="mt-2 mb-1 small"><strong>{% trans "Dinner:" %}</strong> {{ plan.dinner|linebreaksbr|default:"-" }}</p>
+                                        <p class="mb-0 small" style="color:var(--nutri-green);"><strong>{% trans "Snack:" %}</strong> {{ plan.evening_snack|default:"-" }}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -213,75 +258,80 @@
                 {% endfor %}
             </div>
             {% else %}
-            <div class="text-center py-5 bg-light rounded-4 shadow-sm"><i class="bi bi-card-list fs-1 text-muted mb-3 d-block"></i><p class="text-muted">{% trans "No meal plan has been defined yet." %}</p></div>
+            <div class="text-center py-5 bg-light rounded-4 shadow-sm">
+                <i class="bi bi-card-list fs-1 text-muted mb-3 d-block"></i>
+                <p class="text-muted mb-0">{% trans "No meal plan has been defined yet." %}</p>
+            </div>
             {% endif %}
         </div>
     </div>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const ctx = document.getElementById('weightChart').getContext('2d');
-        new Chart(ctx, {
+document.addEventListener('DOMContentLoaded', function () {
+    // --- Graphique ---
+    var el = document.getElementById('weightChart');
+    if (el) {
+        new Chart(el.getContext('2d'), {
             type: 'line',
             data: {
                 labels: [{% for c in chart_history %}"{{ c.date_consultation|date:'d/m/y' }}",{% endfor %}],
                 datasets: [{
                     label: '{% trans "Weight (kg)" %}',
                     data: [{% for c in chart_history %}{{ c.weight|default:0 }},{% endfor %}],
-                    borderColor: '#5a8f3d',
-                    backgroundColor: 'rgba(90, 143, 61, 0.08)',
-                    borderWidth: 3, pointBackgroundColor: '#5a8f3d', pointRadius: 4, tension: 0.4, fill: true
+                    borderColor: '#5a8f3d', backgroundColor: 'rgba(90,143,61,0.08)',
+                    borderWidth: 3, pointBackgroundColor: '#5a8f3d', pointRadius: 4,
+                    tension: 0.4, fill: true
                 }]
             },
-            options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: false, grid: { drawBorder: false } }, x: { grid: { display: false } } } }
-        });
-
-        const triggerTabList = [].slice.call(document.querySelectorAll('#recordTabs button'))
-        triggerTabList.forEach(function (triggerEl) {
-            triggerEl.addEventListener('click', function (event) { localStorage.setItem('activeTab', event.target.id) })
-        })
-        const activeTabId = localStorage.getItem('activeTab')
-        if (activeTabId) {
-            const tabEl = document.querySelector('#' + activeTabId)
-            if (tabEl) { bootstrap.Tab.getInstance(tabEl)?.show() || new bootstrap.Tab(tabEl).show() }
-        }
-
-        const editConsultModal = document.getElementById('editConsultModal');
-        editConsultModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            document.getElementById('editConsultForm').action = `/edit-consultation/${button.getAttribute('data-id')}/`;
-            document.getElementById('edit_weight').value = button.getAttribute('data-weight');
-            document.getElementById('edit_pressure').value = button.getAttribute('data-pressure');
-            document.getElementById('edit_hba1c').value = button.getAttribute('data-hba1c');
-            document.getElementById('edit_chol').value = button.getAttribute('data-chol');
-            document.getElementById('edit_diagnosis').value = button.getAttribute('data-diagnosis');
-            document.getElementById('edit_plan').value = button.getAttribute('data-plan');
-        });
-
-        const deleteModal = document.getElementById('deleteConsultModal');
-        deleteModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            const deleteUrl = button.getAttribute('data-url');
-            deleteModal.querySelector('#confirmDeleteBtn').setAttribute('href', deleteUrl);
-        });
-
-        const patientHeight = {{ patient.height|default:0 }};
-        document.getElementById('edit_weight').addEventListener('input', function(e) {
-            const weight = e.target.value;
-            if (patientHeight > 0 && weight > 0) {
-                const bmi = (weight / (patientHeight * patientHeight)).toFixed(1);
-                console.log("IMC calcule : " + bmi);
+            options: {
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: false }, x: { grid: { display: false } } }
             }
         });
+    }
+
+    // --- Persistance des onglets ---
+    document.querySelectorAll('#recordTabs button').forEach(function (b) {
+        b.addEventListener('click', function (e) { localStorage.setItem('activeTab', e.target.id); });
     });
+    var actif = localStorage.getItem('activeTab');
+    if (actif) {
+        var t = document.querySelector('#' + actif);
+        if (t) { new bootstrap.Tab(t).show(); }
+    }
+
+    // --- Modale edition consultation ---
+    var editModal = document.getElementById('editConsultModal');
+    if (editModal) {
+        editModal.addEventListener('show.bs.modal', function (event) {
+            var b = event.relatedTarget;
+            document.getElementById('editConsultForm').action = '/edit-consultation/' + b.getAttribute('data-id') + '/';
+            document.getElementById('edit_weight').value = b.getAttribute('data-weight') || '';
+            document.getElementById('edit_pressure').value = b.getAttribute('data-pressure') || '';
+            document.getElementById('edit_hba1c').value = b.getAttribute('data-hba1c') || '';
+            document.getElementById('edit_chol').value = b.getAttribute('data-chol') || '';
+            document.getElementById('edit_diagnosis').value = b.getAttribute('data-diagnosis') || '';
+            document.getElementById('edit_plan').value = b.getAttribute('data-plan') || '';
+        });
+    }
+
+    // --- Modale suppression consultation ---
+    var delModal = document.getElementById('deleteConsultModal');
+    if (delModal) {
+        delModal.addEventListener('show.bs.modal', function (event) {
+            document.getElementById('deleteConsultForm').action = event.relatedTarget.getAttribute('data-url');
+        });
+    }
+});
 </script>
 
-<!-- MODALE EDIT CONSULTATION -->
+<!-- ===== MODALE EDITION CONSULTATION ===== -->
 <div class="modal fade" id="editConsultModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 shadow" style="border-radius:20px; overflow:hidden;">
-            <div class="modal-header text-white" style="background: linear-gradient(135deg, #5a8f3d, #2f5e2f);">
+            <div class="modal-header text-white" style="background:linear-gradient(135deg,#5a8f3d,#2f5e2f);">
                 <h5 class="modal-title"><i class="bi bi-clipboard2-pulse me-2"></i>{% trans "Edit consultation" %}</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
@@ -289,12 +339,12 @@
                 {% csrf_token %}
                 <div class="modal-body p-4">
                     <div class="row g-3">
-                        <div class="col-md-3"><label class="form-label fw-bold small text-uppercase">{% trans "Weight (kg)" %}</label><input type="number" name="weight" id="edit_weight" step="0.1" class="form-control"></div>
-                        <div class="col-md-3"><label class="form-label fw-bold small text-uppercase">{% trans "Blood pressure" %}</label><input type="text" name="blood_pressure" id="edit_pressure" class="form-control"></div>
-                        <div class="col-md-3"><label class="form-label fw-bold small text-uppercase">{% trans "HbA1c (%)" %}</label><input type="number" name="hba1c" id="edit_hba1c" step="0.1" class="form-control"></div>
-                        <div class="col-md-3"><label class="form-label fw-bold small text-uppercase">{% trans "Cholesterol" %}</label><input type="text" name="total_cholesterol" id="edit_chol" class="form-control"></div>
-                        <div class="col-12"><label class="form-label fw-bold small text-uppercase">{% trans "Diagnosis (PES)" %}</label><textarea name="nutritional_diagnosis" id="edit_diagnosis" class="form-control" rows="3"></textarea></div>
-                        <div class="col-12"><label class="form-label fw-bold small text-uppercase">{% trans "Intervention plan" %}</label><textarea name="intervention_plan" id="edit_plan" class="form-control" rows="3"></textarea></div>
+                        <div class="col-6 col-md-3"><label class="form-label fw-bold small">{% trans "Weight (kg)" %}</label><input type="number" name="weight" id="edit_weight" step="0.1" class="form-control"></div>
+                        <div class="col-6 col-md-3"><label class="form-label fw-bold small">{% trans "Blood pressure" %}</label><input type="text" name="blood_pressure" id="edit_pressure" class="form-control"></div>
+                        <div class="col-6 col-md-3"><label class="form-label fw-bold small">{% trans "HbA1c (%)" %}</label><input type="number" name="hba1c" id="edit_hba1c" step="0.1" class="form-control"></div>
+                        <div class="col-6 col-md-3"><label class="form-label fw-bold small">{% trans "Cholesterol" %}</label><input type="text" name="total_cholesterol" id="edit_chol" class="form-control"></div>
+                        <div class="col-12"><label class="form-label fw-bold small">{% trans "Diagnosis (PES)" %}</label><textarea name="nutritional_diagnosis" id="edit_diagnosis" class="form-control" rows="3"></textarea></div>
+                        <div class="col-12"><label class="form-label fw-bold small">{% trans "Intervention plan" %}</label><textarea name="intervention_plan" id="edit_plan" class="form-control" rows="3"></textarea></div>
                     </div>
                 </div>
                 <div class="modal-footer bg-light border-0">
@@ -306,7 +356,7 @@
     </div>
 </div>
 
-<!-- MODALE DELETE CONSULTATION -->
+<!-- ===== MODALE SUPPRESSION CONSULTATION ===== -->
 <div class="modal fade" id="deleteConsultModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content border-0 shadow" style="border-radius:20px; overflow:hidden;">
@@ -315,12 +365,15 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body text-center py-4">
-                <p class="mb-0">{% trans "Do you really want to delete this consultation?" %}</p>
+                <p class="mb-1">{% trans "Do you really want to delete this consultation?" %}</p>
                 <small class="text-muted">{% trans "This action is irreversible" %}</small>
             </div>
             <div class="modal-footer border-0 d-flex justify-content-center pb-4">
                 <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
-                <a href="#" id="confirmDeleteBtn" class="btn btn-danger rounded-pill px-4">{% trans "Delete" %}</a>
+                <form id="deleteConsultForm" method="post" action="" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger rounded-pill px-4">{% trans "Delete" %}</button>
+                </form>
             </div>
         </div>
     </div>

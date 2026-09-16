@@ -1,0 +1,131 @@
+{% extends "bases.html" %}
+{% load crispy_forms_tags i18n %}
+
+{% block content %}
+<style>
+    :root { --nutri-green:#5a8f3d; --nutri-green-dark:#2f5e2f; --nutri-green-light:#eaf3e3; --nutri-orange:#f4a020; }
+    .bilan-head {
+        background: linear-gradient(135deg, var(--nutri-green), var(--nutri-green-dark));
+        color:#fff; border-radius: 26px; padding: 2rem 2.5rem; margin-bottom: 1.5rem;
+    }
+    .accordion-item { border:1px solid #eef2ec; border-radius:18px !important; overflow:hidden; margin-bottom:1rem; }
+    .accordion-button { font-weight:700; color: var(--nutri-green-dark); background:#fff; }
+    .accordion-button:not(.collapsed) { background: var(--nutri-green-light); color: var(--nutri-green-dark); box-shadow:none; }
+    .accordion-button:focus { box-shadow: 0 0 0 .2rem rgba(90,143,61,.2); }
+    .sec-num {
+        display:inline-flex; align-items:center; justify-content:center;
+        width:28px; height:28px; border-radius:50%;
+        background: var(--nutri-green); color:#fff; font-size:.8rem; margin-right:.8rem;
+    }
+    .btn-nutri { background:var(--nutri-green); color:#fff; border:none; border-radius:14px; font-weight:700; transition:all .25s ease; }
+    .btn-nutri:hover { background:var(--nutri-green-dark); color:#fff; transform:translateY(-2px); }
+    .progress-hint { font-size:.85rem; opacity:.85; }
+    .form-label { font-weight:600; font-size:.9rem; }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <div class="bilan-head">
+                <h2 class="fw-bolder mb-1"><i class="bi bi-clipboard2-heart me-2"></i>{% trans "Dietetic Consultation Form" %}</h2>
+                <p class="mb-0 progress-hint">{% trans "Fill in what you can. Nothing is mandatory except the basics — your dietitian will complete the rest." %}</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="accordion" id="bilanAccordion">
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#sec1">
+                                <span class="sec-num">1</span>{% trans "Personal Information & Reason" %}
+                            </button>
+                        </h2>
+                        <div id="sec1" class="accordion-collapse collapse show" data-bs-parent="#bilanAccordion">
+                            <div class="accordion-body">{{ form1|crispy }}</div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sec2">
+                                <span class="sec-num">2</span>{% trans "Medical History" %}
+                            </button>
+                        </h2>
+                        <div id="sec2" class="accordion-collapse collapse" data-bs-parent="#bilanAccordion">
+                            <div class="accordion-body">{{ form2|crispy }}</div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sec3">
+                                <span class="sec-num">3</span>{% trans "Lifestyle" %}
+                            </button>
+                        </h2>
+                        <div id="sec3" class="accordion-collapse collapse" data-bs-parent="#bilanAccordion">
+                            <div class="accordion-body">{{ form3|crispy }}</div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sec4">
+                                <span class="sec-num">4</span>{% trans "Anthropometric Data" %}
+                            </button>
+                        </h2>
+                        <div id="sec4" class="accordion-collapse collapse" data-bs-parent="#bilanAccordion">
+                            <div class="accordion-body">{{ form4|crispy }}</div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sec5">
+                                <span class="sec-num">5</span>{% trans "Eating Habits & Hydration" %}
+                            </button>
+                        </h2>
+                        <div id="sec5" class="accordion-collapse collapse" data-bs-parent="#bilanAccordion">
+                            <div class="accordion-body">{{ form5|crispy }}</div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sec6">
+                                <span class="sec-num">6</span>{% trans "Relationship with Food & Goals" %}
+                            </button>
+                        </h2>
+                        <div id="sec6" class="accordion-collapse collapse" data-bs-parent="#bilanAccordion">
+                            <div class="accordion-body">{{ form6|crispy }}</div>
+                        </div>
+                    </div>
+
+                    {% if user.role == 'dietitian' %}
+                    <div class="accordion-item" style="border-color: var(--nutri-orange);">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sec7">
+                                <span class="sec-num" style="background: var(--nutri-orange);">7</span>{% trans "Practitioner's Notes" %}
+                            </button>
+                        </h2>
+                        <div id="sec7" class="accordion-collapse collapse" data-bs-parent="#bilanAccordion">
+                            <div class="accordion-body">{{ form7|crispy }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </div>
+
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-nutri btn-lg py-3">
+                        <i class="bi bi-check-lg me-2"></i>{% trans "Save the assessment" %}
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

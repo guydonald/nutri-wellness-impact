@@ -1,138 +1,197 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.core.mail import send_mail
-from django.conf import settings
-from .forms import PatientProfileForm, ConsultationForm, FoodDiaryForm
-from django.http import HttpResponse
-from django.utils.translation import gettext_lazy as _
-from django.core.paginator import Paginator
-import openpyxl, json
-from .models import PatientProfile, FoodDiary, Consultation, MealPlan
-from django.views.generic import DetailView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.urls import reverse_lazy
-from django.contrib import messages
-from .forms import UserUpdateForm, PatientProfileUpdateForm
-from .models import PatientProfile
-from django.views.generic import ListView
-from django.contrib.auth import get_user_model
-from django.db.models import Q
-from django.db import transaction # Pour s'assurer que les deux sauvegardes sont atomiques
-from users.models import CustomUser
-from django.db.models import Count, Avg
-from django.forms import modelformset_factory
+import json
 
+import openpyxl
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.mail import send_mail
+from django.core.paginator import Paginator
+from django.db import transaction
+from django.db.models import Avg, Count, Q
+from django.forms import modelformset_factory
+from django.http import Http404, HttpResponse, HttpResponseForbidden
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.translation import gettext_lazy as _
+from django.views.decorators.http import require_POST
+from django.views.generic import DetailView, ListView
+import io
+from django.http import FileResponse
+from .pdf_export import generer_bilan_pdf, generer_plan_pdf, generer_suivi_pdf
+
+from .forms import (
+    BilanPraticienForm,
+    BilanSection1Form,
+    BilanSection2Form,
+    BilanSection3Form,
+    BilanSection4Form,
+    BilanSection5Form,
+    BilanSection6Form,
+    ConsultationForm,
+    FoodDiaryForm,
+    PatientProfileForm,
+    PatientProfileUpdateForm,
+    UserUpdateForm,
+)
+from .models import Consultation, FoodDiary, MealPlan, PatientProfile
 
 User = get_user_model()
 
 
+# =========================================================
+#  CONTROLE D'ACCES
+# =========================================================
 class IsDietitianMixin(UserPassesTestMixin):
     def test_func(self):
-        # Vérifie si l'utilisateur est une Diététicienne
-        return self.request.user.is_authenticated and self.request.user.role == "dietitian"
+        return self.request.user.is_authenticated and getattr(self.request.user, 'role', None) == "dietitian"
 
-# Mixin personnalisé pour vérifier le rôle de l'utilisateur
+
 class IsPatientMixin(UserPassesTestMixin):
     def test_func(self):
-        # Vérifie si l'utilisateur est un Patient
-        return self.request.user.is_authenticated and self.request.user.role == "patient"
+        return self.request.user.is_authenticated and getattr(self.request.user, 'role', None) == "patient"
 
-# Fonction de test pour le décorateur user_passes_test (utilisé pour les FBV)
+
 def is_patient_check(user):
-    return user.is_authenticated and user.role == "patient"
+    return user.is_authenticated and getattr(user, 'role', None) == "patient"
+
 
 def is_dietitian_check(user):
-    """Vérifie si l'utilisateur est authentifié et a le rôle 'dietitian'."""
-    return user.is_authenticated and user.role == "dietitian"
+    return user.is_authenticated and getattr(user, 'role', None) == "dietitian"
 
 
+# =========================================================
+#  TABLEAU DE BORD DIETETICIEN
+# =========================================================
 class DietitianPatientListView(LoginRequiredMixin, IsDietitianMixin, ListView):
-    # Nous listons les objets User (car nous avons besoin du nom, de l'email, etc.)
-    model = User 
+    model = User
     template_name = 'dietitians/patient_list.html'
     context_object_name = 'patients'
-    paginate_by = 10 # Optionnel: pour la pagination
+    paginate_by = 10
 
     def get_queryset(self):
-        queryset = User.objects.filter(role='patient').order_by('last_name').select_related('profile').order_by('-date_joined')
-        
-        # Optionnel : Ajoutez ici la recherche si l'utilisateur entre un terme
+        queryset = User.objects.filter(role='patient').select_related('profile').order_by('-date_joined')
         search_query = self.request.GET.get('q')
         if search_query:
             queryset = queryset.filter(
-                Q(first_name__icontains=search_query) |
-                Q(last_name__icontains=search_query) |
-                Q(email__icontains=search_query)
+                Q(first_name__icontains=search_query)
+                | Q(last_name__icontains=search_query)
+                | Q(email__icontains=search_query)
             )
-            
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Nombre total de patients (sans pagination)
-        context['total_patients'] = User.objects.filter(role='patient').count()
-        # Optionnel : nombre actifs / inactifs
-        context['active_patients'] = User.objects.filter(role='patient', is_active=True).count()
-        context['inactive_patients'] = User.objects.filter(role='patient', is_active=False).count()
+        base = User.objects.filter(role='patient')
+        context['total_patients'] = base.count()
+        context['active_patients'] = base.filter(is_active=True).count()
+        context['inactive_patients'] = base.filter(is_active=False).count()
         return context
 
 
 @login_required
 def home_redirect_view(request):
-    user = request.user
+    role = getattr(request.user, 'role', None)
 
-    if user.role == 'dietitian':
+    if role == 'dietitian':
         return redirect('dietitian_statistics')
 
-    elif user.role == 'patient':
-        # On vérifie si le profil existe
-        profile_exists = hasattr(user, 'profile')
-        if profile_exists and user.profile.age:
+    if role == 'patient':
+        profile = getattr(request.user, 'profile', None)
+        if profile and profile.age:
             return redirect('my_medical_record')
-        else:
-            return redirect('complete_profile')
+        return redirect('complete_profile')
 
-    print("DEBUG: Aucun rôle détecté, déconnexion")
     return redirect('account_logout')
 
 
 @login_required
-@user_passes_test(is_dietitian_check, login_url='/') # Utilisez le check que nous avons défini
+@user_passes_test(is_dietitian_check, login_url='/')
 def dietitian_patient_profile_modal(request, user_id):
-    # 1. Récupérer l'utilisateur Patient
     patient = get_object_or_404(User, id=user_id, role='patient')
-    
-    # 2. Récupérer son profil PatientProfile associé (s'il existe)
-    try:
-        profile = patient.profile # Utilise related_name='profile' défini dans PatientProfile
-    except:
-        profile = None # Le profil n'existe pas encore
-
-    context = {
+    profile = getattr(patient, 'profile', None)
+    return render(request, 'dietitians/partials/patient_profile_detail.html', {
         'patient': patient,
         'profile': profile,
-    }
-    
-    # Rendre un template très léger (fragment HTML)
-    return render(request, 'dietitians/partials/patient_profile_detail.html', context)
+    })
+
+
+# =========================================================
+#  BILAN INITIAL (formulaire de consultation dietetique)
+# =========================================================
+SECTION_FORMS = [
+    ('form1', BilanSection1Form),
+    ('form2', BilanSection2Form),
+    ('form3', BilanSection3Form),
+    ('form4', BilanSection4Form),
+    ('form5', BilanSection5Form),
+    ('form6', BilanSection6Form),
+]
+
+
+def _build_bilan_forms(profile, data=None, include_praticien=False):
+    """Instancie chaque section sur la meme instance de profil."""
+    ctx = {}
+    for name, FormClass in SECTION_FORMS:
+        ctx[name] = FormClass(data, instance=profile, prefix=name)
+    if include_praticien:
+        ctx['form7'] = BilanPraticienForm(data, instance=profile, prefix='form7')
+    return ctx
+
 
 @login_required
-def complete_profile(request):
-    if request.user.role != 'patient':
-        return redirect('home')
+def bilan_view(request, patient_id=None):
+    """
+    Bilan initial.
+      /bilan/              -> le patient remplit le sien
+      /bilan/<patient_id>/ -> la nutritionniste remplit celui d'un patient
+    """
+    is_dietitian = is_dietitian_check(request.user)
 
-    # Le signal a normalement déjà créé le profil, on le récupère simplement
-    profile, created = PatientProfile.objects.get_or_create(user=request.user)
+    if patient_id:
+        # SECURITE : seule la nutritionniste accede au bilan d'un autre
+        if not is_dietitian:
+            return HttpResponseForbidden(_("Access denied."))
+        patient = get_object_or_404(User, id=patient_id, role='patient')
+        profile, _created = PatientProfile.objects.get_or_create(user=patient)
+    else:
+        # SECURITE : un dieteticien n'a pas de bilan personnel
+        if not is_patient_check(request.user):
+            return redirect('dietitian_dashboard')
+        profile, _created = PatientProfile.objects.get_or_create(user=request.user)
+        patient = request.user
+
+    if request.method == 'POST':
+        forms_ctx = _build_bilan_forms(profile, request.POST, include_praticien=is_dietitian)
+        if all(f.is_valid() for f in forms_ctx.values()):
+            with transaction.atomic():
+                for f in forms_ctx.values():
+                    f.save()
+            messages.success(request, _("Assessment saved successfully!"))
+            if patient_id:
+                return redirect('patient_record', patient_id=patient_id)
+            return redirect('patient_profile')
+        messages.error(request, _("Please check the highlighted fields."))
+    else:
+        forms_ctx = _build_bilan_forms(profile, include_praticien=is_dietitian)
+
+    forms_ctx['profile'] = profile
+    forms_ctx['patient'] = patient
+    return render(request, 'patients/bilan_form.html', forms_ctx)
+
+
+@login_required
+@user_passes_test(is_patient_check, login_url='/')
+def complete_profile(request):
+    profile, _created = PatientProfile.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
         form = PatientProfileForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
-            if request.user.role == 'dietitian':
-                return redirect('dietitian_dashboard') # ou la liste des patients
-            else:
-                # Pour le patient, on peut l'envoyer vers son dashboard ou son record
-                return redirect('patient_record', patient_id=profile.id)
+            messages.success(request, _("Profile saved successfully!"))
+            return redirect('my_medical_record')
+        messages.error(request, _("Please check the highlighted fields."))
     else:
         form = PatientProfileForm(instance=profile)
 
@@ -140,205 +199,217 @@ def complete_profile(request):
 
 
 class PatientProfileView(LoginRequiredMixin, IsPatientMixin, DetailView):
-    # Le modèle principal de cette vue est PatientProfile
     model = PatientProfile
-    # Le template à utiliser pour l'affichage
     template_name = 'patients/patient_profile.html'
-    # Le nom de la variable d'objet dans le template
     context_object_name = 'profile'
 
     def get_object(self, queryset=None):
-        """
-        Récupère le profil Patient associé à l'utilisateur connecté.
-        Si l'objet n'existe pas, cela lèvera une erreur 404.
-        """
-        return get_object_or_404(PatientProfile, user=self.request.user)
+        profile, _created = PatientProfile.objects.get_or_create(user=self.request.user)
+        return profile
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Ajouter l'objet User au contexte pour l'affichage des infos de base
         context['user'] = self.request.user
         return context
-    
 
 
 @login_required
-@user_passes_test(is_patient_check)
+@user_passes_test(is_patient_check, login_url='/')
 def patient_profile_update_view(request):
-    # Récupérer les instances à modifier
     user_instance = request.user
-    
-    # Récupérer ou créer l'instance PatientProfile
-    # Note: On utilise get_or_create au cas où l'utilisateur n'aurait pas encore de profil
-    profile_instance, created = PatientProfile.objects.get_or_create(user=user_instance)
+    profile_instance, _created = PatientProfile.objects.get_or_create(user=user_instance)
 
     if request.method == 'POST':
-        # Instancier les formulaires avec les données POST et les instances existantes
         user_form = UserUpdateForm(request.POST, instance=user_instance)
         profile_form = PatientProfileUpdateForm(request.POST, instance=profile_instance)
-        
+
         if user_form.is_valid() and profile_form.is_valid():
-            try:
-                with transaction.atomic():
-                    user_form.save()
-                    profile_form.save()
-                
-                messages.success(request, 'Votre profil a été mis à jour avec succès !')
-                return redirect('patient_profile') # Rediriger vers la page d'affichage
-                
-            except Exception as e:
-                messages.error(request, f"Une erreur s'est produite lors de la sauvegarde : {e}")
-                
-        else:
-            messages.error(request, 'Veuillez corriger les erreurs dans les formulaires.')
-    
+            with transaction.atomic():
+                user_form.save()
+                profile_form.save()
+            messages.success(request, _("Your profile has been updated successfully!"))
+            return redirect('patient_profile')
+        messages.error(request, _("Please correct the errors in the form."))
     else:
-        # Créer les formulaires pour la requête GET avec les données actuelles
         user_form = UserUpdateForm(instance=user_instance)
         profile_form = PatientProfileUpdateForm(instance=profile_instance)
 
-    context = {
+    return render(request, 'patients/patient_profile_update.html', {
         'user_form': user_form,
         'profile_form': profile_form,
-        'profile': profile_instance, # Pour afficher des informations non modifiables si nécessaire
-    }
-    return render(request, 'patients/patient_profile_update.html', context)
+        'profile': profile_instance,
+    })
 
 
-# Export sur fichier excel
+# =========================================================
+#  EXPORT EXCEL  (reserve a la nutritionniste)
+# =========================================================
 @login_required
+@user_passes_test(is_dietitian_check, login_url='/')
 def export_patients_excel(request):
-    # 1. Création du fichier Excel
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Liste des Patients"
+    ws.title = "Patients"
 
-    # 2. En-têtes basés sur tes modèles
     headers = [
-        'Fist name', 'Last Name', 'Email', 'Nom d\'utilisateur', 'Rôle', 
-        'Âge', 'Genre', 'Profession', 'Niveau d\'activité', 
-        'Diagnostic', 'Taille (cm)', 'Poids (kg)', 'IMC (BMI)'
+        str(_("First name")), str(_("Last name")), str(_("Email")), str(_("Role")),
+        str(_("Age")), str(_("Gender")), str(_("Occupation")), str(_("Activity level")),
+        str(_("Main pathology")), str(_("Diagnosis")),
+        str(_("Height (cm)")), str(_("Current weight (kg)")), str(_("BMI")),
+        str(_("Waist circumference (cm)")), str(_("Hip circumference (cm)")),
+        str(_("Motivation level (0-10)")),
     ]
     ws.append(headers)
 
-    # 3. Récupération des données avec filtrage (identique à ta liste)
     search_query = request.GET.get('q')
-    patients = User.objects.filter(role='patient').order_by('last_name')
-    
+    patients = User.objects.filter(role='patient').select_related('profile').order_by('last_name')
     if search_query:
         patients = patients.filter(
-            Q(first_name__icontains=search_query) | 
-            Q(last_name__icontains=search_query) | 
-            Q(email__icontains=search_query)
+            Q(first_name__icontains=search_query)
+            | Q(last_name__icontains=search_query)
+            | Q(email__icontains=search_query)
         )
 
-    # 4. Remplissage des lignes
     for patient in patients:
-        # On utilise le related_name='profile' que tu as défini dans ton modèle
-        profile = getattr(patient, 'profile', None) 
-        
-        row = [
+        p = getattr(patient, 'profile', None)
+        ws.append([
             patient.first_name,
             patient.last_name,
             patient.email,
-            patient.username,
-            patient.role,
-            profile.age if profile else "N/A",
-            profile.get_gender_display() if profile else "N/A", # Pour avoir 'Male' au lieu de 'M'
-            profile.occupation if profile else "N/A",
-            profile.get_activity_level_display() if profile else "N/A",
-            profile.diagnosis if profile else "N/A",
-            profile.height if profile else "N/A",
-            profile.weight if profile else "N/A",
-            profile.bmi if profile else "N/A",
-        ]
-        ws.append(row)
+            patient.get_role_display(),
+            p.age if p else "",
+            p.get_gender_display() if p else "",
+            p.occupation if p else "",
+            p.get_activity_level_display() if p else "",
+            p.get_pathology_display() if p else "",
+            p.diagnosis if p else "",
+            p.height if p else "",
+            p.weight if p else "",
+            p.bmi if p else "",
+            p.waist_circumference if p else "",
+            p.hip_circumference if p else "",
+            p.motivation_level if p else "",
+        ])
 
-    # 5. Configuration de la réponse HTTP pour le téléchargement
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
-    response['Content-Disposition'] = 'attachment; filename=export_patients_complet.xlsx'
+    response['Content-Disposition'] = 'attachment; filename=export_patients.xlsx'
     wb.save(response)
-    
     return response
 
 
+# =========================================================
+#  STATISTIQUES
+# =========================================================
 @login_required
 @user_passes_test(is_dietitian_check, login_url='/')
 def dietitian_stats_view(request):
-    # 1. Étude du Sexe
-    gender_stats = PatientProfile.objects.values('gender').annotate(total=Count('gender'))
-    
-    # 2. Étude des Allergies (Boolean)
+    gender_stats = PatientProfile.objects.exclude(gender='').values('gender').annotate(total=Count('gender'))
     allergy_stats = PatientProfile.objects.values('allergies').annotate(total=Count('allergies'))
-    
-    # 3. Étude du Niveau d'Activité
-    activity_stats = PatientProfile.objects.values('activity_level').annotate(total=Count('activity_level'))
-    
-    # 4. Top 5 des Professions (Occupation)
-    occupation_stats = PatientProfile.objects.values('occupation').annotate(total=Count('occupation')).order_by('-total')[:5]
+    activity_stats = PatientProfile.objects.exclude(activity_level='').values('activity_level').annotate(total=Count('activity_level'))
+    occupation_stats = (
+        PatientProfile.objects.exclude(occupation='')
+        .values('occupation').annotate(total=Count('occupation')).order_by('-total')[:5]
+    )
+    pathology_stats = PatientProfile.objects.values('pathology').annotate(total=Count('pathology')).order_by('-total')
 
-    # 5. Moyennes générales (Poids, Taille, Âge)
     averages = PatientProfile.objects.aggregate(
         avg_age=Avg('age'),
         avg_weight=Avg('weight'),
         avg_height=Avg('height'),
-        avg_bmi=Avg('bmi')
+        avg_bmi=Avg('bmi'),
     )
 
+    gender_choices = dict(PatientProfile._meta.get_field('gender').choices or [])
+    activity_choices = dict(PatientProfile._meta.get_field('activity_level').choices or [])
+    pathology_choices = dict(PatientProfile._meta.get_field('pathology').choices or [])
+
     context = {
-        # CORRECTION : On force la conversion en string pour le JSON
-        'gender_labels': json.dumps([str(item['gender']) for item in gender_stats]),
-        'gender_data': json.dumps([item['total'] for item in gender_stats]),
-        
-        # CORRECTION : Ici aussi
-        'allergy_labels': json.dumps([str(_("Avec Allergies")), str(_("Sans Allergies"))]),
+        'gender_labels': json.dumps([str(gender_choices.get(i['gender'], i['gender'])) for i in gender_stats]),
+        'gender_data': json.dumps([i['total'] for i in gender_stats]),
+
+        'allergy_labels': json.dumps([str(_("With allergies")), str(_("Without allergies"))]),
         'allergy_data': json.dumps([
-            next((item['total'] for item in allergy_stats if item['allergies']), 0),
-            next((item['total'] for item in allergy_stats if not item['allergies']), 0)
+            next((i['total'] for i in allergy_stats if i['allergies']), 0),
+            next((i['total'] for i in allergy_stats if not i['allergies']), 0),
         ]),
 
-        # CORRECTION : On s'assure que le choix de niveau d'activité est bien casté en string
-        'activity_labels': json.dumps([
-            str(dict(PatientProfile.activity_level.field.choices).get(item['activity_level'], item['activity_level'])) 
-            for item in activity_stats
-        ]),
-        'activity_data': json.dumps([item['total'] for item in activity_stats]),
+        'activity_labels': json.dumps([str(activity_choices.get(i['activity_level'], i['activity_level'])) for i in activity_stats]),
+        'activity_data': json.dumps([i['total'] for i in activity_stats]),
 
-        'occ_labels': json.dumps([str(item['occupation']) for item in occupation_stats if item['occupation']]),
-        'occ_data': json.dumps([item['total'] for item in occupation_stats if item['occupation']]),
+        'occ_labels': json.dumps([str(i['occupation']) for i in occupation_stats]),
+        'occ_data': json.dumps([i['total'] for i in occupation_stats]),
+
+        'pathology_labels': json.dumps([str(pathology_choices.get(i['pathology'], i['pathology'])) for i in pathology_stats]),
+        'pathology_data': json.dumps([i['total'] for i in pathology_stats]),
 
         'averages': averages,
     }
     return render(request, 'dietitians/statistics.html', context)
 
 
+# =========================================================
+#  CONSULTATIONS  (reserve a la nutritionniste)
+# =========================================================
 @login_required
-@user_passes_test(is_dietitian_check)
+@user_passes_test(is_dietitian_check, login_url='/')
 def create_consultation(request, patient_id):
     patient = get_object_or_404(User, id=patient_id, role='patient')
-    
+    profile = getattr(patient, 'profile', None)
+
     if request.method == 'POST':
         form = ConsultationForm(request.POST)
         if form.is_valid():
             consultation = form.save(commit=False)
             consultation.patient = patient
+            consultation.patient_profile = profile
             consultation.dietitian = request.user
             consultation.save()
+            messages.success(request, _("Consultation saved successfully!"))
 
-            # Si c'est du HTMX, on peut dire à la page de se rafraîchir
             if request.headers.get('HX-Request'):
                 return HttpResponse(status=204, headers={'HX-Trigger': 'consultationSaved'})
-            return redirect('dietitian_dashboard') 
-        
+            return redirect('patient_record', patient_id=patient.id)
     else:
         form = ConsultationForm()
-    
+
     return render(request, 'dietitians/consultation_form.html', {'form': form, 'patient': patient})
 
 
 @login_required
+@user_passes_test(is_dietitian_check, login_url='/')
+def edit_consultation(request, consult_id):
+    """SECURITE : reserve a la nutritionniste + validation par formulaire."""
+    consult = get_object_or_404(Consultation, id=consult_id)
+
+    if request.method == 'POST':
+        form = ConsultationForm(request.POST, instance=consult)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _("Consultation updated."))
+        else:
+            messages.error(request, _("Please check the highlighted fields."))
+    return redirect('patient_record', patient_id=consult.patient.id)
+
+
+@login_required
+@user_passes_test(is_dietitian_check, login_url='/')
+@require_POST
+def delete_consultation(request, consult_id):
+    """SECURITE : POST obligatoire (evite la suppression par simple lien)."""
+    consult = get_object_or_404(Consultation, id=consult_id)
+    patient_id = consult.patient.id
+    consult.delete()
+    messages.warning(request, _("The consultation has been permanently deleted."))
+    return redirect('patient_record', patient_id=patient_id)
+
+
+# =========================================================
+#  JOURNAL ALIMENTAIRE  (le patient ne touche que le sien)
+# =========================================================
+@login_required
+@user_passes_test(is_patient_check, login_url='/')
 def add_food_entry(request):
     if request.method == 'POST':
         form = FoodDiaryForm(request.POST)
@@ -346,208 +417,216 @@ def add_food_entry(request):
             entry = form.save(commit=False)
             entry.patient = request.user
             entry.save()
-            return redirect('my_medical_record') # Redirige vers son espace
-    else:
-        form = FoodDiaryForm()
-    return render(request, 'patients/add_food.html', {'form': form})
+            messages.success(request, _("Meal saved."))
+            return redirect('my_medical_record')
+        messages.error(request, _("Please check the highlighted fields."))
+        return redirect('my_medical_record')
+
+    return render(request, 'patients/add_food.html', {'form': FoodDiaryForm()})
 
 
 @login_required
+@user_passes_test(is_patient_check, login_url='/')
+@require_POST
 def edit_food_entry(request, entry_id):
+    # SECURITE : patient=request.user -> impossible de modifier celui d'un autre
     entry = get_object_or_404(FoodDiary, id=entry_id, patient=request.user)
-    if request.method == 'POST':
-        form = FoodDiaryForm(request.POST, instance=entry)
-        if form.is_valid():
-            form.save()
-            # On peut ajouter un petit message flash ici
+    form = FoodDiaryForm(request.POST, instance=entry)
+    if form.is_valid():
+        form.save()
+        messages.success(request, _("Meal updated."))
+    else:
+        messages.error(request, _("Please check the highlighted fields."))
     return redirect('my_medical_record')
 
 
 @login_required
+@user_passes_test(is_patient_check, login_url='/')
+@require_POST
 def delete_food_entry(request, entry_id):
+    """SECURITE : POST obligatoire + verrouille sur le patient courant."""
     entry = get_object_or_404(FoodDiary, id=entry_id, patient=request.user)
     entry.delete()
-    messages.warning(request, "Le repas a été supprimé.")
+    messages.warning(request, _("The meal has been deleted."))
     return redirect('my_medical_record')
 
 
+# =========================================================
+#  DOSSIERS MEDICAUX
+# =========================================================
+def _record_context(patient, request):
+    """Contexte commun aux deux vues de dossier medical."""
+    all_history = patient.consultations.all().order_by('-date_consultation')
+    all_food = patient.food_entries.all().order_by('-date')
+
+    return {
+        'patient': patient,
+        'profile': getattr(patient, 'profile', None),
+        'meal_plans': MealPlan.objects.filter(patient=patient).order_by('day'),
+        'chart_history': patient.consultations.all().order_by('date_consultation'),
+        'history': Paginator(all_history, 10).get_page(request.GET.get('page_h')),
+        'food_log': Paginator(all_food, 10).get_page(request.GET.get('page_f')),
+    }
+
+
 @login_required
-@user_passes_test(is_dietitian_check)
+@user_passes_test(is_dietitian_check, login_url='/')
 def patient_medical_record(request, patient_id):
     patient = get_object_or_404(User, id=patient_id, role='patient')
-    
-    # 1. Données pour le GRAPHIQUE (non paginées)
-    chart_history = patient.consultations.all().order_by('date_consultation')
-    meal_plans = MealPlan.objects.filter(patient=patient).order_by('day')
-    
-    # 2. Pagination des CONSULTATIONS
-    all_history = patient.consultations.all().order_by('-date_consultation')
-    paginator_h = Paginator(all_history, 10) # 5 par page
-    page_h = request.GET.get('page_h')
-    history_paginated = paginator_h.get_page(page_h)
-    
-    # 3. Pagination du JOURNAL ALIMENTAIRE
-    all_food = patient.food_entries.all().order_by('-date')
-    paginator_f = Paginator(all_food, 10) # 10 par page
-    page_f = request.GET.get('page_f')
-    food_paginated = paginator_f.get_page(page_f)
-    
-    return render(request, 'dietitians/patient_record.html', {
-        'patient': patient,
-        'meal_plans': meal_plans,
-        'chart_history': chart_history, # Pour le canvas JS
-        'history': history_paginated,   # Pour les cartes HTML
-        'food_log': food_paginated      # Pour le tableau HTML
-    })
+    context = _record_context(patient, request)
+    return render(request, 'dietitians/patient_record.html', context)
 
 
 @login_required
-def edit_consultation(request, consult_id):
-    consult = get_object_or_404(Consultation, id=consult_id)
-    if request.method == 'POST':
-        # On met à jour manuellement ou via un Form
-        consult.weight = request.POST.get('weight')
-        consult.blood_pressure = request.POST.get('blood_pressure')
-        consult.hba1c = request.POST.get('hba1c')
-        consult.total_cholesterol = request.POST.get('total_cholesterol')
-        consult.nutritional_diagnosis = request.POST.get('nutritional_diagnosis')
-        consult.intervention_plan = request.POST.get('intervention_plan')
-        consult.save()
-        messages.success(request, "Consultation mise à jour.")
-    return redirect('patient_record', patient_id=consult.patient.id)
-
-@login_required
-def delete_consultation(request, consult_id):
-    consult = get_object_or_404(Consultation, id=consult_id)
-    patient_id = consult.patient.id # On stocke l'ID avant de supprimer
-    consult.delete()
-    messages.warning(request, "La consultation a été définitivement supprimée.")
-    return redirect('patient_record', patient_id=patient_id)
-
-
-@login_required
+@user_passes_test(is_patient_check, login_url='/')
 def my_medical_record(request):
-    patient = request.user
-    if patient.role != 'patient':
-        messages.error(request, "Accès réservé aux patients.")
-        return redirect('home')
-    
-    # 1. Données pour le GRAPHIQUE (non paginées)
-    chart_history = patient.consultations.all().order_by('date_consultation')
-    meal_plans = MealPlan.objects.filter(patient=patient).order_by('day')
-    
-    # 2. Pagination des CONSULTATIONS
-    all_history = patient.consultations.all().order_by('-date_consultation')
-    paginator_h = Paginator(all_history, 10) # 10 par page
-    page_h = request.GET.get('page_h')
-    history_paginated = paginator_h.get_page(page_h)
-    
-    # 3. Pagination du JOURNAL ALIMENTAIRE
-    all_food = patient.food_entries.all().order_by('-date')
-    paginator_f = Paginator(all_food, 10) # 10 par page
-    page_f = request.GET.get('page_f')
-    food_paginated = paginator_f.get_page(page_f)
-    
-    return render(request, 'patients/my_record.html', {
-        'patient': patient,
-        'meal_plans': meal_plans,
-        'chart_history': chart_history, # Pour le canvas JS
-        'history': history_paginated,   # Pour les cartes HTML
-        'food_log': food_paginated,     # Pour le tableau HTML
-        'food_form': FoodDiaryForm()
-    })
+    context = _record_context(request.user, request)
+    context['food_form'] = FoodDiaryForm()
+    return render(request, 'patients/my_record.html', context)
 
 
+# =========================================================
+#  PLAN ALIMENTAIRE  (reserve a la nutritionniste)
+# =========================================================
 @login_required
-@user_passes_test(lambda u: u.role == 'dietitian') # Vérification simple du rôle
+@user_passes_test(is_dietitian_check, login_url='/')
 def manage_meal_plan(request, patient_id):
     patient = get_object_or_404(User, id=patient_id, role='patient')
-    
-    # Définition du FormSet
+
     MealPlanFormSet = modelformset_factory(
-        MealPlan, 
+        MealPlan,
         fields=('day', 'breakfast', 'morning_snack', 'lunch', 'afternoon_snack', 'dinner', 'evening_snack'),
-        extra=0, # On met 0 car on va pré-générer ou filtrer les existants
-        max_num=7
+        extra=0,
+        max_num=7,
     )
 
-    # On récupère ce qui existe déjà pour ce patient
     queryset = MealPlan.objects.filter(patient=patient).order_by('day')
 
     if request.method == 'POST':
-        # On passe le queryset ici pour que Django sache quels IDs mettre à jour
         formset = MealPlanFormSet(request.POST, queryset=queryset)
         if formset.is_valid():
-            instances = formset.save(commit=False)
-            for instance in instances:
-                instance.patient = patient
-                instance.save()
-            messages.success(request, _("Plan alimentaire mis à jour avec succès !"))
+            with transaction.atomic():
+                for instance in formset.save(commit=False):
+                    instance.patient = patient
+                    instance.save()
+            messages.success(request, _("Meal plan updated successfully!"))
             return redirect('patient_record', patient_id=patient.id)
+        messages.error(request, _("Please check the highlighted fields."))
     else:
-        # S'il n'y a rien en base, on peut soit laisser vide, 
-        # soit forcer l'affichage de 7 formulaires vierges
         if not queryset.exists():
+            MealPlanFormSet.extra = 7
             formset = MealPlanFormSet(queryset=MealPlan.objects.none())
-            # On force 7 formulaires vides si c'est la première fois
-            formset.extra = 7 
         else:
             formset = MealPlanFormSet(queryset=queryset)
 
     return render(request, 'dietitians/manage_meal_plan.html', {
         'formset': formset,
-        'patient': patient
+        'patient': patient,
     })
 
 
+# =========================================================
+#  EMAIL AU PATIENT  (reserve a la nutritionniste)
+# =========================================================
+@login_required
+@user_passes_test(is_dietitian_check, login_url='/')
 def prepare_email(request, patient_id):
-    patient = get_object_or_404(CustomUser, id=patient_id)
+    patient = get_object_or_404(User, id=patient_id, role='patient')
     return render(request, 'dietitians/partials/email_form.html', {'patient': patient})
 
-def send_patient_email(request, patient_id):
-    if request.method == "POST":
-        # 1. Récupérer le patient
-        patient = get_object_or_404(CustomUser, id=patient_id)
-        
-        # 2. Récupérer les données du formulaire
-        subject = request.POST.get('subject')
-        message = request.POST.get('message')
-        
-        # 3. Construction du corps de l'email (Optionnel : ajouter une signature)
-        full_message = f"Bonjour {patient.get_full_name() or patient.username},\n\n{message}\n\nCordialement,\nL'équipe Nutri-Wellness Impact"
-        
-        try:
-            # 4. Envoi via SMTP Zoho
-            send_mail(
-                subject=subject,
-                message=full_message,
-                from_email=settings.DEFAULT_FROM_EMAIL, # Utilise contact@nutri-wellnessimpact.com
-                recipient_list=[patient.email],
-                fail_silently=False,
-            )
-            
-            # Retourne un message de succès qui s'affichera dans la modale via HTMX
-            return HttpResponse('''
-                <div class="alert alert-success d-flex align-items-center" role="alert">
-                    <i class="fas fa-check-circle me-2"></i>
-                    <div>Email envoyé avec succès à ''' + patient.email + ''' !</div>
-                </div>
-                <script>
-                    // Optionnel : Fermer la modale après 2 secondes
-                    setTimeout(function(){
-                        var modal = bootstrap.Modal.getInstance(document.getElementById('emailModal'));
-                        modal.hide();
-                    }, 2500);
-                </script>
-            ''')
-            
-        except Exception as e:
-            # En cas d'erreur SMTP (mauvais mot de passe app, port bloqué, etc.)
-            return HttpResponse(f'''
-                <div class="alert alert-danger d-flex align-items-center" role="alert">
-                    <i class="fas fa-exclamation-circle me-2"></i>
-                    <div>Erreur lors de l'envoi : {str(e)}</div>
-                </div>
-            ''')
 
-    return HttpResponse("Méthode non autorisée", status=405)
+@login_required
+@user_passes_test(is_dietitian_check, login_url='/')
+@require_POST
+def send_patient_email(request, patient_id):
+    """SECURITE : connexion + role + POST obligatoires ; pas de detail technique expose."""
+    patient = get_object_or_404(User, id=patient_id, role='patient')
+
+    subject = (request.POST.get('subject') or '').strip()
+    message = (request.POST.get('message') or '').strip()
+
+    if not subject or not message:
+        return HttpResponse(
+            '<div class="alert alert-warning border-0">%s</div>' % _("Subject and message are required.")
+        )
+
+    greeting = patient.get_full_name() or patient.email
+    full_message = "%s %s,\n\n%s\n\n%s\nNutri-Wellness Impact" % (
+        _("Hello"), greeting, message, _("Kind regards,")
+    )
+
+    try:
+        send_mail(
+            subject=subject,
+            message=full_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[patient.email],
+            fail_silently=False,
+        )
+    except Exception:
+        # On ne revele aucun detail technique a l'utilisateur
+        return HttpResponse(
+            '<div class="alert alert-danger border-0">%s</div>'
+            % _("The email could not be sent. Please try again later.")
+        )
+
+    return HttpResponse(
+        '<div class="alert alert-success border-0 d-flex align-items-center">'
+        '<i class="bi bi-check-circle-fill me-2"></i><div>%s</div></div>'
+        '<script>setTimeout(function(){'
+        'var m=bootstrap.Modal.getInstance(document.getElementById("emailModal"));'
+        'if(m){m.hide();}}, 2500);</script>' % _("Email sent successfully!")
+    )
+
+
+def _pdf_reponse(buffer, nom_fichier):
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename=nom_fichier)
+ 
+ 
+def _slug_patient(patient):
+    base = (patient.get_full_name() or patient.email).replace(" ", "_")
+    return "".join(c for c in base if c.isalnum() or c in "_-")
+ 
+ 
+def _acces_dossier(request, patient_id):
+    """
+    Renvoie le patient si l'utilisateur a le droit d'acceder a son dossier.
+    - la nutritionniste accede a tous les patients
+    - un patient n'accede qu'a son propre dossier
+    """
+    if is_dietitian_check(request.user):
+        return get_object_or_404(User, id=patient_id, role='patient')
+    if str(request.user.id) == str(patient_id):
+        return request.user
+    raise Http404
+ 
+ 
+@login_required
+def export_bilan_pdf(request, patient_id):
+    patient = _acces_dossier(request, patient_id)
+    profile, _created = PatientProfile.objects.get_or_create(user=patient)
+    buffer = io.BytesIO()
+    generer_bilan_pdf(buffer, patient, profile)
+    return _pdf_reponse(buffer, "bilan_%s.pdf" % _slug_patient(patient))
+ 
+ 
+@login_required
+def export_suivi_pdf(request, patient_id):
+    patient = _acces_dossier(request, patient_id)
+    profile = getattr(patient, 'profile', None)
+    consultations = patient.consultations.all().order_by('-date_consultation')
+    buffer = io.BytesIO()
+    generer_suivi_pdf(buffer, patient, profile, consultations)
+    return _pdf_reponse(buffer, "suivi_%s.pdf" % _slug_patient(patient))
+ 
+ 
+@login_required
+def export_plan_pdf(request, patient_id):
+    patient = _acces_dossier(request, patient_id)
+    profile = getattr(patient, 'profile', None)
+    plans = MealPlan.objects.filter(patient=patient).order_by('day')
+    buffer = io.BytesIO()
+    generer_plan_pdf(buffer, patient, profile, plans)
+    return _pdf_reponse(buffer, "plan_alimentaire_%s.pdf" % _slug_patient(patient))
+ 

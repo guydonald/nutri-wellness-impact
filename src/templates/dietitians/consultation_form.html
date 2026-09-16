@@ -1,38 +1,118 @@
 {% load i18n %}
 <div class="modal-header text-white" style="background: linear-gradient(135deg, #5a8f3d, #2f5e2f);">
-    <h5 class="modal-title"><i class="bi bi-clipboard2-plus me-2"></i>{% trans "New Consultation:" %} {{ patient.get_full_name }}</h5>
+    <h5 class="modal-title"><i class="bi bi-clipboard2-plus me-2"></i>{% trans "New Consultation:" %} {{ patient.get_full_name|default:patient.email }}</h5>
     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 
-<div class="modal-body p-4">
+<div class="modal-body p-4" style="max-height:72vh; overflow-y:auto;">
+    <style>
+        .cs-sec { color:#2f5e2f; font-weight:700; font-size:.8rem; text-transform:uppercase;
+                  letter-spacing:.5px; margin:1.4rem 0 .8rem; padding-bottom:.35rem;
+                  border-bottom:1px solid #eef2ec; display:flex; align-items:center; gap:.5rem; }
+        .cs-sec:first-of-type { margin-top:0; }
+        .cs-patho { background:#fef3e0; border-left:4px solid #f4a020; border-radius:14px; padding:1rem 1.2rem; margin-top:1.2rem; }
+        .cs-patho .cs-sec { color:#b9750c; border-bottom-color:#f6d9a8; margin-top:0; }
+        .cs-alert-box { background:#fdecec; border-left:4px solid #d62828; border-radius:14px; padding:1rem 1.2rem; margin-top:1rem; }
+        .cs-alert-box .cs-sec { color:#a81f1f; border-bottom-color:#f5c6c6; margin-top:0; }
+        .form-check-label { font-size:.88rem; }
+        label.form-label, .cs-body label { font-size:.85rem; font-weight:600; color:#4a5568; }
+    </style>
+
     <form method="post" action="{% url 'create_consultation' patient_id=patient.id %}">
         {% csrf_token %}
 
-        <h6 class="text-uppercase small fw-bold border-bottom pb-2 mb-3" style="color:#2f5e2f;">{% trans "Biochemical Data" %}</h6>
-        <div class="row g-3 mb-4">
-            <div class="col-md-3">{{ form.blood_pressure.label_tag }}{{ form.blood_pressure }}</div>
-            <div class="col-md-3">{{ form.total_cholesterol.label_tag }}{{ form.total_cholesterol }}</div>
-            <div class="col-md-3">{{ form.hba1c.label_tag }}{{ form.hba1c }}</div>
+        <!-- MESURES CLINIQUES -->
+        <div class="cs-sec"><i class="bi bi-heart-pulse"></i>{% trans "Clinical Measurements" %}</div>
+        <div class="row g-3">
             <div class="col-md-3">{{ form.weight.label_tag }}{{ form.weight }}</div>
-            <div class="col-md-4">{{ form.ldl.label_tag }}{{ form.ldl }}</div>
-            <div class="col-md-4">{{ form.hdl.label_tag }}{{ form.hdl }}</div>
-            <div class="col-md-4">{{ form.triglycerides.label_tag }}{{ form.triglycerides }}</div>
+            <div class="col-md-3">{{ form.blood_pressure.label_tag }}{{ form.blood_pressure }}</div>
+            <div class="col-md-3">{{ form.blood_pressure_right.label_tag }}{{ form.blood_pressure_right }}</div>
+            <div class="col-md-3">{{ form.heart_rate.label_tag }}{{ form.heart_rate }}</div>
         </div>
 
-        <h6 class="text-uppercase small fw-bold border-bottom pb-2 mb-3" style="color:#2f5e2f;">{% trans "Nutritional Analysis (PES)" %}</h6>
+        <!-- BILAN BIOLOGIQUE -->
+        <div class="cs-sec"><i class="bi bi-droplet"></i>{% trans "Biochemical Data" %}</div>
+        <div class="row g-3">
+            <div class="col-md-3">{{ form.total_cholesterol.label_tag }}{{ form.total_cholesterol }}</div>
+            <div class="col-md-3">{{ form.ldl.label_tag }}{{ form.ldl }}</div>
+            <div class="col-md-3">{{ form.hdl.label_tag }}{{ form.hdl }}</div>
+            <div class="col-md-3">{{ form.triglycerides.label_tag }}{{ form.triglycerides }}</div>
+            <div class="col-md-3">{{ form.hba1c.label_tag }}{{ form.hba1c }}</div>
+            <div class="col-md-3">{{ form.appetite.label_tag }}{{ form.appetite }}</div>
+        </div>
+
+        <!-- SUIVI NUTRITIONNEL (tous patients) -->
+        <div class="cs-sec"><i class="bi bi-clipboard2-check"></i>{% trans "Nutritional Assessment" %}</div>
+        <div class="row g-3">
+            <div class="col-md-3">{{ form.salt_intake.label_tag }}{{ form.salt_intake }}</div>
+            <div class="col-md-3">{{ form.protein_intake.label_tag }}{{ form.protein_intake }}</div>
+            <div class="col-md-3">{{ form.hydration_level.label_tag }}{{ form.hydration_level }}</div>
+            <div class="col-md-3">{{ form.fruits_veg_intake.label_tag }}{{ form.fruits_veg_intake }}</div>
+        </div>
+
+        <!-- BLOC SPECIFIQUE PATHOLOGIE -->
+        {% if patient.profile.pathology == 'cardiopathy' %}
+        <div class="cs-patho">
+            <div class="cs-sec">
+                <i class="bi bi-heart-pulse-fill"></i>{% trans "Cardiovascular follow-up" %}
+                <span class="badge ms-auto" style="background:#f4a020;">{{ patient.profile.get_pathology_display }}</span>
+            </div>
+            <div class="row g-3 align-items-end">
+                <div class="col-md-6">{{ form.wound_healing.label_tag }}{{ form.wound_healing }}</div>
+                <div class="col-md-6">
+                    <div class="form-check form-switch mt-2">
+                        {{ form.edema }}
+                        <label class="form-check-label ms-2" for="{{ form.edema.id_for_label }}">{{ form.edema.label }}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- SIGNES D'ALERTE -->
+        <div class="cs-alert-box">
+            <div class="cs-sec"><i class="bi bi-exclamation-triangle-fill"></i>{% trans "Warning Signs" %}</div>
+            <div class="row g-2">
+                <div class="col-md-6">
+                    <div class="form-check">{{ form.alert_rapid_weight_loss }}
+                        <label class="form-check-label" for="{{ form.alert_rapid_weight_loss.id_for_label }}">{{ form.alert_rapid_weight_loss.label }}</label>
+                    </div>
+                    <div class="form-check">{{ form.alert_fatigue }}
+                        <label class="form-check-label" for="{{ form.alert_fatigue.id_for_label }}">{{ form.alert_fatigue.label }}</label>
+                    </div>
+                    <div class="form-check">{{ form.alert_wound }}
+                        <label class="form-check-label" for="{{ form.alert_wound.id_for_label }}">{{ form.alert_wound.label }}</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-check">{{ form.alert_appetite_loss }}
+                        <label class="form-check-label" for="{{ form.alert_appetite_loss.id_for_label }}">{{ form.alert_appetite_loss.label }}</label>
+                    </div>
+                    <div class="form-check">{{ form.alert_edema }}
+                        <label class="form-check-label" for="{{ form.alert_edema.id_for_label }}">{{ form.alert_edema.label }}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ANALYSE PES -->
+        <div class="cs-sec"><i class="bi bi-file-medical"></i>{% trans "Nutritional Analysis (PES)" %}</div>
         <div class="mb-3">
             <label class="form-label">{% trans "Diagnosis (Problem, Etiology, Symptoms)" %}</label>
             {{ form.nutritional_diagnosis }}
         </div>
+        <div class="mb-3">{{ form.observations.label_tag }}{{ form.observations }}</div>
 
-        <h6 class="text-uppercase small fw-bold border-bottom pb-2 mb-3" style="color:#2f5e2f;">{% trans "Goals & Intervention" %}</h6>
-        <div class="row">
-            <div class="col-md-6 mb-3">{{ form.goals.label_tag }}{{ form.goals }}</div>
-            <div class="col-md-6 mb-3">{{ form.intervention_plan.label_tag }}{{ form.intervention_plan }}</div>
+        <!-- OBJECTIFS -->
+        <div class="cs-sec"><i class="bi bi-bullseye"></i>{% trans "Goals & Intervention" %}</div>
+        <div class="row g-3">
+            <div class="col-md-6">{{ form.goals.label_tag }}{{ form.goals }}</div>
+            <div class="col-md-6">{{ form.intervention_plan.label_tag }}{{ form.intervention_plan }}</div>
+            <div class="col-md-6">{{ form.next_appointment.label_tag }}{{ form.next_appointment }}</div>
         </div>
 
         <div class="mt-4 d-flex justify-content-between">
-            <a href="{% url 'dietitian_dashboard' %}" class="btn btn-secondary rounded-pill px-4">{% trans "Cancel" %}</a>
+            <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
             <button type="submit" class="btn text-white rounded-pill px-4" style="background:#5a8f3d; font-weight:700;">
                 <i class="bi bi-check-lg me-1"></i>{% trans "Save consultation" %}
             </button>

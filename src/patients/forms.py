@@ -1,79 +1,198 @@
 from django import forms
-from .models import PatientProfile, Consultation, FoodDiary, MealPlan
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
-
-
-class PatientProfileForm(forms.ModelForm):
-    class Meta:
-        model = PatientProfile
-        fields = [
-            'age', 'gender', 'occupation', 'activity_level',
-            'diagnosis', 'diagnosis_date', 'medical_history',
-            'medications', 'allergies', 'family_history_cvd',
-            'height', 'weight', 'waist_circumference', 'body_fat_percent',
-        ]
-        widgets = {
-            'diagnosis_date': forms.DateInput(attrs={'type': 'date'}),
-            'medical_history': forms.Textarea(attrs={'rows': 3}),
-            'medications': forms.Textarea(attrs={'rows': 2}),
-        }
-
+from .models import PatientProfile, Consultation, FoodDiary, MealPlan
 
 User = get_user_model()
 
-# Formulaire pour modifier le modèle User (nom, prénom, email)
+
+# =========================================================
+#  BILAN INITIAL - decoupe en sections
+# =========================================================
+class BilanSection1Form(forms.ModelForm):
+    """1. Informations personnelles + motif"""
+    class Meta:
+        model = PatientProfile
+        fields = [
+            'birth_date', 'age', 'gender', 'address', 'phone', 'occupation',
+            'pathology', 'consultation_reason', 'reason_comment',
+        ]
+        widgets = {
+            'birth_date': forms.DateInput(attrs={'type': 'date'}),
+            'consultation_reason': forms.Textarea(attrs={'rows': 2}),
+            'reason_comment': forms.Textarea(attrs={'rows': 2}),
+        }
+
+
+class BilanSection2Form(forms.ModelForm):
+    """3. Antecedents medicaux"""
+    class Meta:
+        model = PatientProfile
+        fields = [
+            'diagnosis', 'diagnosis_date', 'known_diseases', 'medical_history',
+            'family_history', 'previous_surgeries', 'medications',
+            'allergies', 'food_allergies', 'food_intolerances', 'family_history_cvd',
+        ]
+        widgets = {
+            'diagnosis_date': forms.DateInput(attrs={'type': 'date'}),
+            'known_diseases': forms.Textarea(attrs={'rows': 2}),
+            'medical_history': forms.Textarea(attrs={'rows': 2}),
+            'family_history': forms.Textarea(attrs={'rows': 2}),
+            'previous_surgeries': forms.Textarea(attrs={'rows': 2}),
+            'medications': forms.Textarea(attrs={'rows': 2}),
+            'food_allergies': forms.Textarea(attrs={'rows': 2}),
+            'food_intolerances': forms.Textarea(attrs={'rows': 2}),
+        }
+
+
+class BilanSection3Form(forms.ModelForm):
+    """4. Habitudes de vie"""
+    class Meta:
+        model = PatientProfile
+        fields = [
+            'sleep_hours', 'sleep_quality',
+            'activity_level', 'activity_type', 'activity_frequency', 'activity_duration',
+            'stress_level', 'stress_sources',
+            'smoking', 'smoking_frequency',
+            'alcohol', 'alcohol_frequency',
+            'sweets', 'sweets_frequency',
+        ]
+        widgets = {
+            'stress_sources': forms.Textarea(attrs={'rows': 2}),
+        }
+
+
+class BilanSection4Form(forms.ModelForm):
+    """5. Donnees anthropometriques"""
+    class Meta:
+        model = PatientProfile
+        fields = [
+            'height', 'weight', 'usual_weight', 'desired_weight',
+            'waist_circumference', 'hip_circumference', 'body_fat_percent',
+            'blood_pressure_left', 'blood_pressure_right', 'other_measures',
+        ]
+        widgets = {
+            'other_measures': forms.Textarea(attrs={'rows': 2}),
+        }
+
+
+class BilanSection5Form(forms.ModelForm):
+    """6. Habitudes alimentaires + 7. Hydratation"""
+    class Meta:
+        model = PatientProfile
+        fields = [
+            'meals_per_day', 'has_snacks',
+            'breakfast_time', 'lunch_time', 'dinner_time', 'snack_times',
+            'meal_place', 'eat_with',
+            'typical_breakfast', 'typical_morning_snack', 'typical_lunch',
+            'typical_afternoon_snack', 'typical_dinner', 'typical_evening_snack',
+            'fruits_consumption', 'vegetables_consumption', 'fatty_sugary_consumption',
+            'water_glasses', 'water_liters', 'other_drinks',
+        ]
+        widgets = {
+            'typical_breakfast': forms.Textarea(attrs={'rows': 2}),
+            'typical_morning_snack': forms.Textarea(attrs={'rows': 2}),
+            'typical_lunch': forms.Textarea(attrs={'rows': 2}),
+            'typical_afternoon_snack': forms.Textarea(attrs={'rows': 2}),
+            'typical_dinner': forms.Textarea(attrs={'rows': 2}),
+            'typical_evening_snack': forms.Textarea(attrs={'rows': 2}),
+            'other_drinks': forms.Textarea(attrs={'rows': 2}),
+            'breakfast_time': forms.TextInput(attrs={'placeholder': '07:00'}),
+            'lunch_time': forms.TextInput(attrs={'placeholder': '13:00'}),
+            'dinner_time': forms.TextInput(attrs={'placeholder': '19:30'}),
+        }
+
+
+class BilanSection6Form(forms.ModelForm):
+    """8. Relation a l'alimentation + 9. Objectifs"""
+    class Meta:
+        model = PatientProfile
+        fields = [
+            'appetite', 'snacking', 'snacking_moments',
+            'dietary_restrictions', 'eating_behaviors',
+            'main_expectations', 'goal_timeframe', 'motivation_level',
+        ]
+        widgets = {
+            'snacking_moments': forms.Textarea(attrs={'rows': 2}),
+            'dietary_restrictions': forms.Textarea(attrs={'rows': 2}),
+            'eating_behaviors': forms.Textarea(attrs={'rows': 2}),
+            'main_expectations': forms.Textarea(attrs={'rows': 3}),
+            'motivation_level': forms.NumberInput(attrs={'min': 0, 'max': 10}),
+        }
+
+
+class BilanPraticienForm(forms.ModelForm):
+    """10-13. Reserve a la nutritionniste"""
+    class Meta:
+        model = PatientProfile
+        fields = [
+            'practitioner_notes', 'nutritional_diagnosis', 'risk_factors',
+            'proposed_dietary_plan', 'specific_advice', 'next_appointment',
+        ]
+        widgets = {
+            'practitioner_notes': forms.Textarea(attrs={'rows': 4}),
+            'nutritional_diagnosis': forms.Textarea(attrs={'rows': 3}),
+            'risk_factors': forms.Textarea(attrs={'rows': 2}),
+            'proposed_dietary_plan': forms.Textarea(attrs={'rows': 4}),
+            'specific_advice': forms.Textarea(attrs={'rows': 3}),
+            'next_appointment': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+
+class PatientProfileForm(forms.ModelForm):
+    """Bilan complet en un seul formulaire (pour la nutritionniste)."""
+    class Meta:
+        model = PatientProfile
+        exclude = ['user', 'bmi', 'created_at', 'updated_at']
+        widgets = {
+            'birth_date': forms.DateInput(attrs={'type': 'date'}),
+            'diagnosis_date': forms.DateInput(attrs={'type': 'date'}),
+            'next_appointment': forms.DateInput(attrs={'type': 'date'}),
+            'motivation_level': forms.NumberInput(attrs={'min': 0, 'max': 10}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            if isinstance(field.widget, forms.Textarea):
+                field.widget.attrs.setdefault('rows', 2)
+
+
+# Alias de compatibilite avec l'ancien code
+PatientProfileUpdateForm = PatientProfileForm
+
+
 class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email']
-        # Vous pouvez ajouter des widgets si vous voulez des classes CSS spécifiques
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'readonly': 'readonly'}), # Email en lecture seule
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
         }
 
-# Formulaire pour modifier le modèle PatientProfile
-class PatientProfileUpdateForm(forms.ModelForm):
-    class Meta:
-        model = PatientProfile
-        exclude = ['user', 'bmi'] # 'user' et 'bmi' sont exclus car ils sont gérés automatiquement
-        
-        widgets = {
-            'gender': forms.Select(attrs={'class': 'form-select'}),
-            'activity_level': forms.Select(attrs={'class': 'form-select'}),
-            'diagnosis_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            # Vous pouvez mettre en forme tous les autres champs ici
-        }
 
-    # Optionnel: Calcul de l'IMC lors de la sauvegarde du formulaire
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        
-        # Exemple de calcul simple (vous devrez peut-être affiner ceci)
-        if instance.height and instance.weight:
-            height_m = instance.height  # Suppose que height est en mètres
-            weight_kg = instance.weight
-            if height_m > 0:
-                instance.bmi = round(weight_kg / (height_m ** 2), 2)
-        
-        if commit:
-            instance.save()
-        return instance
-    
-
+# =========================================================
+#  CONSULTATION
+# =========================================================
 class ConsultationForm(forms.ModelForm):
     class Meta:
         model = Consultation
         fields = [
-            'blood_pressure', 'total_cholesterol', 'ldl', 'hdl', 
-            'triglycerides', 'hba1c', 'weight', 'nutritional_diagnosis', 
-            'goals', 'intervention_plan', 'next_appointment'
+            'weight', 'blood_pressure', 'blood_pressure_right', 'heart_rate',
+            'total_cholesterol', 'ldl', 'hdl', 'triglycerides', 'hba1c',
+            'appetite', 'observations',
+            'edema', 'wound_healing', 'salt_intake', 'protein_intake',
+            'hydration_level', 'fruits_veg_intake',
+            'alert_rapid_weight_loss', 'alert_fatigue', 'alert_wound',
+            'alert_appetite_loss', 'alert_edema',
+            'nutritional_diagnosis', 'goals', 'intervention_plan', 'next_appointment',
         ]
         widgets = {
-            'date_consultation': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'next_appointment': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'nutritional_diagnosis': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Problème, Étiologie, Signes/Symptômes (PES)...'}),
+            'observations': forms.Textarea(attrs={'rows': 3}),
+            'nutritional_diagnosis': forms.Textarea(attrs={'rows': 3, 'placeholder': _('Problem, Etiology, Signs/Symptoms (PES)...')}),
             'goals': forms.Textarea(attrs={'rows': 3}),
             'intervention_plan': forms.Textarea(attrs={'rows': 3}),
         }
@@ -81,27 +200,41 @@ class ConsultationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
-            field.widget.attrs.update({'class': 'form-control'})
+            if isinstance(field.widget, forms.CheckboxInput):
+                field.widget.attrs.update({'class': 'form-check-input'})
+            elif isinstance(field.widget, forms.Select):
+                field.widget.attrs.update({'class': 'form-select'})
+            else:
+                field.widget.attrs.update({'class': 'form-control'})
 
-    
+
+# =========================================================
+#  JOURNAL & PLAN (inchanges)
+# =========================================================
 class FoodDiaryForm(forms.ModelForm):
     class Meta:
         model = FoodDiary
         fields = ['meal_time', 'description', 'beverage']
         widgets = {
-            'meal_time': forms.Select(attrs={'class': 'form-select',}),
-            'description': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Ex: Pain complet, œuf bouilli, lait écrémé...', 'class':"form-control"}),
+            'meal_time': forms.Select(attrs={'class': 'form-select'}),
+            'description': forms.Textarea(attrs={
+                'rows': 3,
+                'placeholder': _('E.g.: whole bread, boiled egg, skimmed milk...'),
+                'class': 'form-control'
+            }),
         }
 
 
-# patients/forms.py
 class MealPlanForm(forms.ModelForm):
     class Meta:
         model = MealPlan
-        fields = ['day', 'breakfast', 'lunch', 'dinner']
+        fields = ['day', 'breakfast', 'morning_snack', 'lunch', 'afternoon_snack', 'dinner', 'evening_snack']
         widgets = {
             'breakfast': forms.Textarea(attrs={'rows': 2, 'class': 'form-control'}),
+            'morning_snack': forms.Textarea(attrs={'rows': 2, 'class': 'form-control'}),
             'lunch': forms.Textarea(attrs={'rows': 2, 'class': 'form-control'}),
+            'afternoon_snack': forms.Textarea(attrs={'rows': 2, 'class': 'form-control'}),
             'dinner': forms.Textarea(attrs={'rows': 2, 'class': 'form-control'}),
+            'evening_snack': forms.Textarea(attrs={'rows': 2, 'class': 'form-control'}),
             'day': forms.Select(attrs={'class': 'form-select'}),
         }

@@ -3,310 +3,1163 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: nutri-wellness-impact 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 20:07+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2026-09-15 22:24+0100\n"
+"PO-Revision-Date: 2026-09-15 10:00+0100\n"
+"Last-Translator: Guy Donald <contact@nutri-wellnessimpact.com>\n"
+"Language-Team: French\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % "
 "1000000 == 0 ? 1 : 2;\n"
-#: .\forum\views.py:24
-msgid "Commentaire ajouté !"
+
+#: .\forum\forms.py:11
+msgid "Share a tip or a recipe..."
+msgstr "Partagez un conseil ou une recette..."
+
+#: .\forum\forms.py:12
+msgid "Title of your post"
+msgstr "Titre de votre publication"
+
+#: .\forum\forms.py:13
+msgid "YouTube link (optional)"
+msgstr "Lien YouTube (optionnel)"
+
+#: .\forum\forms.py:22
+msgid "Add a comment..."
+msgstr "Ajouter un commentaire..."
+
+#: .\forum\models.py:10
+msgid "Title"
+msgstr "Titre"
+
+#: .\forum\models.py:11 .\forum\models.py:42
+msgid "Content"
+msgstr "Contenu"
+
+#: .\forum\models.py:12
+msgid "Image"
+msgstr "Image"
+
+#: .\forum\models.py:15
+msgid "Video URL"
+msgstr "Lien de la vidéo"
+
+#: .\forum\models.py:16
+msgid "YouTube link (e.g.: https://www.youtube.com/watch?v=...)"
+msgstr "Lien YouTube (ex : https://www.youtube.com/watch?v=...)"
+
+#: .\forum\models.py:20
+msgid "Pinned"
+msgstr "Épinglé"
+
+#: .\forum\models.py:50
+#, python-format
+msgid "Comment by %(user)s on %(post)s"
+msgstr "Commentaire de %(user)s sur %(post)s"
+
+#: .\forum\views.py:25
+msgid "Comment added!"
 msgstr "Commentaire ajouté !"
 
-#: .\forum\views.py:55
-msgid "Message envoyé !"
+#: .\forum\views.py:56
+msgid "Message sent!"
 msgstr "Message envoyé !"
 
-#: .\forum\views.py:72
-msgid "Votre article a été publié avec succès !"
-msgstr "Votre article a été publié avec succès !"
+#: .\forum\views.py:74
+msgid "Your post has been published successfully!"
+msgstr "Votre publication a été publiée avec succès !"
 
-#: .\forum\views.py:83
-msgid "Publication supprimée."
+#: .\forum\views.py:85
+msgid "Post deleted."
 msgstr "Publication supprimée."
 
-#: .\forum\views.py:94
-msgid "Commentaire supprimé."
+#: .\forum\views.py:97
+msgid "Comment deleted."
 msgstr "Commentaire supprimé."
 
-#: .\patients\models.py:14 .\templates\patients\patient_profile.html:101
+#: .\forum\views.py:112
+msgid "The post has been pinned."
+msgstr "La publication a été épinglée."
+
+#: .\forum\views.py:114
+msgid "The post has been unpinned."
+msgstr "La publication a été désépinglée."
+
+#: .\patients\forms.py:195
+msgid "Problem, Etiology, Signs/Symptoms (PES)..."
+msgstr "Problème, Étiologie, Signes/Symptômes (PES)..."
+
+#: .\patients\forms.py:222
+msgid "E.g.: whole bread, boiled egg, skimmed milk..."
+msgstr "Ex : pain complet, œuf bouilli, lait écrémé..."
+
+#: .\patients\models.py:11 .\patients\models.py:162 .\patients\models.py:258
+msgid "Low"
+msgstr "Faible"
+
+#: .\patients\models.py:12
+msgid "Medium"
+msgstr "Moyen"
+
+#: .\patients\models.py:13 .\patients\models.py:162 .\patients\models.py:258
+msgid "High"
+msgstr "Élevé"
+
+#: .\patients\models.py:17
+msgid "Rare"
+msgstr "Rare"
+
+#: .\patients\models.py:18
+msgid "Sometimes"
+msgstr "Parfois"
+
+#: .\patients\models.py:19
+msgid "Frequent"
+msgstr "Fréquent"
+
+#: .\patients\models.py:23 .\patients\pdf_export.py:120
+#: .\patients\pdf_export.py:330
+#: .\templates\dietitians\partials\patient_profile_detail.html:58
+#: .\templates\dietitians\partials\patient_profile_detail.html:67
+#: .\templates\dietitians\partials\patient_profile_detail.html:68
+#: .\templates\dietitians\partials\patient_profile_detail.html:69
+#: .\templates\patients\partials\food_table.html:21
+#: .\templates\patients\patient_profile.html:136
+#: .\templates\patients\patient_profile.html:157
+#: .\templates\patients\patient_profile.html:161
+msgid "Yes"
+msgstr "Oui"
+
+#: .\patients\models.py:24 .\patients\pdf_export.py:120
+#: .\templates\dietitians\partials\patient_profile_detail.html:58
+#: .\templates\dietitians\partials\patient_profile_detail.html:67
+#: .\templates\dietitians\partials\patient_profile_detail.html:68
+#: .\templates\dietitians\partials\patient_profile_detail.html:69
+#: .\templates\patients\partials\food_table.html:23
+#: .\templates\patients\patient_profile.html:137
+#: .\templates\patients\patient_profile.html:157
+#: .\templates\patients\patient_profile.html:161
+msgid "No"
+msgstr "Non"
+
+#: .\patients\models.py:28
+msgid "None / General follow-up"
+msgstr "Aucune / Suivi général"
+
+#: .\patients\models.py:29
+msgid "Cardiovascular disease"
+msgstr "Maladie cardiovasculaire"
+
+#: .\patients\models.py:30
+msgid "Diabetes"
+msgstr "Diabète"
+
+#: .\patients\models.py:31
+msgid "Hypertension"
+msgstr "Hypertension"
+
+#: .\patients\models.py:32
+msgid "Kidney disease"
+msgstr "Maladie rénale"
+
+#: .\patients\models.py:33
+msgid "Pregnancy / Breastfeeding"
+msgstr "Grossesse / Allaitement"
+
+#: .\patients\models.py:34
+msgid "Digestive issues"
+msgstr "Troubles digestifs"
+
+#: .\patients\models.py:35
+msgid "Weight loss"
+msgstr "Perte de poids"
+
+#: .\patients\models.py:36
+msgid "Weight gain"
+msgstr "Prise de poids"
+
+#: .\patients\models.py:37
+msgid "Other metabolic disease"
+msgstr "Autre maladie métabolique"
+
+#: .\patients\models.py:49 .\patients\pdf_export.py:158
+#: .\templates\patients\patient_profile.html:90
+msgid "Date of birth"
+msgstr "Date de naissance"
+
+#: .\patients\models.py:50 .\patients\pdf_export.py:159
+#: .\patients\pdf_export.py:311 .\patients\views.py:256
+#: .\templates\dietitians\partials\patient_profile_detail.html:27
+#: .\templates\patients\patient_profile.html:70
 msgid "Age"
 msgstr "Âge"
 
-#: .\patients\models.py:18
+#: .\patients\models.py:53
 msgid "Male"
 msgstr "Homme"
 
-#: .\patients\models.py:19
+#: .\patients\models.py:53
 msgid "Female"
 msgstr "Femme"
 
-#: .\patients\models.py:21 .\templates\patients\patient_profile.html:116
+#: .\patients\models.py:54 .\patients\pdf_export.py:160
+#: .\patients\pdf_export.py:312 .\patients\views.py:256
+#: .\templates\dietitians\partials\patient_profile_detail.html:28
+#: .\templates\patients\patient_profile.html:91
 msgid "Gender"
 msgstr "Sexe"
 
-#: .\patients\models.py:23 .\templates\patients\patient_profile.html:117
+#: .\patients\models.py:56 .\patients\pdf_export.py:163
+#: .\templates\dietitians\partials\patient_profile_detail.html:21
+#: .\templates\patients\patient_profile.html:93
+msgid "Address"
+msgstr "Adresse"
+
+#: .\patients\models.py:57 .\patients\pdf_export.py:161
+#: .\templates\dietitians\partials\patient_profile_detail.html:20
+#: .\templates\patients\patient_profile.html:92
+msgid "Phone"
+msgstr "Téléphone"
+
+#: .\patients\models.py:58 .\patients\pdf_export.py:162 .\patients\views.py:256
+#: .\templates\dietitians\partials\patient_profile_detail.html:22
+#: .\templates\patients\patient_profile.html:94
 msgid "Occupation"
 msgstr "Profession"
 
-#: .\patients\models.py:27
-msgid "Sedentary"
-msgstr "Sédentaire"
+#: .\patients\models.py:63 .\patients\pdf_export.py:168
+#: .\patients\pdf_export.py:313 .\patients\views.py:257
+#: .\templates\dietitians\partials\patient_profile_detail.html:23
+msgid "Main pathology"
+msgstr "Pathologie principale"
 
-#: .\patients\models.py:28
-msgid "Low activity"
-msgstr "Faible activité"
+#: .\patients\models.py:65 .\patients\pdf_export.py:169
+msgid "Reason for consultation"
+msgstr "Motif de consultation"
 
-#: .\patients\models.py:29
-msgid "Moderate activity"
-msgstr "Activité modérée"
+#: .\patients\models.py:66 .\patients\pdf_export.py:170
+#: .\templates\community\post_detail.html:54
+msgid "Comment"
+msgstr "Commenter"
 
-#: .\patients\models.py:30
-msgid "Intense activity"
-msgstr "Activité intense"
-
-#: .\patients\models.py:32 .\templates\patients\patient_profile.html:118
-msgid "Activity level"
-msgstr "Niveau d'activité"
-
-#: .\patients\models.py:35 .\templates\patients\patient_profile.html:132
+#: .\patients\models.py:69 .\patients\pdf_export.py:175
+#: .\patients\pdf_export.py:314 .\patients\views.py:257
+#: .\templates\dietitians\partials\patient_profile_detail.html:50
+#: .\templates\patients\patient_profile.html:127
 msgid "Diagnosis"
 msgstr "Diagnostic"
 
-#: .\patients\models.py:36 .\templates\patients\patient_profile.html:133
+#: .\patients\models.py:70 .\patients\pdf_export.py:176
 msgid "Diagnosis date"
 msgstr "Date du diagnostic"
 
-#: .\patients\models.py:37 .\templates\patients\patient_profile.html:134
+#: .\patients\models.py:71 .\patients\pdf_export.py:177
+#: .\templates\dietitians\partials\patient_profile_detail.html:51
+#: .\templates\patients\patient_profile.html:128
+msgid "Known diseases"
+msgstr "Maladies connues"
+
+#: .\patients\models.py:72 .\patients\pdf_export.py:178
 msgid "Medical history"
 msgstr "Antécédents médicaux"
 
-#: .\patients\models.py:38 .\templates\patients\patient_profile.html:135
-msgid "Medications"
-msgstr "Médicaments"
+#: .\patients\models.py:73
+msgid "Family history (diabetes, hypertension, obesity...)"
+msgstr "Antécédents familiaux (diabète, HTA, obésité...)"
 
-#: .\patients\models.py:39 .\templates\patients\patient_profile.html:137
+#: .\patients\models.py:74 .\patients\pdf_export.py:180
+#: .\templates\dietitians\partials\patient_profile_detail.html:52
+#: .\templates\patients\patient_profile.html:129
+msgid "Previous surgeries"
+msgstr "Chirurgies antérieures"
+
+#: .\patients\models.py:75
+msgid "Current treatments (medications, supplements)"
+msgstr "Traitements en cours (médicaments, compléments)"
+
+#: .\patients\models.py:76
 msgid "Allergies"
 msgstr "Allergies"
 
-#: .\patients\models.py:40 .\templates\patients\patient_profile.html:144
+#: .\patients\models.py:77 .\patients\pdf_export.py:182
+#: .\templates\dietitians\partials\patient_profile_detail.html:54
+#: .\templates\patients\patient_profile.html:131
+msgid "Food allergies"
+msgstr "Allergies alimentaires"
+
+#: .\patients\models.py:78 .\patients\pdf_export.py:183
+#: .\templates\dietitians\partials\patient_profile_detail.html:55
+#: .\templates\patients\patient_profile.html:132
+msgid "Food intolerances"
+msgstr "Intolérances alimentaires"
+
+#: .\patients\models.py:79 .\patients\pdf_export.py:184
+#: .\templates\dietitians\partials\patient_profile_detail.html:57
+#: .\templates\patients\patient_profile.html:134
 msgid "Family history of CVD"
 msgstr "Antécédents familiaux de MCV"
 
-#: .\patients\models.py:42 .\templates\patients\patient_profile.html:103
+#: .\patients\models.py:82 .\patients\pdf_export.py:189
+#: .\templates\dietitians\partials\patient_profile_detail.html:63
+#: .\templates\patients\patient_profile.html:151
+msgid "Sleep (hours per night)"
+msgstr "Sommeil (heures par nuit)"
+
+#: .\patients\models.py:85 .\patients\models.py:267
+msgid "Good"
+msgstr "Bonne"
+
+#: .\patients\models.py:85 .\patients\models.py:267
+msgid "Fair"
+msgstr "Moyenne"
+
+#: .\patients\models.py:85 .\patients\models.py:267
+msgid "Poor"
+msgstr "Mauvaise"
+
+#: .\patients\models.py:86 .\patients\pdf_export.py:190
+#: .\templates\dietitians\partials\patient_profile_detail.html:64
+#: .\templates\patients\patient_profile.html:152
+msgid "Sleep quality"
+msgstr "Qualité du sommeil"
+
+#: .\patients\models.py:91
+msgid "Sedentary"
+msgstr "Sédentaire"
+
+#: .\patients\models.py:92
+msgid "Low activity"
+msgstr "Faible activité"
+
+#: .\patients\models.py:93
+msgid "Moderate activity"
+msgstr "Activité modérée"
+
+#: .\patients\models.py:94
+msgid "Intense activity"
+msgstr "Activité intense"
+
+#: .\patients\models.py:96 .\patients\pdf_export.py:191 .\patients\views.py:256
+#: .\templates\dietitians\partials\patient_profile_detail.html:65
+#: .\templates\patients\patient_profile.html:95
+msgid "Activity level"
+msgstr "Niveau d'activité"
+
+#: .\patients\models.py:98 .\patients\pdf_export.py:192
+#: .\templates\patients\patient_profile.html:153
+msgid "Physical activity type"
+msgstr "Type d'activité physique"
+
+#: .\patients\models.py:99 .\patients\pdf_export.py:193
+msgid "Times per week"
+msgstr "Fois par semaine"
+
+#: .\patients\models.py:100 .\patients\pdf_export.py:194
+msgid "Minutes per session"
+msgstr "Minutes par séance"
+
+#: .\patients\models.py:101 .\patients\pdf_export.py:195
+#: .\templates\dietitians\partials\patient_profile_detail.html:66
+#: .\templates\patients\patient_profile.html:154
+msgid "Stress level"
+msgstr "Niveau de stress"
+
+#: .\patients\models.py:102 .\patients\pdf_export.py:201
+msgid "Main stress sources"
+msgstr "Principales sources de stress"
+
+#: .\patients\models.py:103 .\patients\pdf_export.py:196
+#: .\templates\dietitians\partials\patient_profile_detail.html:67
+#: .\templates\patients\patient_profile.html:156
+msgid "Smoking"
+msgstr "Tabac"
+
+#: .\patients\models.py:104
+msgid "Smoking frequency"
+msgstr "Fréquence du tabac"
+
+#: .\patients\models.py:105 .\patients\pdf_export.py:197
+#: .\templates\dietitians\partials\patient_profile_detail.html:68
+#: .\templates\patients\patient_profile.html:160
+msgid "Alcohol"
+msgstr "Alcool"
+
+#: .\patients\models.py:106
+msgid "Alcohol frequency"
+msgstr "Fréquence de l'alcool"
+
+#: .\patients\models.py:107 .\patients\pdf_export.py:198
+#: .\templates\dietitians\partials\patient_profile_detail.html:69
+msgid "Sweets"
+msgstr "Sucreries"
+
+#: .\patients\models.py:108
+msgid "Sweets frequency"
+msgstr "Fréquence des sucreries"
+
+#: .\patients\models.py:111 .\patients\pdf_export.py:206
+#: .\patients\pdf_export.py:315 .\patients\views.py:258
+#: .\templates\dietitians\partials\patient_profile_detail.html:29
+#: .\templates\patients\patient_profile.html:72
 msgid "Height (cm)"
 msgstr "Taille (cm)"
 
-#: .\patients\models.py:43 .\patients\models.py:79
-#: .\templates\dietitians\patient_record.html:230
-#: .\templates\dietitians\patient_record.html:292
-#: .\templates\patients\my_record.html:321
-#: .\templates\patients\patient_profile.html:102
-msgid "Weight (kg)"
-msgstr "Poids (kg)"
+#: .\patients\models.py:112 .\patients\pdf_export.py:207
+#: .\patients\views.py:258
+#: .\templates\dietitians\partials\patient_profile_detail.html:30
+msgid "Current weight (kg)"
+msgstr "Poids actuel (kg)"
 
-#: .\patients\models.py:44 .\templates\dietitians\patient_record.html:86
-#: .\templates\patients\my_record.html:118
-#: .\templates\patients\patient_profile.html:104
+#: .\patients\models.py:113 .\patients\pdf_export.py:208
+#: .\templates\dietitians\partials\patient_profile_detail.html:31
+#: .\templates\patients\patient_profile.html:107
+msgid "Usual weight (kg)"
+msgstr "Poids habituel (kg)"
+
+#: .\patients\models.py:114 .\patients\pdf_export.py:209
+#: .\templates\dietitians\partials\patient_profile_detail.html:32
+#: .\templates\patients\patient_profile.html:108
+msgid "Desired weight (kg)"
+msgstr "Poids souhaité (kg)"
+
+#: .\patients\models.py:115 .\patients\pdf_export.py:210
+#: .\patients\views.py:259
+#: .\templates\dietitians\partials\patient_profile_detail.html:33
+#: .\templates\patients\patient_profile.html:109
+msgid "Waist circumference (cm)"
+msgstr "Tour de taille (cm)"
+
+#: .\patients\models.py:116 .\patients\pdf_export.py:211
+#: .\patients\views.py:259
+#: .\templates\dietitians\partials\patient_profile_detail.html:34
+#: .\templates\patients\patient_profile.html:110
+msgid "Hip circumference (cm)"
+msgstr "Tour de hanches (cm)"
+
+#: .\patients\models.py:117 .\patients\pdf_export.py:213
+#: .\patients\pdf_export.py:319 .\patients\views.py:258
+#: .\templates\dietitians\partials\patient_profile_detail.html:39
+#: .\templates\dietitians\patient_record.html:134
+#: .\templates\patients\my_record.html:106
+#: .\templates\patients\patient_profile.html:76
 msgid "BMI"
 msgstr "IMC"
 
-#: .\patients\models.py:45 .\templates\patients\patient_profile.html:119
-msgid "Waist circumference"
-msgstr "Tour de taille"
-
-#: .\patients\models.py:46
+#: .\patients\models.py:118
 msgid "Body fat (%)"
 msgstr "Masse grasse (%)"
 
-#: .\patients\models.py:55
+#: .\patients\models.py:119 .\patients\pdf_export.py:214
+#: .\templates\dietitians\partials\patient_profile_detail.html:45
+#: .\templates\patients\patient_profile.html:114
+msgid "Left blood pressure"
+msgstr "Tension artérielle gauche"
+
+#: .\patients\models.py:120 .\patients\models.py:245
+#: .\patients\pdf_export.py:215
+#: .\templates\dietitians\partials\patient_profile_detail.html:46
+#: .\templates\patients\patient_profile.html:115
+msgid "Right blood pressure"
+msgstr "Tension artérielle droite"
+
+#: .\patients\models.py:121
+msgid "Other measures"
+msgstr "Autres mesures"
+
+#: .\patients\models.py:124 .\patients\pdf_export.py:224
+#: .\templates\dietitians\partials\patient_profile_detail.html:73
+msgid "Number of meals per day"
+msgstr "Nombre de repas par jour"
+
+#: .\patients\models.py:125 .\patients\pdf_export.py:225
+msgid "Snacks included"
+msgstr "Avec collations"
+
+#: .\patients\models.py:126 .\patients\pdf_export.py:226
+msgid "Breakfast time"
+msgstr "Heure du petit-déjeuner"
+
+#: .\patients\models.py:127 .\patients\pdf_export.py:227
+msgid "Lunch time"
+msgstr "Heure du déjeuner"
+
+#: .\patients\models.py:128 .\patients\pdf_export.py:228
+msgid "Dinner time"
+msgstr "Heure du dîner"
+
+#: .\patients\models.py:129 .\patients\pdf_export.py:229
+msgid "Snack times"
+msgstr "Heures des collations"
+
+#: .\patients\models.py:132 .\templates\components\footer.html:43
+#: .\templates\components\navbar.html:61
+msgid "Home"
+msgstr "Accueil"
+
+#: .\patients\models.py:132
+msgid "Work"
+msgstr "Travail"
+
+#: .\patients\models.py:132
+msgid "Eating out"
+msgstr "Restauration extérieure"
+
+#: .\patients\models.py:133 .\patients\pdf_export.py:230
+#: .\templates\dietitians\partials\patient_profile_detail.html:74
+msgid "Usual place for meals"
+msgstr "Lieu principal des repas"
+
+#: .\patients\models.py:137
+msgid "Alone"
+msgstr "Seul(e)"
+
+#: .\patients\models.py:137
+msgid "Family"
+msgstr "Famille"
+
+#: .\patients\models.py:137
+msgid "Colleagues"
+msgstr "Collègues"
+
+#: .\patients\models.py:137
+msgid "Others"
+msgstr "Autres"
+
+#: .\patients\models.py:138 .\patients\pdf_export.py:231
+msgid "People you eat with"
+msgstr "Personnes avec qui vous mangez"
+
+#: .\patients\models.py:142 .\patients\pdf_export.py:237
+msgid "Typical breakfast"
+msgstr "Petit-déjeuner type"
+
+#: .\patients\models.py:143 .\patients\pdf_export.py:238
+msgid "Typical morning snack"
+msgstr "Collation du matin type"
+
+#: .\patients\models.py:144 .\patients\pdf_export.py:239
+msgid "Typical lunch"
+msgstr "Déjeuner type"
+
+#: .\patients\models.py:145 .\patients\pdf_export.py:240
+msgid "Typical afternoon snack"
+msgstr "Collation de l'après-midi type"
+
+#: .\patients\models.py:146 .\patients\pdf_export.py:241
+msgid "Typical dinner"
+msgstr "Dîner type"
+
+#: .\patients\models.py:147 .\patients\pdf_export.py:242
+msgid "Typical evening snack"
+msgstr "Collation du soir type"
+
+#: .\patients\models.py:150 .\patients\pdf_export.py:247
+msgid "Fruits consumption"
+msgstr "Consommation de fruits"
+
+#: .\patients\models.py:151 .\patients\pdf_export.py:248
+msgid "Vegetables consumption"
+msgstr "Consommation de légumes"
+
+#: .\patients\models.py:152 .\patients\pdf_export.py:249
+msgid "Fatty/sugary foods consumption"
+msgstr "Consommation de produits gras/sucrés"
+
+#: .\patients\models.py:155 .\patients\pdf_export.py:250
+#: .\templates\dietitians\partials\patient_profile_detail.html:77
+#: .\templates\patients\patient_profile.html:163
+msgid "Glasses of water per day"
+msgstr "Verres d'eau par jour"
+
+#: .\patients\models.py:156 .\patients\pdf_export.py:251
+msgid "Litres of water per day"
+msgstr "Litres d'eau par jour"
+
+#: .\patients\models.py:157
+msgid "Other drinks (sodas, juice, alcohol, energy drinks)"
+msgstr "Autres boissons (sodas, jus, alcool, boissons énergisantes)"
+
+#: .\patients\models.py:162 .\patients\models.py:206 .\patients\models.py:258
+#: .\patients\models.py:309
+msgid "Normal"
+msgstr "Normal"
+
+#: .\patients\models.py:163 .\patients\models.py:259
+#: .\patients\pdf_export.py:257 .\patients\pdf_export.py:320
+#: .\templates\dietitians\partials\patient_profile_detail.html:75
+msgid "Appetite"
+msgstr "Appétit"
+
+#: .\patients\models.py:165 .\patients\pdf_export.py:258
+#: .\templates\dietitians\partials\patient_profile_detail.html:76
+msgid "Snacking"
+msgstr "Grignotage"
+
+#: .\patients\models.py:166
+msgid "Snacking moments (evening, stress, boredom...)"
+msgstr "Moments de grignotage (soir, stress, ennui...)"
+
+#: .\patients\models.py:167
+#: .\templates\dietitians\partials\patient_profile_detail.html:78
+msgid "Specific restrictions (cultural, religious, ethical)"
+msgstr "Restrictions particulières (culturelles, religieuses, éthiques)"
+
+#: .\patients\models.py:168
+msgid "Particular behaviors (binges, guilt, compulsions...)"
+msgstr "Comportements particuliers (compulsions, crises, culpabilité...)"
+
+#: .\patients\models.py:171 .\patients\pdf_export.py:266
+#: .\templates\dietitians\partials\patient_profile_detail.html:81
+#: .\templates\patients\patient_profile.html:175
+msgid "Main expectations"
+msgstr "Attentes principales"
+
+#: .\patients\models.py:172 .\patients\pdf_export.py:267
+#: .\templates\dietitians\partials\patient_profile_detail.html:82
+#: .\templates\patients\patient_profile.html:176
+msgid "Timeframe to reach goals"
+msgstr "Délai souhaité pour atteindre les objectifs"
+
+#: .\patients\models.py:173 .\patients\pdf_export.py:268
+#: .\patients\views.py:260
+#: .\templates\dietitians\partials\patient_profile_detail.html:84
+#: .\templates\patients\patient_profile.html:178
+msgid "Motivation level (0-10)"
+msgstr "Motivation (0-10)"
+
+#: .\patients\models.py:176 .\patients\pdf_export.py:273
+msgid "Practitioner's notes"
+msgstr "Observations du praticien"
+
+#: .\patients\models.py:177 .\patients\pdf_export.py:274
+msgid "Nutritional diagnosis"
+msgstr "Diagnostic nutritionnel"
+
+#: .\patients\models.py:178 .\patients\pdf_export.py:275
+msgid "Risk factors"
+msgstr "Facteurs de risque"
+
+#: .\patients\models.py:179 .\patients\pdf_export.py:276
+#: .\patients\pdf_export.py:438
+msgid "Proposed dietary plan"
+msgstr "Plan diététique proposé"
+
+#: .\patients\models.py:180 .\patients\pdf_export.py:277
+#: .\patients\pdf_export.py:439
+msgid "Specific advice"
+msgstr "Conseils spécifiques"
+
+#: .\patients\models.py:181 .\patients\pdf_export.py:278
+msgid "Date of next appointment"
+msgstr "Date du prochain rendez-vous"
+
+#: .\patients\models.py:188
+msgid "Patient profile"
+msgstr "Profil patient"
+
+#: .\patients\models.py:189
+msgid "Patient profiles"
+msgstr "Profils patients"
+
+#: .\patients\models.py:202 .\patients\models.py:305
+msgid "Unknown"
+msgstr "Inconnu"
+
+#: .\patients\models.py:204 .\patients\models.py:307
+msgid "Underweight"
+msgstr "Insuffisance pondérale"
+
+#: .\patients\models.py:208 .\patients\models.py:311
+msgid "Overweight"
+msgstr "Surpoids"
+
+#: .\patients\models.py:209 .\patients\models.py:312
+msgid "Obesity"
+msgstr "Obésité"
+
+#: .\patients\models.py:224
 #, python-format
 msgid "Profile of %(email)s"
 msgstr "Profil de %(email)s"
 
-#: .\patients\models.py:71
+#: .\patients\models.py:240
 msgid "Consultation date"
 msgstr "Date de consultation"
 
-#: .\patients\models.py:73 .\templates\dietitians\patient_record.html:84
-#: .\templates\dietitians\patient_record.html:293
-#: .\templates\patients\my_record.html:110
+#: .\patients\models.py:243 .\templates\dietitians\patient_record.html:280
+#: .\templates\dietitians\patient_record.html:342
+#: .\templates\patients\my_record.html:355
+#: .\templates\patients\patient_profile.html:71
+msgid "Weight (kg)"
+msgstr "Poids (kg)"
+
+#: .\patients\models.py:244 .\patients\pdf_export.py:319
+#: .\templates\dietitians\patient_record.html:133
+#: .\templates\dietitians\patient_record.html:343
+#: .\templates\patients\my_record.html:105
 msgid "Blood pressure"
 msgstr "Tension artérielle"
 
-#: .\patients\models.py:74
+#: .\patients\models.py:246
+msgid "Heart rate (bpm)"
+msgstr "Fréquence cardiaque (bpm)"
+
+#: .\patients\models.py:249
 msgid "Total cholesterol"
 msgstr "Cholestérol total"
 
-#: .\patients\models.py:75
+#: .\patients\models.py:250
 msgid "LDL"
 msgstr "LDL"
 
-#: .\patients\models.py:76
+#: .\patients\models.py:251
 msgid "HDL"
 msgstr "HDL"
 
-#: .\patients\models.py:77
+#: .\patients\models.py:252
 msgid "Triglycerides"
 msgstr "Triglycérides"
 
-#: .\patients\models.py:78
+#: .\patients\models.py:253
 msgid "HbA1c (%)"
 msgstr "HbA1c (%)"
 
-#: .\patients\models.py:81
+#: .\patients\models.py:261 .\patients\pdf_export.py:366
+msgid "Observations"
+msgstr "Observations"
+
+#: .\patients\models.py:264 .\patients\pdf_export.py:357
+msgid "Edema"
+msgstr "Œdèmes"
+
+#: .\patients\models.py:268 .\patients\pdf_export.py:358
+msgid "Wound healing"
+msgstr "Cicatrisation"
+
+#: .\patients\models.py:270 .\patients\pdf_export.py:353
+msgid "Salt intake"
+msgstr "Apport en sel"
+
+#: .\patients\models.py:271 .\patients\pdf_export.py:354
+msgid "Protein intake"
+msgstr "Protéines"
+
+#: .\patients\models.py:272 .\patients\pdf_export.py:355
+#: .\templates\patients\patient_profile_form.html:219
+#: .\templates\patients\patient_profile_update.html:194
+msgid "Hydration"
+msgstr "Hydratation"
+
+#: .\patients\models.py:273 .\patients\pdf_export.py:356
+msgid "Fruits/Vegetables"
+msgstr "Fruits/Légumes"
+
+#: .\patients\models.py:276 .\patients\pdf_export.py:372
+msgid "Rapid weight loss"
+msgstr "Perte de poids rapide"
+
+#: .\patients\models.py:277 .\patients\pdf_export.py:373
+msgid "Significant fatigue"
+msgstr "Fatigue importante"
+
+#: .\patients\models.py:278 .\patients\pdf_export.py:374
+msgid "Non-healing wound"
+msgstr "Plaie non cicatrisante"
+
+#: .\patients\models.py:279 .\patients\pdf_export.py:375
+msgid "Decreased appetite"
+msgstr "Diminution de l'appétit"
+
+#: .\patients\models.py:280 .\patients\pdf_export.py:376
+msgid "Edema present"
+msgstr "Œdèmes présents"
+
+#: .\patients\models.py:283 .\patients\pdf_export.py:363
 msgid "Nutritional Diagnosis (PES)"
 msgstr "Diagnostic nutritionnel (PES)"
 
-#: .\patients\models.py:82
+#: .\patients\models.py:284 .\patients\pdf_export.py:364
 msgid "Nutritional goals"
 msgstr "Objectifs nutritionnels"
 
-#: .\patients\models.py:83 .\templates\dietitians\patient_record.html:297
+#: .\patients\models.py:285 .\patients\pdf_export.py:365
+#: .\templates\dietitians\patient_record.html:347
 msgid "Intervention plan"
 msgstr "Plan d'intervention"
 
-#: .\patients\models.py:85
+#: .\patients\models.py:286
 msgid "Follow-up date"
 msgstr "Date de suivi"
 
-#: .\patients\models.py:98
-msgid "Unknown"
-msgstr "Inconnu"
+#: .\patients\models.py:290
+msgid "Consultation"
+msgstr "Consultation"
 
-#: .\patients\models.py:100
-msgid "Underweight"
-msgstr "Insuffisance pondérale"
+#: .\patients\models.py:291 .\templates\dietitians\patient_record.html:92
+#: .\templates\patients\my_record.html:79
+msgid "Consultations"
+msgstr "Consultations"
 
-#: .\patients\models.py:102
-msgid "Normal"
-msgstr "Normal"
-
-#: .\patients\models.py:104
-msgid "Overweight"
-msgstr "Surpoids"
-
-#: .\patients\models.py:105
-msgid "Obesity"
-msgstr "Obésité"
-
-#: .\patients\models.py:108
+#: .\patients\models.py:323
 #, python-format
 msgid "Consultation of %(email)s - %(date)s"
 msgstr "Consultation de %(email)s - %(date)s"
 
-#: .\patients\models.py:116
+#: .\patients\models.py:331
 msgid "Day 1"
 msgstr "Jour 1"
 
-#: .\patients\models.py:116
+#: .\patients\models.py:331
 msgid "Day 2"
 msgstr "Jour 2"
 
-#: .\patients\models.py:116
+#: .\patients\models.py:331
 msgid "Day 3"
 msgstr "Jour 3"
 
-#: .\patients\models.py:117
+#: .\patients\models.py:332
 msgid "Day 4"
 msgstr "Jour 4"
 
-#: .\patients\models.py:117
+#: .\patients\models.py:332
 msgid "Day 5"
 msgstr "Jour 5"
 
-#: .\patients\models.py:117
+#: .\patients\models.py:332
 msgid "Day 6"
 msgstr "Jour 6"
 
-#: .\patients\models.py:117
+#: .\patients\models.py:332
 msgid "Day 7"
 msgstr "Jour 7"
 
-#: .\patients\models.py:123 .\patients\models.py:148
+#: .\patients\models.py:338 .\patients\models.py:363
+#: .\patients\pdf_export.py:408
 msgid "Breakfast"
 msgstr "Petit-déjeuner"
 
-#: .\patients\models.py:124 .\patients\models.py:149
+#: .\patients\models.py:339 .\patients\models.py:364
 msgid "Morning snack"
 msgstr "Collation du matin"
 
-#: .\patients\models.py:125 .\patients\models.py:150
+#: .\patients\models.py:340 .\patients\models.py:365
+#: .\patients\pdf_export.py:408
 msgid "Lunch"
 msgstr "Déjeuner"
 
-#: .\patients\models.py:126 .\patients\models.py:151
+#: .\patients\models.py:341 .\patients\models.py:366
 msgid "Afternoon snack"
 msgstr "Collation de l'après-midi"
 
-#: .\patients\models.py:127 .\patients\models.py:152
+#: .\patients\models.py:342 .\patients\models.py:367
+#: .\patients\pdf_export.py:408
 msgid "Dinner"
 msgstr "Dîner"
 
-#: .\patients\models.py:128
+#: .\patients\models.py:343
 msgid "Evening snack"
 msgstr "Collation du soir"
 
-#: .\patients\models.py:135
+#: .\patients\models.py:350
 #, python-format
 msgid "Plan %(day)s - %(email)s"
 msgstr "Plan %(day)s - %(email)s"
 
-#: .\patients\models.py:144 .\templates\dietitians\patient_record.html:136
-#: .\templates\patients\my_record.html:186
+#: .\patients\models.py:359 .\patients\pdf_export.py:319
+#: .\templates\dietitians\patient_record.html:177
+#: .\templates\dietitians\patient_record.html:186
+#: .\templates\patients\my_record.html:149
+#: .\templates\patients\my_record.html:159
 #: .\templates\patients\partials\food_table.html:7
 msgid "Date"
 msgstr "Date"
 
-#: .\patients\models.py:154
+#: .\patients\models.py:369
 msgid "Meal time"
 msgstr "Moment du repas"
 
-#: .\patients\models.py:156
+#: .\patients\models.py:371
 msgid "What did you eat?"
 msgstr "Qu'avez-vous mangé ?"
 
-#: .\patients\models.py:157
+#: .\patients\models.py:372
 msgid "Sugary drink consumed?"
 msgstr "Boisson sucrée consommée ?"
 
-#: .\patients\models.py:160
+#: .\patients\models.py:375
 msgid "General instructions"
 msgstr "Instructions générales"
 
-#: .\patients\models.py:161
+#: .\patients\models.py:376
 msgid "Current plan"
 msgstr "Plan actuel"
 
-#: .\patients\models.py:164 .\templates\components\projects.html:119
+#: .\patients\models.py:379 .\templates\components\projects.html:119
+#: .\templates\dietitians\patient_record.html:72
 msgid "Meal plan"
 msgstr "Plan alimentaire"
 
-#: .\patients\models.py:168
+#: .\patients\models.py:383
 #, python-format
 msgid "%(email)s - %(date)s - %(meal)s"
 msgstr "%(email)s - %(date)s - %(meal)s"
 
-#: .\patients\views.py:296
-msgid "Avec Allergies"
+#: .\patients\pdf_export.py:128
+msgid "Page"
+msgstr "Page"
+
+#: .\patients\pdf_export.py:148 .\patients\pdf_export.py:151
+#: .\patients\pdf_export.py:219 .\templates\patients\bilan_form.html:31
+msgid "Dietetic Consultation Form"
+msgstr "Formulaire de consultation diététique"
+
+#: .\patients\pdf_export.py:154
+msgid "1. Personal Information"
+msgstr "1. Informations personnelles"
+
+#: .\patients\pdf_export.py:156 .\patients\pdf_export.py:310
+msgid "Full name"
+msgstr "Nom complet"
+
+#: .\patients\pdf_export.py:157 .\patients\views.py:255
+#: .\templates\dietitians\partials\patient_profile_detail.html:19
+#: .\templates\dietitians\patient_list.html:79
+#: .\templates\dietitians\patient_list.html:89
+msgid "Email"
+msgstr "E-mail"
+
+#: .\patients\pdf_export.py:166
+msgid "2. Reason for Consultation"
+msgstr "2. Motif de consultation"
+
+#: .\patients\pdf_export.py:173
+msgid "3. Medical History"
+msgstr "3. Antécédents médicaux"
+
+#: .\patients\pdf_export.py:179
+msgid "Family history"
+msgstr "Antécédents familiaux"
+
+#: .\patients\pdf_export.py:181
+#: .\templates\dietitians\partials\patient_profile_detail.html:53
+#: .\templates\patients\patient_profile.html:130
+msgid "Medications"
+msgstr "Médicaments"
+
+#: .\patients\pdf_export.py:187
+msgid "4. Lifestyle"
+msgstr "4. Habitudes de vie"
+
+#: .\patients\pdf_export.py:203
+msgid "5. Anthropometric Data"
+msgstr "5. Données anthropométriques"
+
+#: .\patients\pdf_export.py:212
+#: .\templates\dietitians\partials\patient_profile_detail.html:36
+#: .\templates\patients\patient_profile.html:112
+msgid "Waist/Hip ratio"
+msgstr "Rapport taille/hanches"
+
+#: .\patients\pdf_export.py:220
+msgid "continued"
+msgstr "suite"
+
+#: .\patients\pdf_export.py:222
+msgid "6. Eating Habits"
+msgstr "6. Habitudes alimentaires"
+
+#: .\patients\pdf_export.py:235
+#: .\templates\patients\patient_profile_form.html:204
+#: .\templates\patients\patient_profile_update.html:181
+msgid "Typical Daily Intake"
+msgstr "Journal alimentaire type"
+
+#: .\patients\pdf_export.py:252
+msgid "Other drinks"
+msgstr "Autres boissons"
+
+#: .\patients\pdf_export.py:255
+msgid "7. Relationship with Food"
+msgstr "7. Relation à l'alimentation"
+
+#: .\patients\pdf_export.py:259
+msgid "Snacking moments"
+msgstr "Moments de grignotage"
+
+#: .\patients\pdf_export.py:260 .\patients\pdf_export.py:440
+msgid "Specific restrictions"
+msgstr "Restrictions particulières"
+
+#: .\patients\pdf_export.py:261
+msgid "Particular behaviors"
+msgstr "Comportements particuliers"
+
+#: .\patients\pdf_export.py:264
+msgid "8. Goals and Expectations"
+msgstr "8. Objectifs et attentes"
+
+#: .\patients\pdf_export.py:271
+msgid "9. Practitioner's Notes"
+msgstr "9. Observations du praticien"
+
+#: .\patients\pdf_export.py:283
+msgid "Patient's name and signature"
+msgstr "Nom et signature du patient"
+
+#: .\patients\pdf_export.py:284
+msgid "Nutritionist's signature name"
+msgstr "Nom et signature de la nutritionniste"
+
+#: .\patients\pdf_export.py:302 .\patients\pdf_export.py:305
+msgid "Therapeutic Dietetic Follow-up Sheet"
+msgstr "Fiche de suivi diététique thérapeutique"
+
+#: .\patients\pdf_export.py:308
+msgid "Patient identification"
+msgstr "Identification du patient"
+
+#: .\patients\pdf_export.py:318
+msgid "Clinical follow-up"
+msgstr "Suivi clinique"
+
+#: .\patients\pdf_export.py:319 .\templates\dietitians\patient_record.html:132
+#: .\templates\patients\my_record.html:104
+msgid "Weight"
+msgstr "Poids"
+
+#: .\patients\pdf_export.py:320 .\templates\dietitians\patient_record.html:137
+#: .\templates\patients\my_record.html:109
+msgid "Heart rate"
+msgstr "Fréquence cardiaque"
+
+#: .\patients\pdf_export.py:320
+msgid "Alerts"
+msgstr "Alertes"
+
+#: .\patients\pdf_export.py:351
+msgid "Latest consultation - details"
+msgstr "Dernière consultation - détails"
+
+#: .\patients\pdf_export.py:370
+#: .\templates\dietitians\consultation_form.html:74
+msgid "Warning Signs"
+msgstr "Signes d'alerte"
+
+#: .\patients\pdf_export.py:400 .\patients\pdf_export.py:406
+msgid "Therapeutic Meal Plan"
+msgstr "Plan alimentaire thérapeutique"
+
+#: .\patients\pdf_export.py:408
+msgid "Day"
+msgstr "Jour"
+
+#: .\patients\pdf_export.py:408
+msgid "Snack"
+msgstr "Collation"
+
+#: .\patients\pdf_export.py:436
+msgid "Objectives and advice"
+msgstr "Objectifs et conseils"
+
+#: .\patients\views.py:154
+msgid "Access denied."
+msgstr "Accès refusé."
+
+#: .\patients\views.py:170
+msgid "Assessment saved successfully!"
+msgstr "Bilan enregistré avec succès !"
+
+#: .\patients\views.py:174 .\patients\views.py:194 .\patients\views.py:392
+#: .\patients\views.py:422 .\patients\views.py:439 .\patients\views.py:514
+#: .\templates\patients\patient_profile_form.html:37
+msgid "Please check the highlighted fields."
+msgstr "Veuillez vérifier les champs signalés."
+
+#: .\patients\views.py:192
+msgid "Profile saved successfully!"
+msgstr "Profil enregistré avec succès !"
+
+#: .\patients\views.py:230
+msgid "Your profile has been updated successfully!"
+msgstr "Votre profil a été mis à jour avec succès !"
+
+#: .\patients\views.py:232
+msgid "Please correct the errors in the form."
+msgstr "Veuillez corriger les erreurs du formulaire."
+
+#: .\patients\views.py:255 .\users\forms.py:8 .\users\models.py:28
+msgid "First name"
+msgstr "Prénom"
+
+#: .\patients\views.py:255 .\users\forms.py:9 .\users\models.py:29
+msgid "Last name"
+msgstr "Nom"
+
+#: .\patients\views.py:255 .\users\models.py:37
+msgid "Role"
+msgstr "Rôle"
+
+#: .\patients\views.py:332
+msgid "With allergies"
 msgstr "Avec allergies"
 
-#: .\patients\views.py:296
-msgid "Sans Allergies"
+#: .\patients\views.py:332
+msgid "Without allergies"
 msgstr "Sans allergies"
 
-#: .\patients\views.py:485
-msgid "Plan alimentaire mis à jour avec succès !"
+#: .\patients\views.py:369
+msgid "Consultation saved successfully!"
+msgstr "Consultation enregistrée avec succès !"
+
+#: .\patients\views.py:390
+msgid "Consultation updated."
+msgstr "Consultation mise à jour."
+
+#: .\patients\views.py:404
+msgid "The consultation has been permanently deleted."
+msgstr "La consultation a été définitivement supprimée."
+
+#: .\patients\views.py:420
+msgid "Meal saved."
+msgstr "Repas enregistré."
+
+#: .\patients\views.py:437
+msgid "Meal updated."
+msgstr "Repas mis à jour."
+
+#: .\patients\views.py:450
+msgid "The meal has been deleted."
+msgstr "Le repas a été supprimé."
+
+#: .\patients\views.py:512
+msgid "Meal plan updated successfully!"
 msgstr "Plan alimentaire mis à jour avec succès !"
+
+#: .\patients\views.py:550
+msgid "Subject and message are required."
+msgstr "Le sujet et le message sont obligatoires."
+
+#: .\patients\views.py:555
+msgid "Hello"
+msgstr "Bonjour"
+
+#: .\patients\views.py:555
+msgid "Kind regards,"
+msgstr "Cordialement,"
+
+#: .\patients\views.py:570
+msgid "The email could not be sent. Please try again later."
+msgstr "L'e-mail n'a pas pu être envoyé. Veuillez réessayer plus tard."
+
+#: .\patients\views.py:578
+msgid "Email sent successfully!"
+msgstr "E-mail envoyé avec succès !"
 
 #: .\templates\account\account_inactive.html:5
 #: .\templates\account\account_inactive.html:9
@@ -330,7 +1183,11 @@ msgstr "Validez votre adresse e-mail"
 msgid ""
 "Un code a été envoyé à <a href=\"mailto:%(email)s\">%(email)s</a>. Il "
 "expirera bientôt, veuillez le saisir rapidement."
-msgstr "Un code a été envoyé à <a href=\"mailto:%(email)s\">%(email)s</a>. Il expirera bientôt, veuillez le saisir rapidement."
+msgstr ""
+"Un code a été envoyé à <a href=\"mailto:%(email)s\">%(email)s</a>. Il "
+"expirera bientôt, veuillez le saisir rapidement.Un code a été envoyé à <a "
+"href=\"mailto:%(email)s\">%(email)s</a>. Il expirera bientôt, veuillez le "
+"saisir rapidement."
 
 #: .\templates\account\base_confirm_code.html:31
 msgid "Confirmer"
@@ -464,7 +1321,19 @@ msgstr ""
 "%(email)s\n"
 "\n"
 "Cependant, un compte utilisant cette adresse existe déjà. Si vous l'aviez\n"
-"oublié, veuillez utiliser la procédure de mot de passe oublié pour récupérer\n"
+"oublié, veuillez utiliser la procédure de mot de passe oublié pour "
+"récupérer\n"
+"votre compte :\n"
+"\n"
+"%(password_reset_url)sVous recevez cet e-mail car vous ou quelqu'un d'autre "
+"a tenté de créer un\n"
+"compte avec l'adresse e-mail :\n"
+"\n"
+"%(email)s\n"
+"\n"
+"Cependant, un compte utilisant cette adresse existe déjà. Si vous l'aviez\n"
+"oublié, veuillez utiliser la procédure de mot de passe oublié pour "
+"récupérer\n"
 "votre compte :\n"
 "\n"
 "%(password_reset_url)s"
@@ -485,13 +1354,17 @@ msgid ""
 "%(site_domain)s"
 msgstr ""
 "Merci d'utiliser %(site_name)s !\n"
+"%(site_domain)sMerci d'utiliser %(site_name)s !\n"
 "%(site_domain)s"
 
 #: .\templates\account\email\base_notification.txt:5
 msgid ""
 "You are receiving this mail because the following change was made to your "
 "account:"
-msgstr "Vous recevez cet e-mail car la modification suivante a été apportée à votre compte :"
+msgstr ""
+"Vous recevez cet e-mail car la modification suivante a été apportée à votre "
+"compte :Vous recevez cet e-mail car la modification suivante a été apportée "
+"à votre compte :"
 
 #: .\templates\account\email\base_notification.txt:10
 #, python-format
@@ -503,7 +1376,15 @@ msgid ""
 "- Browser: %(user_agent)s\n"
 "- Date: %(timestamp)s"
 msgstr ""
-"Si vous ne reconnaissez pas cette modification, veuillez prendre immédiatement les précautions de sécurité nécessaires. La modification provient de :\n"
+"Si vous ne reconnaissez pas cette modification, veuillez prendre "
+"immédiatement les précautions de sécurité nécessaires. La modification "
+"provient de :\n"
+"\n"
+"- Adresse IP : %(ip)s\n"
+"- Navigateur : %(user_agent)s\n"
+"- Date : %(timestamp)sSi vous ne reconnaissez pas cette modification, "
+"veuillez prendre immédiatement les précautions de sécurité nécessaires. La "
+"modification provient de :\n"
 "\n"
 "- Adresse IP : %(ip)s\n"
 "- Navigateur : %(user_agent)s\n"
@@ -531,13 +1412,20 @@ msgstr "Confirmation de l'e-mail"
 msgid ""
 "You're receiving this email because user %(user_display)s has given your "
 "email address to register an account on %(site_domain)s."
-msgstr "Vous recevez cet e-mail car l'utilisateur %(user_display)s a indiqué votre adresse pour créer un compte sur %(site_domain)s."
+msgstr ""
+"Vous recevez cet e-mail car l'utilisateur %(user_display)s a indiqué votre "
+"adresse pour créer un compte sur %(site_domain)s.Vous recevez cet e-mail car "
+"l'utilisateur %(user_display)s a indiqué votre adresse pour créer un compte "
+"sur %(site_domain)s."
 
 #: .\templates\account\email\email_confirmation_message.txt:7
 msgid ""
 "Your email verification code is listed below. Please enter it in your open "
 "browser window."
-msgstr "Votre code de vérification est indiqué ci-dessous. Veuillez le saisir dans la fenêtre de votre navigateur."
+msgstr ""
+"Votre code de vérification est indiqué ci-dessous. Veuillez le saisir dans "
+"la fenêtre de votre navigateur.Votre code de vérification est indiqué ci-"
+"dessous. Veuillez le saisir dans la fenêtre de votre navigateur."
 
 #: .\templates\account\email\email_confirmation_message.txt:9
 #, python-format
@@ -561,13 +1449,19 @@ msgstr "E-mail supprimé"
 msgid ""
 "Your sign-in code is listed below. Please enter it in your open browser "
 "window."
-msgstr "Votre code de connexion est indiqué ci-dessous. Veuillez le saisir dans la fenêtre de votre navigateur."
+msgstr ""
+"Votre code de connexion est indiqué ci-dessous. Veuillez le saisir dans la "
+"fenêtre de votre navigateur.Votre code de connexion est indiqué ci-dessous. "
+"Veuillez le saisir dans la fenêtre de votre navigateur."
 
 #: .\templates\account\email\login_code_message.txt:9
 #: .\templates\account\email\password_reset_code_message.txt:9
 #: .\templates\account\email\unknown_account_message.txt:6
 msgid "This mail can be safely ignored if you did not initiate this action."
-msgstr "Cet e-mail peut être ignoré si vous n'êtes pas à l'origine de cette action."
+msgstr ""
+"Cet e-mail peut être ignoré si vous n'êtes pas à l'origine de cette "
+"action.Cet e-mail peut être ignoré si vous n'êtes pas à l'origine de cette "
+"action."
 
 #: .\templates\account\email\login_code_subject.txt:3
 msgid "Sign-In Code"
@@ -585,7 +1479,10 @@ msgstr "Mot de passe modifié"
 msgid ""
 "Your password reset code is listed below. Please enter it in your open "
 "browser window."
-msgstr "Votre code de réinitialisation est indiqué ci-dessous. Veuillez le saisir dans la fenêtre de votre navigateur."
+msgstr ""
+"Votre code de réinitialisation est indiqué ci-dessous. Veuillez le saisir "
+"dans la fenêtre de votre navigateur.Votre code de réinitialisation est "
+"indiqué ci-dessous. Veuillez le saisir dans la fenêtre de votre navigateur."
 
 #: .\templates\account\email\password_reset_code_subject.txt:3
 msgid "Password Reset Code"
@@ -598,8 +1495,14 @@ msgid ""
 "It can be safely ignored if you did not request a password reset. Click the "
 "link below to reset your password."
 msgstr ""
-"Vous recevez cet e-mail car vous ou quelqu'un d'autre a demandé la réinitialisation du mot de passe de votre compte.\n"
-"Vous pouvez l'ignorer si vous n'êtes pas à l'origine de cette demande. Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe."
+"Vous recevez cet e-mail car vous ou quelqu'un d'autre a demandé la "
+"réinitialisation du mot de passe de votre compte.\n"
+"Vous pouvez l'ignorer si vous n'êtes pas à l'origine de cette demande. "
+"Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe.Vous "
+"recevez cet e-mail car vous ou quelqu'un d'autre a demandé la "
+"réinitialisation du mot de passe de votre compte.\n"
+"Vous pouvez l'ignorer si vous n'êtes pas à l'origine de cette demande. "
+"Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe."
 
 #: .\templates\account\email\password_reset_key_message.txt:9
 #, python-format
@@ -628,7 +1531,12 @@ msgid ""
 "You are receiving this email because you, or someone else, tried to access "
 "an account with email %(email)s. However, we do not have any record of such "
 "an account in our database."
-msgstr "Vous recevez cet e-mail car vous, ou quelqu'un d'autre, a tenté d'accéder à un compte avec l'adresse %(email)s. Cependant, aucun compte de ce type n'existe dans notre base de données."
+msgstr ""
+"Vous recevez cet e-mail car vous, ou quelqu'un d'autre, a tenté d'accéder à "
+"un compte avec l'adresse %(email)s. Cependant, aucun compte de ce type "
+"n'existe dans notre base de données.Vous recevez cet e-mail car vous, ou "
+"quelqu'un d'autre, a tenté d'accéder à un compte avec l'adresse %(email)s. "
+"Cependant, aucun compte de ce type n'existe dans notre base de données."
 
 #: .\templates\account\email\unknown_account_message.txt:8
 msgid "If it was you, you can sign up for an account using the link below."
@@ -685,8 +1593,15 @@ msgid ""
 "                        "
 msgstr ""
 "\n"
-"                            Veuillez confirmer que <a href=\"mailto:%(email)s\" class=\"text-primary\">%(email)s</a>\n"
-"                            est bien l'adresse e-mail de l'utilisateur <strong>%(user_display)s</strong>.\n"
+"                            Veuillez confirmer que <a href=\"mailto:"
+"%(email)s\" class=\"text-primary\">%(email)s</a>\n"
+"                            est bien l'adresse e-mail de l'utilisateur "
+"<strong>%(user_display)s</strong>.\n"
+"                        \n"
+"                            Veuillez confirmer que <a href=\"mailto:"
+"%(email)s\" class=\"text-primary\">%(email)s</a>\n"
+"                            est bien l'adresse e-mail de l'utilisateur "
+"<strong>%(user_display)s</strong>.\n"
 "                        "
 
 #: .\templates\account\email_confirm.html:31
@@ -717,7 +1632,10 @@ msgstr "Vous ne pouvez pas supprimer votre adresse principale (%(email)s)."
 msgid ""
 "Unable to confirm %(email)s because it is already confirmed by a different "
 "account."
-msgstr "Impossible de confirmer %(email)s car cette adresse est déjà confirmée par un autre compte."
+msgstr ""
+"Impossible de confirmer %(email)s car cette adresse est déjà confirmée par "
+"un autre compte.Impossible de confirmer %(email)s car cette adresse est déjà "
+"confirmée par un autre compte."
 
 #: .\templates\account\messages\email_confirmation_sent.txt:2
 #, python-format
@@ -832,14 +1750,15 @@ msgstr "Oui, me déconnecter"
 #: .\templates\account\password_reset_from_key.html:33
 #: .\templates\community\feed.html:92 .\templates\community\feed.html:110
 #: .\templates\community\post_detail.html:124
-#: .\templates\dietitians\consultation_form.html:35
+#: .\templates\dietitians\consultation_form.html:115
 #: .\templates\dietitians\manage_meal_plan.html:65
 #: .\templates\dietitians\partials\email_form.html:20
-#: .\templates\dietitians\patient_record.html:301
-#: .\templates\dietitians\patient_record.html:322
-#: .\templates\patients\my_record.html:403
-#: .\templates\patients\my_record.html:436
-#: .\templates\patients\patient_profile_update.html:98
+#: .\templates\dietitians\patient_record.html:351
+#: .\templates\dietitians\patient_record.html:372
+#: .\templates\patients\my_record.html:280
+#: .\templates\patients\my_record.html:313
+#: .\templates\patients\my_record.html:335
+#: .\templates\patients\patient_profile_update.html:234
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -877,7 +1796,12 @@ msgstr "Consultez vos e-mails"
 msgid ""
 "We have sent a reset link to your address.<br><br><strong>Note:</strong> If "
 "you don't see it, check your <b>junk mail</b>."
-msgstr "Nous avons envoyé un lien de réinitialisation à votre adresse.<br><br><strong>Note :</strong> si vous ne le voyez pas, vérifiez vos <b>courriers indésirables</b>."
+msgstr ""
+"Nous avons envoyé un lien de réinitialisation à votre adresse."
+"<br><br><strong>Note :</strong> si vous ne le voyez pas, vérifiez vos "
+"<b>courriers indésirables</b>.Nous avons envoyé un lien de réinitialisation "
+"à votre adresse.<br><br><strong>Note :</strong> si vous ne le voyez pas, "
+"vérifiez vos <b>courriers indésirables</b>."
 
 #: .\templates\account\partials\password_reset_done_inner.html:19
 msgid "Got it"
@@ -902,7 +1826,10 @@ msgstr "Retour à la connexion"
 
 #: .\templates\account\partials\password_reset_from_key_done_inner.html:11
 msgid "Your new password has been successfully saved. You can now log in."
-msgstr "Votre nouveau mot de passe a bien été enregistré. Vous pouvez maintenant vous connecter."
+msgstr ""
+"Votre nouveau mot de passe a bien été enregistré. Vous pouvez maintenant "
+"vous connecter.Votre nouveau mot de passe a bien été enregistré. Vous pouvez "
+"maintenant vous connecter."
 
 #: .\templates\account\partials\password_reset_from_key_inner.html:7
 msgid "Link expired"
@@ -944,7 +1871,12 @@ msgstr "Déjà un compte ?"
 msgid ""
 "We have sent you an email. If you have not received it please check your "
 "spam folder. Otherwise contact us if you do not receive it in a few minutes."
-msgstr "Nous vous avons envoyé un e-mail. Si vous ne l'avez pas reçu, vérifiez vos courriers indésirables. Sinon, contactez-nous si vous ne le recevez pas dans quelques minutes."
+msgstr ""
+"Nous vous avons envoyé un e-mail. Si vous ne l'avez pas reçu, vérifiez vos "
+"courriers indésirables. Sinon, contactez-nous si vous ne le recevez pas dans "
+"quelques minutes.Nous vous avons envoyé un e-mail. Si vous ne l'avez pas "
+"reçu, vérifiez vos courriers indésirables. Sinon, contactez-nous si vous ne "
+"le recevez pas dans quelques minutes."
 
 #: .\templates\account\password_reset_from_key.html:5
 #: .\templates\account\password_reset_from_key.html:12
@@ -965,7 +1897,12 @@ msgid ""
 "The password reset link was invalid, possibly because it has already been "
 "used.  Please request a <a href=\"%(passwd_reset_url)s\">new password reset</"
 "a>."
-msgstr "Le lien de réinitialisation n'est pas valide, peut-être parce qu'il a déjà été utilisé. Veuillez demander une <a href=\"%(passwd_reset_url)s\">nouvelle réinitialisation</a>."
+msgstr ""
+"Le lien de réinitialisation n'est pas valide, peut-être parce qu'il a déjà "
+"été utilisé. Veuillez demander une <a href=\"%(passwd_reset_url)s\">nouvelle "
+"réinitialisation</a>.Le lien de réinitialisation n'est pas valide, peut-être "
+"parce qu'il a déjà été utilisé. Veuillez demander une <a "
+"href=\"%(passwd_reset_url)s\">nouvelle réinitialisation</a>."
 
 #: .\templates\account\password_reset_from_key_done.html:12
 msgid "Your password is now changed."
@@ -1007,7 +1944,11 @@ msgstr "Recevez un code de connexion"
 msgid ""
 "Entrez votre adresse e-mail, nous vous enverrons un code à usage unique pour "
 "vous connecter en toute sécurité sans mot de passe."
-msgstr "Entrez votre adresse e-mail, nous vous enverrons un code à usage unique pour vous connecter en toute sécurité sans mot de passe."
+msgstr ""
+"Entrez votre adresse e-mail, nous vous enverrons un code à usage unique pour "
+"vous connecter en toute sécurité sans mot de passe.Entrez votre adresse e-"
+"mail, nous vous enverrons un code à usage unique pour vous connecter en "
+"toute sécurité sans mot de passe."
 
 #: .\templates\account\request_login_code.html:30
 msgid "Demander le code"
@@ -1081,7 +2022,12 @@ msgstr "Attention :"
 msgid ""
 "You currently do not have any email address set up. You should really add an "
 "email address so you can receive notifications, reset your password, etc."
-msgstr "Vous n'avez actuellement aucune adresse e-mail configurée. Vous devriez en ajouter une pour recevoir des notifications, réinitialiser votre mot de passe, etc."
+msgstr ""
+"Vous n'avez actuellement aucune adresse e-mail configurée. Vous devriez en "
+"ajouter une pour recevoir des notifications, réinitialiser votre mot de "
+"passe, etc.Vous n'avez actuellement aucune adresse e-mail configurée. Vous "
+"devriez en ajouter une pour recevoir des notifications, réinitialiser votre "
+"mot de passe, etc."
 
 #: .\templates\account\verification_sent.html:5
 #: .\templates\account\verification_sent.html:9
@@ -1096,7 +2042,14 @@ msgid ""
 "finalize the signup process. If you do not see the verification email in "
 "your main inbox, check your spam folder. Please contact us if you do not "
 "receive the verification email within a few minutes."
-msgstr "Nous vous avons envoyé un e-mail de vérification. Suivez le lien fourni pour finaliser l'inscription. Si vous ne voyez pas l'e-mail dans votre boîte de réception, vérifiez vos courriers indésirables. Contactez-nous si vous ne le recevez pas dans quelques minutes."
+msgstr ""
+"Nous vous avons envoyé un e-mail de vérification. Suivez le lien fourni pour "
+"finaliser l'inscription. Si vous ne voyez pas l'e-mail dans votre boîte de "
+"réception, vérifiez vos courriers indésirables. Contactez-nous si vous ne le "
+"recevez pas dans quelques minutes.Nous vous avons envoyé un e-mail de "
+"vérification. Suivez le lien fourni pour finaliser l'inscription. Si vous ne "
+"voyez pas l'e-mail dans votre boîte de réception, vérifiez vos courriers "
+"indésirables. Contactez-nous si vous ne le recevez pas dans quelques minutes."
 
 #: .\templates\account\verified_email_required.html:13
 msgid ""
@@ -1105,6 +2058,9 @@ msgid ""
 "verify ownership of your email address. "
 msgstr ""
 "Cette partie du site nécessite que nous vérifiions\n"
+"votre identité. Pour cela, nous devons vérifier\n"
+"que vous êtes bien propriétaire de votre adresse e-mail. Cette partie du "
+"site nécessite que nous vérifiions\n"
 "votre identité. Pour cela, nous devons vérifier\n"
 "que vous êtes bien propriétaire de votre adresse e-mail. "
 
@@ -1117,7 +2073,14 @@ msgid ""
 "contact us if you do not receive it within a few minutes."
 msgstr ""
 "Nous vous avons envoyé un e-mail de\n"
-"vérification. Veuillez cliquer sur le lien qu'il contient. Si vous ne voyez pas l'e-mail dans votre boîte de réception, vérifiez vos courriers indésirables. Sinon,\n"
+"vérification. Veuillez cliquer sur le lien qu'il contient. Si vous ne voyez "
+"pas l'e-mail dans votre boîte de réception, vérifiez vos courriers "
+"indésirables. Sinon,\n"
+"contactez-nous si vous ne le recevez pas dans quelques minutes.Nous vous "
+"avons envoyé un e-mail de\n"
+"vérification. Veuillez cliquer sur le lien qu'il contient. Si vous ne voyez "
+"pas l'e-mail dans votre boîte de réception, vérifiez vos courriers "
+"indésirables. Sinon,\n"
 "contactez-nous si vous ne le recevez pas dans quelques minutes."
 
 #: .\templates\account\verified_email_required.html:23
@@ -1125,7 +2088,11 @@ msgstr ""
 msgid ""
 "<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your "
 "email address</a>."
-msgstr "<strong>Note :</strong> vous pouvez encore <a href=\"%(email_url)s\">modifier votre adresse e-mail</a>."
+msgstr ""
+"<strong>Note :</strong> vous pouvez encore <a "
+"href=\"%(email_url)s\">modifier votre adresse e-mail</a>.<strong>Note :</"
+"strong> vous pouvez encore <a href=\"%(email_url)s\">modifier votre adresse "
+"e-mail</a>."
 
 #: .\templates\community\feed.html:20
 msgid "Advice & Community"
@@ -1172,17 +2139,14 @@ msgstr "Discussion"
 msgid "Leave a message"
 msgstr "Laissez un message"
 
-#: .\templates\community\post_detail.html:54
-msgid "Comment"
-msgstr "Commenter"
-
 #: .\templates\community\post_detail.html:73
 msgid "this comment"
 msgstr "ce commentaire"
 
 #: .\templates\community\post_detail.html:74
 #: .\templates\community\post_detail.html:125
-#: .\templates\dietitians\patient_record.html:323
+#: .\templates\dietitians\patient_record.html:375
+#: .\templates\patients\my_record.html:338
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -1202,95 +2166,16 @@ msgstr "Confirmation"
 msgid "Do you really want to delete"
 msgstr "Voulez-vous vraiment supprimer"
 
-#: .\templates\components\contact.html:98
-msgid "Contact Information"
-msgstr "Coordonnées"
-
-#: .\templates\components\contact.html:99
-msgid ""
-"Ready to start your journey towards sustainable wellness? Reach out for a "
-"personalized consultation."
-msgstr "Prêt à démarrer votre parcours vers un bien-être durable ? Contactez-nous pour une consultation personnalisée."
-
-#: .\templates\components\contact.html:104
-msgid "Location"
-msgstr "Localisation"
-
-#: .\templates\components\contact.html:105
-msgid "Online & On-site (Cameroon)"
-msgstr "En ligne et sur site (Cameroun)"
-
-#: .\templates\components\contact.html:112
-msgid "Expertise"
-msgstr "Expertise"
-
-#: .\templates\components\contact.html:113
-msgid "Clinical Nutrition & Dietetics"
-msgstr "Nutrition clinique et diététique"
-
-#: .\templates\components\contact.html:121
-msgid "Chat with us"
-msgstr "Discutez avec nous"
-
-#: .\templates\components\contact.html:126
-msgid ""
-"\"Healthy nutrition is not about restriction, but about making informed "
-"choices.\""
-msgstr "« Une alimentation saine n'est pas une question de restriction, mais de choix éclairés. »"
-
-#: .\templates\components\contact.html:132
-msgid "Send us a message"
-msgstr "Envoyez-nous un message"
-
-#: .\templates\components\contact.html:133
-msgid "Fill out the form below and we'll get back to you within 24 hours."
-msgstr "Remplissez le formulaire ci-dessous et nous vous répondrons sous 24 heures."
-
-#: .\templates\components\contact.html:153
-#: .\templates\components\contact.html:154
-msgid "Full name"
-msgstr "Nom complet"
-
-#: .\templates\components\contact.html:159
-msgid "Phone"
-msgstr "Téléphone"
-
-#: .\templates\components\contact.html:160 .\users\models.py:43
-msgid "Phone number"
-msgstr "Numéro de téléphone"
-
-#: .\templates\components\contact.html:165
-#: .\templates\dietitians\patient_list.html:56
-msgid "Email"
-msgstr "E-mail"
-
-#: .\templates\components\contact.html:166
-msgid "Email address"
-msgstr "Adresse e-mail"
-
-#: .\templates\components\contact.html:169
-msgid "How can we help you?"
-msgstr "Comment pouvons-nous vous aider ?"
-
-#: .\templates\components\contact.html:170
-msgid "Describe your health goals or questions..."
-msgstr "Décrivez vos objectifs de santé ou vos questions..."
-
-#: .\templates\components\contact.html:174
-msgid "Send Message"
-msgstr "Envoyer le message"
-
 #: .\templates\components\footer.html:36
 msgid "Using food as a tool for better health and lifelong well-being."
-msgstr "L'alimentation comme outil pour une meilleure santé et un bien-être durable."
+msgstr ""
+"L'alimentation comme outil pour une meilleure santé et un bien-être "
+"durable.L'alimentation comme outil pour une meilleure santé et un bien-être "
+"durable."
 
 #: .\templates\components\footer.html:41
 msgid "Navigation"
 msgstr "Navigation"
-
-#: .\templates\components\footer.html:43 .\templates\components\navbar.html:61
-msgid "Home"
-msgstr "Accueil"
 
 #: .\templates\components\footer.html:44 .\templates\components\navbar.html:62
 msgid "Summary"
@@ -1337,7 +2222,10 @@ msgstr "Améliorer la santé par la nutrition"
 msgid ""
 "Personalized nutritional follow-up and simple tools to transform your daily "
 "well-being."
-msgstr "Un suivi nutritionnel personnalisé et des outils simples pour transformer votre bien-être au quotidien."
+msgstr ""
+"Un suivi nutritionnel personnalisé et des outils simples pour transformer "
+"votre bien-être au quotidien.Un suivi nutritionnel personnalisé et des "
+"outils simples pour transformer votre bien-être au quotidien."
 
 #: .\templates\components\home.html:185 .\templates\components\resume.html:89
 #: .\templates\components\resume.html:90
@@ -1377,7 +2265,15 @@ msgid ""
 "The foods we eat every day directly influence how our bodies grow, function, "
 "heal, and protect themselves against disease. We work alongside healthcare "
 "professionals to give daily support for a healthy lifestyle."
-msgstr "Les aliments que nous consommons chaque jour influencent directement la façon dont notre corps grandit, fonctionne, guérit et se protège contre les maladies. Nous collaborons avec des professionnels de santé pour offrir un accompagnement quotidien vers un mode de vie sain."
+msgstr ""
+"Les aliments que nous consommons chaque jour influencent directement la "
+"façon dont notre corps grandit, fonctionne, guérit et se protège contre les "
+"maladies. Nous collaborons avec des professionnels de santé pour offrir un "
+"accompagnement quotidien vers un mode de vie sain.Les aliments que nous "
+"consommons chaque jour influencent directement la façon dont notre corps "
+"grandit, fonctionne, guérit et se protège contre les maladies. Nous "
+"collaborons avec des professionnels de santé pour offrir un accompagnement "
+"quotidien vers un mode de vie sain."
 
 #: .\templates\components\home.html:231
 msgid "Prevention & Immunity"
@@ -1386,7 +2282,10 @@ msgstr "Prévention et immunité"
 #: .\templates\components\home.html:232
 msgid ""
 "Boosting immunity and energy levels through balanced, everyday nutrition."
-msgstr "Renforcer l'immunité et l'énergie grâce à une alimentation équilibrée au quotidien."
+msgstr ""
+"Renforcer l'immunité et l'énergie grâce à une alimentation équilibrée au "
+"quotidien.Renforcer l'immunité et l'énergie grâce à une alimentation "
+"équilibrée au quotidien."
 
 #: .\templates\components\home.html:238
 msgid "Chronic Disease Care"
@@ -1394,7 +2293,10 @@ msgstr "Maladies chroniques"
 
 #: .\templates\components\home.html:239
 msgid "Managing diabetes, hypertension and obesity with clinical follow-up."
-msgstr "Gérer le diabète, l'hypertension et l'obésité grâce à un suivi clinique."
+msgstr ""
+"Gérer le diabète, l'hypertension et l'obésité grâce à un suivi "
+"clinique.Gérer le diabète, l'hypertension et l'obésité grâce à un suivi "
+"clinique."
 
 #: .\templates\components\home.html:245
 msgid "Local Food Culture"
@@ -1402,7 +2304,10 @@ msgstr "Culture alimentaire locale"
 
 #: .\templates\components\home.html:246
 msgid "Meal plans built on local foods like Ndole, Millet and Yam."
-msgstr "Des plans de repas basés sur des aliments locaux comme le Ndolé, le Mil et l'Igname."
+msgstr ""
+"Des plans de repas basés sur des aliments locaux comme le Ndolé, le Mil et "
+"l'Igname.Des plans de repas basés sur des aliments locaux comme le Ndolé, le "
+"Mil et l'Igname."
 
 #: .\templates\components\home.html:257
 msgid "Our Philosophy"
@@ -1413,7 +2318,14 @@ msgid ""
 "Healthy nutrition is not about restriction, but about making informed "
 "choices. When nutrition is aligned with lifestyle, culture and individual "
 "health needs, it becomes a powerful tool for lifelong transformation."
-msgstr "Une alimentation saine n'est pas une question de restriction, mais de choix éclairés. Lorsque la nutrition s'aligne sur le mode de vie, la culture et les besoins de santé de chacun, elle devient un puissant outil de transformation durable."
+msgstr ""
+"Une alimentation saine n'est pas une question de restriction, mais de choix "
+"éclairés. Lorsque la nutrition s'aligne sur le mode de vie, la culture et "
+"les besoins de santé de chacun, elle devient un puissant outil de "
+"transformation durable.Une alimentation saine n'est pas une question de "
+"restriction, mais de choix éclairés. Lorsque la nutrition s'aligne sur le "
+"mode de vie, la culture et les besoins de santé de chacun, elle devient un "
+"puissant outil de transformation durable."
 
 #: .\templates\components\home.html:263
 msgid "Our Aim"
@@ -1423,7 +2335,11 @@ msgstr "Notre objectif"
 msgid ""
 "To support our clients with personalized follow-up and simple tools to "
 "improve overall well-being, and to live a purposeful life."
-msgstr "Accompagner nos clients avec un suivi personnalisé et des outils simples pour améliorer leur bien-être général et vivre une vie qui a du sens."
+msgstr ""
+"Accompagner nos clients avec un suivi personnalisé et des outils simples "
+"pour améliorer leur bien-être général et vivre une vie qui a du "
+"sens.Accompagner nos clients avec un suivi personnalisé et des outils "
+"simples pour améliorer leur bien-être général et vivre une vie qui a du sens."
 
 #: .\templates\components\navbar.html:78
 msgid "My Tracking"
@@ -1451,7 +2367,10 @@ msgstr "Nos solutions numériques"
 
 #: .\templates\components\projects.html:84
 msgid "Tools designed for clinical expertise and daily support."
-msgstr "Des outils conçus pour l'expertise clinique et l'accompagnement quotidien."
+msgstr ""
+"Des outils conçus pour l'expertise clinique et l'accompagnement "
+"quotidien.Des outils conçus pour l'expertise clinique et l'accompagnement "
+"quotidien."
 
 #: .\templates\components\projects.html:93
 msgid "Clinical Expertise"
@@ -1468,7 +2387,18 @@ msgid ""
 "strong>. Thanks to the integration of the <strong>nutritional diagnosis (PES "
 "format)</strong>, we ensure scientific care for patients suffering from "
 "cardiac and metabolic pathologies."
-msgstr "Cette plateforme est le cœur de notre système de suivi. Elle permet au diététicien d'enregistrer des <strong>évaluations anthropométriques et biochimiques</strong> complètes. Grâce à l'intégration du <strong>diagnostic nutritionnel (format PES)</strong>, nous assurons une prise en charge scientifique des patients atteints de pathologies cardiaques et métaboliques."
+msgstr ""
+"Cette plateforme est le cœur de notre système de suivi. Elle permet au "
+"diététicien d'enregistrer des <strong>évaluations anthropométriques et "
+"biochimiques</strong> complètes. Grâce à l'intégration du <strong>diagnostic "
+"nutritionnel (format PES)</strong>, nous assurons une prise en charge "
+"scientifique des patients atteints de pathologies cardiaques et "
+"métaboliques.Cette plateforme est le cœur de notre système de suivi. Elle "
+"permet au diététicien d'enregistrer des <strong>évaluations "
+"anthropométriques et biochimiques</strong> complètes. Grâce à l'intégration "
+"du <strong>diagnostic nutritionnel (format PES)</strong>, nous assurons une "
+"prise en charge scientifique des patients atteints de pathologies cardiaques "
+"et métaboliques."
 
 #: .\templates\components\projects.html:97
 msgid "Monitoring of blood pressure and lipid profile"
@@ -1497,7 +2427,17 @@ msgid ""
 "(like our 7-day menus) including local alternatives such as <strong>Ndole, "
 "Millet or Yam</strong>, while respecting glycemic indices to stabilize "
 "diabetes."
-msgstr "C'est ici que le diététicien publie les <strong>programmes nutritionnels personnalisés</strong>. L'application donne accès à des plans de repas structurés (comme nos menus sur 7 jours) incluant des alternatives locales telles que le <strong>Ndolé, le Mil ou l'Igname</strong>, tout en respectant les index glycémiques pour stabiliser le diabète."
+msgstr ""
+"C'est ici que le diététicien publie les <strong>programmes nutritionnels "
+"personnalisés</strong>. L'application donne accès à des plans de repas "
+"structurés (comme nos menus sur 7 jours) incluant des alternatives locales "
+"telles que le <strong>Ndolé, le Mil ou l'Igname</strong>, tout en respectant "
+"les index glycémiques pour stabiliser le diabète.C'est ici que le "
+"diététicien publie les <strong>programmes nutritionnels personnalisés</"
+"strong>. L'application donne accès à des plans de repas structurés (comme "
+"nos menus sur 7 jours) incluant des alternatives locales telles que le "
+"<strong>Ndolé, le Mil ou l'Igname</strong>, tout en respectant les index "
+"glycémiques pour stabiliser le diabète."
 
 #: .\templates\components\projects.html:114
 msgid "Weekly menus adapted"
@@ -1541,7 +2481,14 @@ msgid ""
 "Providing evidence-based therapy to manage <strong>Non-Communicable Diseases "
 "(NCDs)</strong>. We focus on long-term vitality and clinical recovery "
 "through personalized follow-up and digital monitoring tools."
-msgstr "Proposer une thérapie fondée sur des preuves pour gérer les <strong>maladies non transmissibles (MNT)</strong>. Nous mettons l'accent sur la vitalité à long terme et la récupération clinique grâce à un suivi personnalisé et des outils numériques."
+msgstr ""
+"Proposer une thérapie fondée sur des preuves pour gérer les <strong>maladies "
+"non transmissibles (MNT)</strong>. Nous mettons l'accent sur la vitalité à "
+"long terme et la récupération clinique grâce à un suivi personnalisé et des "
+"outils numériques.Proposer une thérapie fondée sur des preuves pour gérer "
+"les <strong>maladies non transmissibles (MNT)</strong>. Nous mettons "
+"l'accent sur la vitalité à long terme et la récupération clinique grâce à un "
+"suivi personnalisé et des outils numériques."
 
 #: .\templates\components\resume.html:123
 msgid "2020 - 2021"
@@ -1554,19 +2501,28 @@ msgstr "Hôpital régional de Bafoussam"
 #: .\templates\components\resume.html:128
 msgid ""
 "Conducted clinical consultations and nutrition therapy for hospital patients."
-msgstr "Réalisation de consultations cliniques et de thérapies nutritionnelles pour les patients hospitalisés."
+msgstr ""
+"Réalisation de consultations cliniques et de thérapies nutritionnelles pour "
+"les patients hospitalisés.Réalisation de consultations cliniques et de "
+"thérapies nutritionnelles pour les patients hospitalisés."
 
 #: .\templates\components\resume.html:129
 msgid ""
 "Sensitized individuals on the direct impact of dietary habits on metabolic "
 "health."
-msgstr "Sensibilisation à l'impact direct des habitudes alimentaires sur la santé métabolique."
+msgstr ""
+"Sensibilisation à l'impact direct des habitudes alimentaires sur la santé "
+"métabolique.Sensibilisation à l'impact direct des habitudes alimentaires sur "
+"la santé métabolique."
 
 #: .\templates\components\resume.html:130
 msgid ""
 "Collaborated with multidisciplinary healthcare teams to optimize patient "
 "outcomes."
-msgstr "Collaboration avec des équipes de santé pluridisciplinaires pour optimiser les résultats des patients."
+msgstr ""
+"Collaboration avec des équipes de santé pluridisciplinaires pour optimiser "
+"les résultats des patients.Collaboration avec des équipes de santé "
+"pluridisciplinaires pour optimiser les résultats des patients."
 
 #: .\templates\components\resume.html:138
 msgid "2019 - 2020"
@@ -1584,90 +2540,143 @@ msgstr "Centre médical Nkongni"
 msgid ""
 "Managed public health nutrition interventions by identifying determinants of "
 "food insecurity and malnutrition."
-msgstr "Gestion d'interventions de nutrition en santé publique en identifiant les déterminants de l'insécurité alimentaire et de la malnutrition."
+msgstr ""
+"Gestion d'interventions de nutrition en santé publique en identifiant les "
+"déterminants de l'insécurité alimentaire et de la malnutrition.Gestion "
+"d'interventions de nutrition en santé publique en identifiant les "
+"déterminants de l'insécurité alimentaire et de la malnutrition."
 
 #: .\templates\components\resume.html:144
 msgid ""
 "Impact: Promoted healthy eating habits to improve community health outcomes "
 "and dietary diversity."
-msgstr "Impact : promotion d'habitudes alimentaires saines pour améliorer la santé communautaire et la diversité alimentaire."
+msgstr ""
+"Impact : promotion d'habitudes alimentaires saines pour améliorer la santé "
+"communautaire et la diversité alimentaire.Impact : promotion d'habitudes "
+"alimentaires saines pour améliorer la santé communautaire et la diversité "
+"alimentaire."
 
 #: .\templates\components\resume.html:151
 msgid "Education"
 msgstr "Formation"
 
-#: .\templates\components\resume.html:155
-msgid "2018 - 2020"
-msgstr "2018 - 2020"
-
-#: .\templates\components\resume.html:156
-msgid "Bachelor's Degree"
-msgstr "Licence"
-
 #: .\templates\components\resume.html:157
-msgid "Nutrition & Dietetics"
-msgstr "Nutrition et diététique"
+msgid "2020 - 2022"
+msgstr "2020 - 2022"
 
 #: .\templates\components\resume.html:158
+msgid "Professional Master's Degree"
+msgstr "Master professionnel"
+
+#: .\templates\components\resume.html:159
+msgid "Public Health Nutrition, Dietetics and Nutrition Education"
+msgstr "Nutrition de Santé Publique, Diététique et Éducation Nutritionnelle"
+
+#: .\templates\components\resume.html:160
+#: .\templates\components\resume.html:175
 msgid "University of Dschang"
 msgstr "Université de Dschang"
 
-#: .\templates\components\resume.html:161
+#: .\templates\components\resume.html:163
+msgid ""
+"Advanced training in public health nutrition, therapeutic dietetics and "
+"nutrition education. Expertise in community nutrition programmes, "
+"nutritional assessment and the dietary management of chronic diseases."
+msgstr ""
+"Formation avancée en nutrition de santé publique, diététique thérapeutique "
+"et éducation nutritionnelle. Expertise en programmes de nutrition "
+"communautaire, évaluation nutritionnelle et prise en charge diététique des "
+"maladies chroniques.Formation avancée en nutrition de santé publique, "
+"diététique thérapeutique et éducation nutritionnelle. Expertise en "
+"programmes de nutrition communautaire, évaluation nutritionnelle et prise en "
+"charge diététique des maladies chroniques."
+
+#: .\templates\components\resume.html:172
+msgid "2018 - 2020"
+msgstr "2018 - 2020"
+
+#: .\templates\components\resume.html:173
+msgid "Bachelor's Degree"
+msgstr "Licence"
+
+#: .\templates\components\resume.html:174
+msgid "Nutrition & Dietetics"
+msgstr "Nutrition et diététique"
+
+#: .\templates\components\resume.html:178
 msgid ""
 "Specialized study of nutritional needs and management of chronic diseases. "
 "Developed expertise in clinical monitoring and nutritional interventions for "
 "nutrient deficiencies."
-msgstr "Étude spécialisée des besoins nutritionnels et de la gestion des maladies chroniques. Expertise développée en suivi clinique et interventions nutritionnelles pour les carences."
+msgstr ""
+"Étude spécialisée des besoins nutritionnels et de la gestion des maladies "
+"chroniques. Expertise développée en suivi clinique et interventions "
+"nutritionnelles pour les carences.Étude spécialisée des besoins "
+"nutritionnels et de la gestion des maladies chroniques. Expertise développée "
+"en suivi clinique et interventions nutritionnelles pour les carences."
 
-#: .\templates\components\resume.html:170
+#: .\templates\components\resume.html:187
 msgid "Key Competencies"
 msgstr "Compétences clés"
 
-#: .\templates\components\resume.html:173
+#: .\templates\components\resume.html:190
 msgid "BP & Blood Sugar Monitoring"
 msgstr "Suivi de la tension et de la glycémie"
 
-#: .\templates\components\resume.html:174
+#: .\templates\components\resume.html:191
 msgid "PES Diagnostic Format"
 msgstr "Format de diagnostic PES"
 
-#: .\templates\components\resume.html:175
+#: .\templates\components\resume.html:192
 msgid "Custom Menu Creation"
 msgstr "Création de menus personnalisés"
 
-#: .\templates\components\resume.html:176
+#: .\templates\components\resume.html:193
 msgid "Anthropometric Evaluation"
 msgstr "Évaluation anthropométrique"
 
-#: .\templates\components\resume.html:177
+#: .\templates\components\resume.html:194
 msgid "Digital Health Tools"
 msgstr "Outils de santé numériques"
 
-#: .\templates\components\resume.html:178
+#: .\templates\components\resume.html:195
 msgid "Clinical Nutrition (SAM/MAM)"
 msgstr "Nutrition clinique (MAS/MAM)"
 
 #: .\templates\dietitians\consultation_form.html:3
+#: .\templates\dietitians\patient_list.html:105
 msgid "New Consultation:"
 msgstr "Nouvelle consultation :"
 
-#: .\templates\dietitians\consultation_form.html:11
+#: .\templates\dietitians\consultation_form.html:25
+msgid "Clinical Measurements"
+msgstr "Mesures cliniques"
+
+#: .\templates\dietitians\consultation_form.html:34
 msgid "Biochemical Data"
 msgstr "Données biochimiques"
 
-#: .\templates\dietitians\consultation_form.html:22
+#: .\templates\dietitians\consultation_form.html:45
+msgid "Nutritional Assessment"
+msgstr "Évaluation nutritionnelle"
+
+#: .\templates\dietitians\consultation_form.html:57
+msgid "Cardiovascular follow-up"
+msgstr "Suivi cardiovasculaire"
+
+#: .\templates\dietitians\consultation_form.html:99
 msgid "Nutritional Analysis (PES)"
 msgstr "Analyse nutritionnelle (PES)"
 
-#: .\templates\dietitians\consultation_form.html:24
+#: .\templates\dietitians\consultation_form.html:101
 msgid "Diagnosis (Problem, Etiology, Symptoms)"
 msgstr "Diagnostic (Problème, Étiologie, Symptômes)"
 
-#: .\templates\dietitians\consultation_form.html:28
+#: .\templates\dietitians\consultation_form.html:107
 msgid "Goals & Intervention"
 msgstr "Objectifs et intervention"
 
-#: .\templates\dietitians\consultation_form.html:37
+#: .\templates\dietitians\consultation_form.html:117
 msgid "Save consultation"
 msgstr "Enregistrer la consultation"
 
@@ -1676,20 +2685,20 @@ msgid "Weekly Planning"
 msgstr "Planification hebdomadaire"
 
 #: .\templates\dietitians\manage_meal_plan.html:42
-#: .\templates\dietitians\patient_record.html:206
-#: .\templates\patients\my_record.html:277
+#: .\templates\dietitians\patient_record.html:235
+#: .\templates\patients\my_record.html:219
 msgid "Morning"
 msgstr "Matin"
 
 #: .\templates\dietitians\manage_meal_plan.html:47
-#: .\templates\dietitians\patient_record.html:207
-#: .\templates\patients\my_record.html:284
+#: .\templates\dietitians\patient_record.html:242
+#: .\templates\patients\my_record.html:226
 msgid "Noon"
 msgstr "Midi"
 
 #: .\templates\dietitians\manage_meal_plan.html:52
-#: .\templates\dietitians\patient_record.html:208
-#: .\templates\patients\my_record.html:291
+#: .\templates\dietitians\patient_record.html:249
+#: .\templates\patients\my_record.html:233
 msgid "Evening"
 msgstr "Soir"
 
@@ -1698,6 +2707,7 @@ msgid "Save the complete program"
 msgstr "Enregistrer le programme complet"
 
 #: .\templates\dietitians\partials\email_form.html:5
+#: .\templates\dietitians\patient_list.html:120
 msgid "Send a message to"
 msgstr "Envoyer un message à"
 
@@ -1714,409 +2724,327 @@ msgid "Message"
 msgstr "Message"
 
 #: .\templates\dietitians\partials\patient_profile_detail.html:3
+#: .\templates\dietitians\patient_list.html:111
 msgid "Detailed Profile of"
 msgstr "Profil détaillé de"
 
-#: .\templates\dietitians\partials\patient_profile_detail.html:9
+#: .\templates\dietitians\partials\patient_profile_detail.html:18
 msgid "Basic Account"
 msgstr "Compte de base"
 
-#: .\templates\dietitians\partials\patient_profile_detail.html:11
-msgid "Email:"
-msgstr "E-mail :"
-
-#: .\templates\dietitians\partials\patient_profile_detail.html:12
-msgid "Occupation:"
-msgstr "Profession :"
-
-#: .\templates\dietitians\partials\patient_profile_detail.html:13
-msgid "Role:"
-msgstr "Rôle :"
-
-#: .\templates\dietitians\partials\patient_profile_detail.html:17
+#: .\templates\dietitians\partials\patient_profile_detail.html:25
 msgid "Physical Measurements"
 msgstr "Mesures physiques"
 
-#: .\templates\dietitians\partials\patient_profile_detail.html:19
-msgid "Age:"
-msgstr "Âge :"
-
-#: .\templates\dietitians\partials\patient_profile_detail.html:20
-msgid "Gender:"
-msgstr "Sexe :"
-
-#: .\templates\dietitians\partials\patient_profile_detail.html:21
-msgid "Height:"
-msgstr "Taille :"
-
-#: .\templates\dietitians\partials\patient_profile_detail.html:22
-msgid "Weight:"
-msgstr "Poids :"
-
-#: .\templates\dietitians\partials\patient_profile_detail.html:23
-msgid "BMI:"
-msgstr "IMC :"
-
-#: .\templates\dietitians\partials\patient_profile_detail.html:24
-msgid "Activity:"
-msgstr "Activité :"
-
-#: .\templates\dietitians\partials\patient_profile_detail.html:28
-#: .\templates\patients\patient_profile.html:129
+#: .\templates\dietitians\partials\patient_profile_detail.html:49
+#: .\templates\patients\bilan_form.html:54
+#: .\templates\patients\patient_profile.html:124
+#: .\templates\patients\patient_profile_form.html:78
+#: .\templates\patients\patient_profile_update.html:71
 msgid "Medical History"
 msgstr "Antécédents médicaux"
 
-#: .\templates\dietitians\partials\patient_profile_detail.html:30
-msgid "Diagnosis:"
-msgstr "Diagnostic :"
+#: .\templates\dietitians\partials\patient_profile_detail.html:61
+#: .\templates\patients\bilan_form.html:65
+#: .\templates\patients\patient_profile.html:148
+#: .\templates\patients\patient_profile_form.html:108
+#: .\templates\patients\patient_profile_update.html:98
+msgid "Lifestyle"
+msgstr "Habitudes de vie"
 
-#: .\templates\dietitians\partials\patient_profile_detail.html:31
-msgid "Medications:"
-msgstr "Médicaments :"
+#: .\templates\dietitians\partials\patient_profile_detail.html:72
+msgid "Eating Habits"
+msgstr "Habitudes alimentaires"
 
-#: .\templates\dietitians\partials\patient_profile_detail.html:32
-msgid "Medical history:"
-msgstr "Antécédents médicaux :"
+#: .\templates\dietitians\partials\patient_profile_detail.html:80
+#: .\templates\patients\patient_profile.html:172
+#: .\templates\patients\patient_profile_form.html:246
+msgid "Goals and Expectations"
+msgstr "Objectifs et attentes"
 
-#: .\templates\dietitians\partials\patient_profile_detail.html:33
-msgid "Family history of CVD:"
-msgstr "Antécédents familiaux de MCV :"
-
-#: .\templates\dietitians\partials\patient_profile_detail.html:34
-#: .\templates\dietitians\partials\patient_profile_detail.html:37
-#: .\templates\patients\partials\food_table.html:21
-#: .\templates\patients\patient_profile.html:139
-#: .\templates\patients\patient_profile.html:146
-msgid "Yes"
-msgstr "Oui"
-
-#: .\templates\dietitians\partials\patient_profile_detail.html:34
-#: .\templates\dietitians\partials\patient_profile_detail.html:37
-#: .\templates\patients\partials\food_table.html:23
-#: .\templates\patients\patient_profile.html:140
-#: .\templates\patients\patient_profile.html:147
-msgid "No"
-msgstr "Non"
-
-#: .\templates\dietitians\partials\patient_profile_detail.html:36
-msgid "Allergies:"
-msgstr "Allergies :"
-
-#: .\templates\dietitians\partials\patient_profile_detail.html:41
+#: .\templates\dietitians\partials\patient_profile_detail.html:89
 msgid "This patient's detailed profile has not been filled in yet."
 msgstr "Le profil détaillé de ce patient n'a pas encore été renseigné."
 
-#: .\templates\dietitians\partials\patient_profile_detail.html:46
+#: .\templates\dietitians\partials\patient_profile_detail.html:96
+msgid "Edit assessment"
+msgstr "Modifier le bilan"
+
+#: .\templates\dietitians\partials\patient_profile_detail.html:99
 msgid "Close"
 msgstr "Fermer"
 
-#: .\templates\dietitians\patient_list.html:21
+#: .\templates\dietitians\patient_list.html:45
 msgid "Dietitian Dashboard"
 msgstr "Tableau de bord du diététicien"
 
-#: .\templates\dietitians\patient_list.html:22
+#: .\templates\dietitians\patient_list.html:46
 msgid "My Patients"
 msgstr "Mes patients"
 
-#: .\templates\dietitians\patient_list.html:22
+#: .\templates\dietitians\patient_list.html:46
 msgid "in total"
 msgstr "au total"
 
-#: .\templates\dietitians\patient_list.html:25
+#: .\templates\dietitians\patient_list.html:49
 msgid "Active"
 msgstr "Actifs"
 
-#: .\templates\dietitians\patient_list.html:26
+#: .\templates\dietitians\patient_list.html:50
 msgid "Inactive"
 msgstr "Inactifs"
 
-#: .\templates\dietitians\patient_list.html:32
+#: .\templates\dietitians\patient_list.html:56
 msgid "Search by name or email..."
 msgstr "Rechercher par nom ou e-mail..."
 
-#: .\templates\dietitians\patient_list.html:35
+#: .\templates\dietitians\patient_list.html:59
 msgid "Clear"
 msgstr "Effacer"
 
-#: .\templates\dietitians\patient_list.html:42
+#: .\templates\dietitians\patient_list.html:65
 msgid "Statistics"
 msgstr "Statistiques"
 
-#: .\templates\dietitians\patient_list.html:45
+#: .\templates\dietitians\patient_list.html:68
 msgid "Export to Excel"
 msgstr "Exporter vers Excel"
 
-#: .\templates\dietitians\patient_list.html:55
+#: .\templates\dietitians\patient_list.html:78
+#: .\templates\dietitians\patient_list.html:88
 msgid "Name"
 msgstr "Nom"
 
-#: .\templates\dietitians\patient_list.html:57
+#: .\templates\dietitians\patient_list.html:80
+#: .\templates\dietitians\patient_list.html:90
 msgid "Registered since"
 msgstr "Inscrit depuis"
 
-#: .\templates\dietitians\patient_list.html:58
+#: .\templates\dietitians\patient_list.html:81
+#: .\templates\dietitians\patient_list.html:91
 msgid "Profile Status"
 msgstr "État du profil"
 
-#: .\templates\dietitians\patient_list.html:59
-#: .\templates\patients\my_record.html:190
+#: .\templates\dietitians\patient_list.html:82
+#: .\templates\patients\my_record.html:153
 msgid "Actions"
 msgstr "Actions"
 
-#: .\templates\dietitians\patient_list.html:70
+#: .\templates\dietitians\patient_list.html:93
 msgid "Complete"
 msgstr "Complet"
 
-#: .\templates\dietitians\patient_list.html:72
+#: .\templates\dietitians\patient_list.html:95
 msgid "Incomplete"
 msgstr "Incomplet"
 
-#: .\templates\dietitians\patient_list.html:77
-msgid "File"
-msgstr "Dossier"
-
-#: .\templates\dietitians\patient_list.html:82
-msgid "Consult."
-msgstr "Consult."
-
-#: .\templates\dietitians\patient_list.html:97
-msgid "No patients found."
-msgstr "Aucun patient trouvé."
-
-#: .\templates\dietitians\patient_list.html:109
-msgid "Loading..."
-msgstr "Chargement..."
-
-#: .\templates\dietitians\patient_list.html:137
-#: .\templates\dietitians\patient_list.html:140
-#: .\templates\dietitians\patient_record.html:110
-#: .\templates\dietitians\patient_record.html:165
-#: .\templates\patients\my_record.html:160
-#: .\templates\patients\my_record.html:233
-msgid "Beginning"
-msgstr "Début"
-
-#: .\templates\dietitians\patient_list.html:138
-#: .\templates\dietitians\patient_list.html:141
-#: .\templates\dietitians\patient_record.html:111
-#: .\templates\dietitians\patient_record.html:114
-#: .\templates\dietitians\patient_record.html:166
-#: .\templates\dietitians\patient_record.html:169
-#: .\templates\patients\my_record.html:161
-#: .\templates\patients\my_record.html:164
-#: .\templates\patients\my_record.html:234
-#: .\templates\patients\my_record.html:237
-msgid "Previous"
-msgstr "Précédent"
-
-#: .\templates\dietitians\patient_list.html:143
-#: .\templates\dietitians\patient_record.html:116
-#: .\templates\dietitians\patient_record.html:171
-#: .\templates\patients\my_record.html:166
-#: .\templates\patients\my_record.html:239
-msgid "Page"
-msgstr "Page"
-
-#: .\templates\dietitians\patient_list.html:145
-#: .\templates\dietitians\patient_list.html:148
-#: .\templates\dietitians\patient_record.html:118
-#: .\templates\dietitians\patient_record.html:121
-#: .\templates\dietitians\patient_record.html:173
-#: .\templates\dietitians\patient_record.html:176
-#: .\templates\patients\my_record.html:168
-#: .\templates\patients\my_record.html:171
-#: .\templates\patients\my_record.html:241
-#: .\templates\patients\my_record.html:244
-msgid "Next"
-msgstr "Suivant"
-
-#: .\templates\dietitians\patient_list.html:146
-#: .\templates\dietitians\patient_list.html:149
-#: .\templates\dietitians\patient_record.html:119
-#: .\templates\dietitians\patient_record.html:174
-#: .\templates\patients\my_record.html:169
-#: .\templates\patients\my_record.html:242
-msgid "End"
-msgstr "Fin"
-
-#: .\templates\dietitians\patient_record.html:28
-#: .\templates\patients\my_record.html:50
+#: .\templates\dietitians\patient_list.html:99
+#: .\templates\dietitians\patient_record.html:56
+#: .\templates\patients\my_record.html:56
 msgid "Medical File"
 msgstr "Dossier médical"
 
-#: .\templates\dietitians\patient_record.html:32
+#: .\templates\dietitians\patient_list.html:100
+msgid "File"
+msgstr "Dossier"
+
+#: .\templates\dietitians\patient_list.html:114
+#: .\templates\dietitians\patient_record.html:63
+#: .\templates\dietitians\patient_record.html:70
+msgid "Assessment form"
+msgstr "Formulaire de bilan"
+
+#: .\templates\dietitians\patient_list.html:126
+msgid "No patients found."
+msgstr "Aucun patient trouvé."
+
+#: .\templates\dietitians\patient_list.html:138
+msgid "Loading..."
+msgstr "Chargement..."
+
+#: .\templates\dietitians\patient_list.html:166
+#: .\templates\dietitians\patient_list.html:167
+#: .\templates\dietitians\patient_record.html:160
+#: .\templates\dietitians\patient_record.html:161
+#: .\templates\dietitians\patient_record.html:205
+#: .\templates\dietitians\patient_record.html:206
+#: .\templates\patients\my_record.html:132
+#: .\templates\patients\my_record.html:133
+#: .\templates\patients\my_record.html:192
+#: .\templates\patients\my_record.html:193
+msgid "Previous"
+msgstr "Précédent"
+
+#: .\templates\dietitians\patient_list.html:170
+#: .\templates\dietitians\patient_list.html:171
+#: .\templates\dietitians\patient_record.html:164
+#: .\templates\dietitians\patient_record.html:165
+#: .\templates\dietitians\patient_record.html:209
+#: .\templates\dietitians\patient_record.html:210
+#: .\templates\patients\my_record.html:136
+#: .\templates\patients\my_record.html:137
+#: .\templates\patients\my_record.html:196
+#: .\templates\patients\my_record.html:197
+msgid "Next"
+msgstr "Suivant"
+
+#: .\templates\dietitians\patient_record.html:60
 msgid "Define the Meal Plan"
 msgstr "Définir le plan alimentaire"
 
-#: .\templates\dietitians\patient_record.html:35
+#: .\templates\dietitians\patient_record.html:60
+msgid "Plan"
+msgstr "Plan"
+
+#: .\templates\dietitians\patient_record.html:71
+msgid "Follow-up sheet"
+msgstr "Fiche de suivi"
+
+#: .\templates\dietitians\patient_record.html:76
 msgid "Patient List"
 msgstr "Liste des patients"
 
-#: .\templates\dietitians\patient_record.html:43
-#: .\templates\patients\my_record.html:61
+#: .\templates\dietitians\patient_record.html:84
+#: .\templates\patients\my_record.html:71
 msgid "Weight Evolution"
 msgstr "Évolution du poids"
 
-#: .\templates\dietitians\patient_record.html:50
-#: .\templates\patients\my_record.html:75
-msgid "Consultations"
-msgstr "Consultations"
-
-#: .\templates\dietitians\patient_record.html:51
+#: .\templates\dietitians\patient_record.html:93
 #: .\templates\patients\my_record.html:80
 msgid "Food Journal"
 msgstr "Journal alimentaire"
 
-#: .\templates\dietitians\patient_record.html:52
-#: .\templates\patients\my_record.html:85
+#: .\templates\dietitians\patient_record.html:94
+#: .\templates\patients\my_record.html:81
 msgid "Food Plan"
 msgstr "Plan alimentaire"
 
-#: .\templates\dietitians\patient_record.html:63
-#: .\templates\patients\my_record.html:98
+#: .\templates\dietitians\patient_record.html:106
+#: .\templates\patients\my_record.html:93
 msgid "Consultation of"
 msgstr "Consultation du"
 
-#: .\templates\dietitians\patient_record.html:66
-#: .\templates\patients\my_record.html:101
-msgid "Followed by"
-msgstr "Suivi par"
-
-#: .\templates\dietitians\patient_record.html:82
-#: .\templates\patients\my_record.html:107
+#: .\templates\dietitians\patient_record.html:130
+#: .\templates\patients\my_record.html:102
 msgid "Clinical Assessment"
 msgstr "Bilan clinique"
 
-#: .\templates\dietitians\patient_record.html:85
-#: .\templates\patients\my_record.html:114
-msgid "Weight"
-msgstr "Poids"
-
-#: .\templates\dietitians\patient_record.html:88
-#: .\templates\patients\my_record.html:122
-msgid "Missing height"
-msgstr "Taille manquante"
-
-#: .\templates\dietitians\patient_record.html:90
-#: .\templates\patients\my_record.html:126
-msgid "HbA1c"
-msgstr "HbA1c"
-
-#: .\templates\dietitians\patient_record.html:91
-#: .\templates\dietitians\patient_record.html:295
-#: .\templates\patients\my_record.html:130
-msgid "Cholesterol"
-msgstr "Cholestérol"
-
-#: .\templates\dietitians\patient_record.html:95
-#: .\templates\patients\my_record.html:136
+#: .\templates\dietitians\patient_record.html:141
+#: .\templates\patients\my_record.html:113
 msgid "Analysis & Prescription"
 msgstr "Analyse et prescription"
 
-#: .\templates\dietitians\patient_record.html:96
-#: .\templates\patients\my_record.html:138
+#: .\templates\dietitians\patient_record.html:142
+#: .\templates\patients\my_record.html:114
 msgid "Diagnosis (PES):"
 msgstr "Diagnostic (PES) :"
 
-#: .\templates\dietitians\patient_record.html:97
-#: .\templates\patients\my_record.html:142
+#: .\templates\dietitians\patient_record.html:144
+#: .\templates\patients\my_record.html:116
 msgid "Intervention plan:"
 msgstr "Plan d'intervention :"
 
-#: .\templates\dietitians\patient_record.html:103
-#: .\templates\patients\my_record.html:152
+#: .\templates\dietitians\patient_record.html:153
+#: .\templates\patients\my_record.html:125
 msgid "No consultation recorded."
 msgstr "Aucune consultation enregistrée."
 
-#: .\templates\dietitians\patient_record.html:137
-#: .\templates\patients\my_record.html:187
+#: .\templates\dietitians\patient_record.html:178
+#: .\templates\dietitians\patient_record.html:187
+#: .\templates\patients\my_record.html:150
+#: .\templates\patients\my_record.html:160
 msgid "Moment"
 msgstr "Moment"
 
-#: .\templates\dietitians\patient_record.html:138
-#: .\templates\patients\my_record.html:188
+#: .\templates\dietitians\patient_record.html:179
+#: .\templates\dietitians\patient_record.html:188
+#: .\templates\patients\my_record.html:151
+#: .\templates\patients\my_record.html:161
 #: .\templates\patients\partials\food_table.html:9
 msgid "Description"
 msgstr "Description"
 
-#: .\templates\dietitians\patient_record.html:139
-#: .\templates\patients\my_record.html:189
+#: .\templates\dietitians\patient_record.html:180
+#: .\templates\dietitians\patient_record.html:189
+#: .\templates\patients\my_record.html:152
+#: .\templates\patients\my_record.html:162
 msgid "Sugary Drink"
 msgstr "Boisson sucrée"
 
-#: .\templates\dietitians\patient_record.html:154
-#: .\templates\patients\my_record.html:222
+#: .\templates\dietitians\patient_record.html:195
+#: .\templates\patients\my_record.html:182
 msgid "Empty diary."
 msgstr "Journal vide."
 
-#: .\templates\dietitians\patient_record.html:187
+#: .\templates\dietitians\patient_record.html:218
 msgid "Weekly Schedule"
 msgstr "Programme hebdomadaire"
 
-#: .\templates\dietitians\patient_record.html:189
-#: .\templates\patients\my_record.html:258
+#: .\templates\dietitians\patient_record.html:219
 msgid "Edit plan"
 msgstr "Modifier le plan"
 
-#: .\templates\dietitians\patient_record.html:194
-msgid "Last updated on"
-msgstr "Dernière mise à jour le"
-
-#: .\templates\dietitians\patient_record.html:206
-#: .\templates\patients\my_record.html:278
+#: .\templates\dietitians\patient_record.html:236
+#: .\templates\patients\my_record.html:220
 msgid "Breakfast:"
 msgstr "Petit-déjeuner :"
 
-#: .\templates\dietitians\patient_record.html:206
-#: .\templates\dietitians\patient_record.html:207
-#: .\templates\dietitians\patient_record.html:208
-#: .\templates\patients\my_record.html:279
-#: .\templates\patients\my_record.html:286
-#: .\templates\patients\my_record.html:293
+#: .\templates\dietitians\patient_record.html:237
+#: .\templates\dietitians\patient_record.html:244
+#: .\templates\dietitians\patient_record.html:251
+#: .\templates\patients\my_record.html:221
+#: .\templates\patients\my_record.html:228
+#: .\templates\patients\my_record.html:235
 msgid "Snack:"
 msgstr "Collation :"
 
-#: .\templates\dietitians\patient_record.html:207
-#: .\templates\patients\my_record.html:285
+#: .\templates\dietitians\patient_record.html:243
+#: .\templates\patients\my_record.html:227
 msgid "Lunch:"
 msgstr "Déjeuner :"
 
-#: .\templates\dietitians\patient_record.html:208
-#: .\templates\patients\my_record.html:292
+#: .\templates\dietitians\patient_record.html:250
+#: .\templates\patients\my_record.html:234
 msgid "Dinner:"
 msgstr "Dîner :"
 
-#: .\templates\dietitians\patient_record.html:216
-#: .\templates\patients\my_record.html:305
+#: .\templates\dietitians\patient_record.html:263
+#: .\templates\patients\my_record.html:247
 msgid "No meal plan has been defined yet."
 msgstr "Aucun plan alimentaire n'a encore été défini."
 
-#: .\templates\dietitians\patient_record.html:285
+#: .\templates\dietitians\patient_record.html:335
 msgid "Edit consultation"
 msgstr "Modifier la consultation"
 
-#: .\templates\dietitians\patient_record.html:294
+#: .\templates\dietitians\patient_record.html:344
 #, python-format
 msgid "HbA1c (%%)"
 msgstr "HbA1c (%%)"
 
-#: .\templates\dietitians\patient_record.html:296
+#: .\templates\dietitians\patient_record.html:345
+msgid "Cholesterol"
+msgstr "Cholestérol"
+
+#: .\templates\dietitians\patient_record.html:346
 msgid "Diagnosis (PES)"
 msgstr "Diagnostic (PES)"
 
-#: .\templates\dietitians\patient_record.html:302
+#: .\templates\dietitians\patient_record.html:352
 msgid "Update the record"
 msgstr "Mettre à jour la fiche"
 
-#: .\templates\dietitians\patient_record.html:314
+#: .\templates\dietitians\patient_record.html:364
+#: .\templates\patients\my_record.html:326
 msgid "Warning"
 msgstr "Attention"
 
-#: .\templates\dietitians\patient_record.html:318
+#: .\templates\dietitians\patient_record.html:368
 msgid "Do you really want to delete this consultation?"
 msgstr "Voulez-vous vraiment supprimer cette consultation ?"
 
-#: .\templates\dietitians\patient_record.html:319
+#: .\templates\dietitians\patient_record.html:369
+#: .\templates\patients\my_record.html:332
 msgid "This action is irreversible"
 msgstr "Cette action est irréversible"
 
@@ -2164,24 +3092,24 @@ msgstr "Nombre de patients"
 msgid "Patients"
 msgstr "Patients"
 
-#: .\templates\patients\add_food.html:3 .\templates\patients\my_record.html:382
+#: .\templates\patients\add_food.html:3 .\templates\patients\my_record.html:259
 msgid "Write down your meal"
 msgstr "Notez votre repas"
 
 #: .\templates\patients\add_food.html:11
-#: .\templates\patients\my_record.html:389
-#: .\templates\patients\my_record.html:423
+#: .\templates\patients\my_record.html:266
+#: .\templates\patients\my_record.html:300
 msgid "What meal?"
 msgstr "Quel repas ?"
 
 #: .\templates\patients\add_food.html:15
-#: .\templates\patients\my_record.html:393
-#: .\templates\patients\my_record.html:427
+#: .\templates\patients\my_record.html:270
+#: .\templates\patients\my_record.html:304
 msgid "Content description"
 msgstr "Description du contenu"
 
 #: .\templates\patients\add_food.html:17
-#: .\templates\patients\my_record.html:395
+#: .\templates\patients\my_record.html:272
 msgid "Be specific (e.g., 2 steamed bananas, tomato sauce, grilled fish)."
 msgstr "Soyez précis (ex : 2 bananes vapeur, sauce tomate, poisson grillé)."
 
@@ -2190,42 +3118,86 @@ msgid "I consumed a sugary drink."
 msgstr "J'ai consommé une boisson sucrée."
 
 #: .\templates\patients\add_food.html:25
-#: .\templates\patients\my_record.html:404
+#: .\templates\patients\my_record.html:281
 msgid "Save the meal"
 msgstr "Enregistrer le repas"
+
+#: .\templates\patients\bilan_form.html:32
+msgid ""
+"Fill in what you can. Nothing is mandatory except the basics — your "
+"dietitian will complete the rest."
+msgstr ""
+"Remplissez ce que vous pouvez. Rien n'est obligatoire hormis l'essentiel — "
+"votre diététicienne complétera le reste."
+
+#: .\templates\patients\bilan_form.html:43
+msgid "Personal Information & Reason"
+msgstr "Informations personnelles et motif"
+
+#: .\templates\patients\bilan_form.html:76
+#: .\templates\patients\patient_profile.html:104
+#: .\templates\patients\patient_profile_form.html:152
+#: .\templates\patients\patient_profile_update.html:134
+msgid "Anthropometric Data"
+msgstr "Données anthropométriques"
+
+#: .\templates\patients\bilan_form.html:87
+#: .\templates\patients\patient_profile_form.html:183
+#: .\templates\patients\patient_profile_update.html:162
+msgid "Eating Habits & Hydration"
+msgstr "Habitudes alimentaires et hydratation"
+
+#: .\templates\patients\bilan_form.html:98
+#: .\templates\patients\patient_profile_form.html:233
+#: .\templates\patients\patient_profile_update.html:207
+msgid "Relationship with Food & Goals"
+msgstr "Relation à l'alimentation et objectifs"
+
+#: .\templates\patients\bilan_form.html:110
+#: .\templates\patients\patient_profile_form.html:261
+msgid "Practitioner's Notes"
+msgstr "Observations du praticien"
+
+#: .\templates\patients\bilan_form.html:123
+msgid "Save the assessment"
+msgstr "Enregistrer le bilan"
 
 #: .\templates\patients\home_patient.html:6
 msgid "Welcome to your space"
 msgstr "Bienvenue dans votre espace"
 
-#: .\templates\patients\my_record.html:53
+#: .\templates\patients\my_record.html:60
+msgid "Download my meal plan"
+msgstr "Télécharger mon plan alimentaire"
+
+#: .\templates\patients\my_record.html:63
 msgid "Rate my meal"
 msgstr "Noter mon repas"
 
-#: .\templates\patients\my_record.html:215
-msgid "Do you really want to delete this meal?"
-msgstr "Voulez-vous vraiment supprimer ce repas ?"
-
-#: .\templates\patients\my_record.html:255
+#: .\templates\patients\my_record.html:204
 msgid "My Weekly Program"
 msgstr "Mon programme hebdomadaire"
 
-#: .\templates\patients\my_record.html:399
+#: .\templates\patients\my_record.html:276
 msgid "I consumed a sugary drink"
 msgstr "J'ai consommé une boisson sucrée"
 
-#: .\templates\patients\my_record.html:416
+#: .\templates\patients\my_record.html:293
 msgid "Edit my meal"
 msgstr "Modifier mon repas"
 
-#: .\templates\patients\my_record.html:432
+#: .\templates\patients\my_record.html:309
 msgid "Sugary drink consumed"
 msgstr "Boisson sucrée consommée"
 
-#: .\templates\patients\my_record.html:437
-#: .\templates\patients\patient_profile_update.html:95
+#: .\templates\patients\my_record.html:314
+#: .\templates\patients\patient_profile_update.html:232
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
+
+#: .\templates\patients\my_record.html:330
+msgid "Do you really want to delete this meal?"
+msgstr "Voulez-vous vraiment supprimer ce repas ?"
 
 #: .\templates\patients\partials\food_table.html:8
 msgid "Meal"
@@ -2239,15 +3211,35 @@ msgstr "Sucre ?"
 msgid "No meal recorded yet."
 msgstr "Aucun repas enregistré pour le moment."
 
-#: .\templates\patients\patient_profile.html:94
+#: .\templates\patients\patient_profile.html:55
 msgid "Member since"
 msgstr "Membre depuis"
 
-#: .\templates\patients\patient_profile.html:113
+#: .\templates\patients\patient_profile.html:63
+msgid ""
+"Your assessment form is incomplete. Filling it in helps your dietitian "
+"provide better care."
+msgstr "Votre formulaire de bilan est incomplet. Le remplir aide votre diététicienne à vous offrir un meilleur suivi."
+
+#: .\templates\patients\patient_profile.html:64
+msgid "Complete it now"
+msgstr "Le compléter maintenant"
+
+#: .\templates\patients\patient_profile.html:87
+#: .\templates\patients\patient_profile_form.html:50
+#: .\templates\patients\patient_profile_update.html:52
 msgid "Personal Information"
 msgstr "Informations personnelles"
 
-#: .\templates\patients\patient_profile.html:157
+#: .\templates\patients\patient_profile.html:192
+msgid "Download my assessment"
+msgstr "Télécharger mon bilan"
+
+#: .\templates\patients\patient_profile.html:195
+msgid "My assessment form"
+msgstr "Mon formulaire de bilan"
+
+#: .\templates\patients\patient_profile.html:198
 msgid "Update my profile"
 msgstr "Mettre à jour mon profil"
 
@@ -2256,36 +3248,65 @@ msgid "Complete your medical profile"
 msgstr "Complétez votre profil médical"
 
 #: .\templates\patients\patient_profile_form.html:32
-msgid "This information helps your dietitian provide personalized care."
-msgstr "Ces informations aident votre diététicien à vous offrir un suivi personnalisé."
+msgid ""
+"Fill in what you can. Only the basics are needed to get started — your "
+"dietitian will complete the rest."
+msgstr ""
+"Remplissez ce que vous pouvez. Seul l'essentiel est nécessaire pour "
+"commencer — votre diététicienne complétera le reste."
 
-#: .\templates\patients\patient_profile_form.html:40
+#: .\templates\patients\patient_profile_form.html:66
+msgid "Reason for Consultation"
+msgstr "Motif de consultation"
+
+#: .\templates\patients\patient_profile_form.html:93
+msgid "Allergies and Intolerances"
+msgstr "Allergies et intolérances"
+
+#: .\templates\patients\patient_profile_form.html:113
+msgid "Sleep"
+msgstr "Sommeil"
+
+#: .\templates\patients\patient_profile_form.html:119
+msgid "Physical activity"
+msgstr "Activité physique"
+
+#: .\templates\patients\patient_profile_form.html:127
+msgid "Stress"
+msgstr "Stress"
+
+#: .\templates\patients\patient_profile_form.html:131
+msgid "Consumption"
+msgstr "Consommation"
+
+#: .\templates\patients\patient_profile_form.html:169
+msgid "To be completed by the nutritionist"
+msgstr "À compléter par la nutritionniste"
+
+#: .\templates\patients\patient_profile_form.html:188
+msgid "Meal Pattern"
+msgstr "Organisation des repas"
+
+#: .\templates\patients\patient_profile_form.html:212
+#: .\templates\patients\patient_profile_update.html:188
+msgid "Weekly Consumption"
+msgstr "Consommation hebdomadaire"
+
+#: .\templates\patients\patient_profile_form.html:281
 msgid "Save"
 msgstr "Enregistrer"
 
-#: .\templates\patients\patient_profile_update.html:42
+#: .\templates\patients\patient_profile_update.html:29
 msgid "Edit your profile"
 msgstr "Modifier votre profil"
 
-#: .\templates\patients\patient_profile_update.html:56
+#: .\templates\patients\patient_profile_update.html:30
+msgid "Update your personal details and medical information."
+msgstr "Mettez à jour vos informations personnelles et médicales."
+
+#: .\templates\patients\patient_profile_update.html:41
 msgid "Account Information"
 msgstr "Informations du compte"
-
-#: .\templates\patients\patient_profile_update.html:68
-msgid "Physical and Medical Details"
-msgstr "Détails physiques et médicaux"
-
-#: .\templates\patients\patient_profile_update.html:80
-msgid "Health and History"
-msgstr "Santé et antécédents"
-
-#: .\users\forms.py:8 .\users\models.py:28
-msgid "First name"
-msgstr "Prénom"
-
-#: .\users\forms.py:9 .\users\models.py:29
-msgid "Last name"
-msgstr "Nom"
 
 #: .\users\forms.py:16
 msgid "Unable to create the user."
@@ -2303,9 +3324,9 @@ msgstr "Patient"
 msgid "Dietitian"
 msgstr "Diététicien"
 
-#: .\users\models.py:37
-msgid "Role"
-msgstr "Rôle"
+#: .\users\models.py:43
+msgid "Phone number"
+msgstr "Numéro de téléphone"
 
 #: .\users\models.py:44
 msgid "Profile picture"
@@ -2338,3 +3359,165 @@ msgstr "Français"
 #: .\websites\settings.py:147
 msgid "English"
 msgstr "Anglais"
+
+#~ msgid "Export PDF"
+#~ msgstr "Exporter en PDF"
+
+#~ msgid "Last updated on"
+#~ msgstr "Dernière mise à jour le"
+
+#~ msgid "Matin"
+#~ msgstr "Matin"
+
+#~ msgid "Midi"
+#~ msgstr "Midi"
+
+#~ msgid "Soir"
+#~ msgstr "Soir"
+
+#~ msgid "Commentaire ajouté !"
+#~ msgstr "Commentaire ajouté !"
+
+#~ msgid "Votre article a été publié avec succès !"
+#~ msgstr "Votre article a été publié avec succès !"
+
+#~ msgid "Publication supprimée."
+#~ msgstr "Publication supprimée."
+
+#~ msgid "Commentaire supprimé."
+#~ msgstr "Commentaire supprimé."
+
+#~ msgid "Avec Allergies"
+#~ msgstr "Avec allergies"
+
+#~ msgid "Sans Allergies"
+#~ msgstr "Sans allergies"
+
+#~ msgid "Plan alimentaire mis à jour avec succès !"
+#~ msgstr "Plan alimentaire mis à jour avec succès !"
+
+#~ msgid "Contact Information"
+#~ msgstr "Coordonnées"
+
+#~ msgid ""
+#~ "Ready to start your journey towards sustainable wellness? Reach out for a "
+#~ "personalized consultation."
+#~ msgstr ""
+#~ "Prêt à démarrer votre parcours vers un bien-être durable ? Contactez-nous "
+#~ "pour une consultation personnalisée."
+
+#~ msgid "Location"
+#~ msgstr "Localisation"
+
+#~ msgid "Online & On-site (Cameroon)"
+#~ msgstr "En ligne et sur site (Cameroun)"
+
+#~ msgid "Expertise"
+#~ msgstr "Expertise"
+
+#~ msgid "Clinical Nutrition & Dietetics"
+#~ msgstr "Nutrition clinique et diététique"
+
+#~ msgid "Chat with us"
+#~ msgstr "Discutez avec nous"
+
+#~ msgid ""
+#~ "\"Healthy nutrition is not about restriction, but about making informed "
+#~ "choices.\""
+#~ msgstr ""
+#~ "« Une alimentation saine n'est pas une question de restriction, mais de "
+#~ "choix éclairés. »"
+
+#~ msgid "Send us a message"
+#~ msgstr "Envoyez-nous un message"
+
+#~ msgid "Fill out the form below and we'll get back to you within 24 hours."
+#~ msgstr ""
+#~ "Remplissez le formulaire ci-dessous et nous vous répondrons sous 24 "
+#~ "heures."
+
+#~ msgid "Email address"
+#~ msgstr "Adresse e-mail"
+
+#~ msgid "How can we help you?"
+#~ msgstr "Comment pouvons-nous vous aider ?"
+
+#~ msgid "Describe your health goals or questions..."
+#~ msgstr "Décrivez vos objectifs de santé ou vos questions..."
+
+#~ msgid "Send Message"
+#~ msgstr "Envoyer le message"
+
+#~ msgid "Email:"
+#~ msgstr "E-mail :"
+
+#~ msgid "Occupation:"
+#~ msgstr "Profession :"
+
+#~ msgid "Role:"
+#~ msgstr "Rôle :"
+
+#~ msgid "Age:"
+#~ msgstr "Âge :"
+
+#~ msgid "Gender:"
+#~ msgstr "Sexe :"
+
+#~ msgid "Height:"
+#~ msgstr "Taille :"
+
+#~ msgid "Weight:"
+#~ msgstr "Poids :"
+
+#~ msgid "BMI:"
+#~ msgstr "IMC :"
+
+#~ msgid "Activity:"
+#~ msgstr "Activité :"
+
+#~ msgid "Diagnosis:"
+#~ msgstr "Diagnostic :"
+
+#~ msgid "Medications:"
+#~ msgstr "Médicaments :"
+
+#~ msgid "Medical history:"
+#~ msgstr "Antécédents médicaux :"
+
+#~ msgid "Family history of CVD:"
+#~ msgstr "Antécédents familiaux de MCV :"
+
+#~ msgid "Allergies:"
+#~ msgstr "Allergies :"
+
+#~ msgid "Consult."
+#~ msgstr "Consult."
+
+#~ msgid "Beginning"
+#~ msgstr "Début"
+
+#~ msgid "End"
+#~ msgstr "Fin"
+
+#~ msgid "Followed by"
+#~ msgstr "Suivi par"
+
+#~ msgid "Missing height"
+#~ msgstr "Taille manquante"
+
+#~ msgid "HbA1c"
+#~ msgstr "HbA1c"
+
+#~ msgid "Physical and Medical Details"
+#~ msgstr "Détails physiques et médicaux"
+
+#~ msgid "Health and History"
+#~ msgstr "Santé et antécédents"
+
+#: .\\templates\\dietitians\\statistics.html
+msgid "Pathology Distribution"
+msgstr "Répartition par pathologie"
+
+#: .\\templates\\dietitians\\statistics.html
+msgid "No data available"
+msgstr "Aucune donnée disponible"

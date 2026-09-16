@@ -3,3 +3,5 @@ __pycache__/
 *.pyc
 .env
 *.sqlite3
+# Donnees de test - LOCAL UNIQUEMENT
+src/patients/management/commands/donnees_test.py

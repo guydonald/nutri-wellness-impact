@@ -1,55 +1,78 @@
 {% extends "bases.html" %}
-{% load allauth i18n static %}
+{% load i18n static %}
 {% block content %}
+
 <style>
     :root { --nutri-green:#5a8f3d; --nutri-green-dark:#2f5e2f; --nutri-green-light:#eaf3e3; --nutri-orange:#f4a020; }
-    .dash-title { color: var(--nutri-green-dark); font-weight: 800; }
-    .kpi-pill { background: var(--nutri-green-light); border-radius: 14px; padding: 0.8rem 1.2rem; display:inline-flex; align-items:center; gap:0.5rem; }
-    .kpi-pill .num { font-weight: 800; color: var(--nutri-green-dark); font-size: 1.2rem; }
-    .table-card { border-radius: 20px; border: 1px solid #eef2ec; overflow: hidden; }
+    .dash-title { color:var(--nutri-green-dark); font-weight:800; }
+    .kpi-pill { background:var(--nutri-green-light); border-radius:14px; padding:.7rem 1.1rem;
+                display:inline-flex; align-items:center; gap:.5rem; }
+    .kpi-pill .num { font-weight:800; color:var(--nutri-green-dark); font-size:1.15rem; }
+    .table-card { border-radius:20px; border:1px solid #eef2ec; overflow:hidden; }
     .btn-nutri { background:var(--nutri-green); color:#fff; border:none; border-radius:50px; font-weight:700; transition:all .25s ease; }
     .btn-nutri:hover { background:var(--nutri-green-dark); color:#fff; transform:translateY(-2px); }
-    .search-input { border:1px solid #e4ebe0; border-radius: 50px 0 0 50px; }
-    .search-input:focus { border-color: var(--nutri-green); box-shadow: 0 0 0 0.2rem rgba(90,143,61,0.15); }
-    .action-btn { border-radius: 10px; font-size: 0.8rem; }
+    .btn-nutri-outline { background:transparent; color:var(--nutri-green-dark); border:2px solid var(--nutri-green);
+                         border-radius:50px; font-weight:700; transition:all .2s ease; }
+    .btn-nutri-outline:hover { background:var(--nutri-green); color:#fff; }
+    .search-input { border:1px solid #e4ebe0; border-radius:50px 0 0 50px; }
+    .search-input:focus { border-color:var(--nutri-green); box-shadow:0 0 0 .2rem rgba(90,143,61,.15); }
+    .action-btn { border-radius:10px; font-size:.8rem; }
     .page-link { border:none; color:var(--nutri-green-dark); font-weight:bold; }
     .pagination .active .page-link { background:var(--nutri-green); border-color:var(--nutri-green); color:#fff; }
-    thead.table-head-green th { background: var(--nutri-green-light); color: var(--nutri-green-dark); border:0; }
+    thead.table-head-green th { background:var(--nutri-green-light); color:var(--nutri-green-dark); border:0; }
+
+    /* ===== MOBILE : tableau en cartes ===== */
+    @media (max-width: 767.98px) {
+        .dash-title { font-size:1.2rem; }
+        .mobile-cards thead { display:none; }
+        .mobile-cards tbody tr { display:block; border:1px solid #eef2ec; border-radius:14px;
+                                  margin-bottom:.8rem; padding:.8rem; }
+        .mobile-cards tbody td { display:flex; justify-content:space-between; align-items:center;
+                                  border:none !important; padding:.35rem 0 !important; text-align:right; }
+        .mobile-cards tbody td::before { content:attr(data-label); color:#7a8a72; font-size:.78rem;
+                                          font-weight:600; text-align:left; margin-right:1rem; flex-shrink:0; }
+        .mobile-cards tbody td.actions-cell { justify-content:center; flex-wrap:wrap; gap:.3rem;
+                                               padding-top:.7rem !important; border-top:1px dashed #eef2ec !important; }
+        .mobile-cards tbody td.actions-cell::before { display:none; }
+        .search-group { width:100%; }
+        .top-tools { width:100%; }
+        .top-tools .btn { flex:1 1 auto; font-size:.82rem; }
+    }
 </style>
 
-<div class="container py-5">
+<div class="container py-4 py-md-5">
+
     <h2 class="dash-title mb-1"><i class="bi bi-people me-2"></i>{% trans "Dietitian Dashboard" %}</h2>
     <p class="text-muted mb-4">{% trans "My Patients" %} — {{ total_patients }} {% trans "in total" %}</p>
 
-    <div class="d-flex gap-3 mb-4 flex-wrap">
+    <div class="d-flex gap-2 mb-4 flex-wrap">
         <div class="kpi-pill"><i class="bi bi-check-circle" style="color:var(--nutri-green);"></i><span class="num">{{ active_patients }}</span> <span class="small text-muted">{% trans "Active" %}</span></div>
         <div class="kpi-pill" style="background:#fef3e0;"><i class="bi bi-dash-circle" style="color:var(--nutri-orange);"></i><span class="num" style="color:var(--nutri-orange);">{{ inactive_patients }}</span> <span class="small text-muted">{% trans "Inactive" %}</span></div>
     </div>
 
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-        <form method="GET" class="d-flex">
+        <form method="GET" class="d-flex search-group">
             <div class="input-group">
                 <input type="text" name="q" class="form-control search-input" placeholder="{% trans 'Search by name or email...' %}" value="{{ request.GET.q }}">
-                <button class="btn btn-nutri px-4" type="submit"><i class="bi bi-search"></i></button>
+                <button class="btn btn-nutri px-3" type="submit"><i class="bi bi-search"></i></button>
                 {% if request.GET.q %}
                     <a href="{% url 'dietitian_dashboard' %}" class="btn btn-outline-secondary rounded-end-pill">{% trans "Clear" %}</a>
                 {% endif %}
             </div>
         </form>
-
-        <div class="d-flex gap-2">
-            <a href="{% url 'dietitian_statistics' %}" class="btn btn-outline-secondary rounded-pill px-3">
-                <i class="bi bi-bar-chart me-1"></i>{% trans "Statistics" %}
+        <div class="d-flex gap-2 top-tools">
+            <a href="{% url 'dietitian_statistics' %}" class="btn btn-nutri-outline px-3 py-2">
+                <i class="bi bi-bar-chart me-1"></i><span class="d-none d-sm-inline">{% trans "Statistics" %}</span>
             </a>
-            <a href="{% url 'export_patients_excel' %}{% if request.GET.q %}?q={{ request.GET.q }}{% endif %}" class="btn btn-nutri px-3 shadow-sm">
-                <i class="bi bi-file-earmark-excel me-1"></i>{% trans "Export to Excel" %}
+            <a href="{% url 'export_patients_excel' %}{% if request.GET.q %}?q={{ request.GET.q }}{% endif %}" class="btn btn-nutri px-3 py-2 shadow-sm">
+                <i class="bi bi-file-earmark-excel me-1"></i><span class="d-none d-sm-inline">{% trans "Export to Excel" %}</span><span class="d-sm-none">Excel</span>
             </a>
         </div>
     </div>
 
     <div class="card table-card shadow-sm">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table class="table table-hover align-middle mb-0 mobile-cards">
                 <thead class="table-head-green">
                     <tr>
                         <th class="px-4">{% trans "Name" %}</th>
@@ -62,33 +85,39 @@
                 <tbody>
                     {% for patient in patients %}
                     <tr>
-                        <td class="px-4 fw-bold">{{ patient.last_name|default:patient.username }}</td>
-                        <td class="text-muted small">{{ patient.email }}</td>
-                        <td class="text-muted small">{{ patient.date_joined|date:"d M Y" }}</td>
-                        <td>
+                        <td class="px-4 fw-bold" data-label="{% trans 'Name' %}">{{ patient.get_full_name|default:patient.email }}</td>
+                        <td class="text-muted small" data-label="{% trans 'Email' %}">{{ patient.email }}</td>
+                        <td class="text-muted small" data-label="{% trans 'Registered since' %}">{{ patient.date_joined|date:"d M Y" }}</td>
+                        <td data-label="{% trans 'Profile Status' %}">
                             {% if patient.profile and patient.profile.age %}
                                 <span class="badge bg-success-subtle text-success"><i class="bi bi-check-circle me-1"></i>{% trans "Complete" %}</span>
                             {% else %}
                                 <span class="badge bg-warning-subtle text-warning"><i class="bi bi-exclamation-triangle me-1"></i>{% trans "Incomplete" %}</span>
                             {% endif %}
                         </td>
-                        <td class="text-center">
-                            <a href="{% url 'patient_record' patient.id %}" class="btn btn-sm action-btn text-white" style="background:var(--nutri-green);">
-                                <i class="bi bi-folder2-open"></i> <span class="d-none d-lg-inline">{% trans "File" %}</span>
+                        <td class="text-center actions-cell">
+                            <a href="{% url 'patient_record' patient.id %}" class="btn btn-sm action-btn text-white" style="background:var(--nutri-green);" title="{% trans 'Medical File' %}">
+                                <i class="bi bi-folder2-open"></i> <span class="d-none d-xl-inline">{% trans "File" %}</span>
                             </a>
-                            <a href="{% url 'create_consultation' patient_id=patient.id %}" class="btn btn-sm action-btn btn-outline-success"
-                               data-bs-toggle="modal" data-bs-target="#Consultation"
-                               hx-get="{% url 'create_consultation' patient_id=patient.id %}" hx-target="#modal-content-placeholder1" hx-trigger="click">
-                                <i class="bi bi-plus-lg"></i> <span class="d-none d-lg-inline">{% trans "Consult." %}</span>
-                            </a>
-                            <a href="{% url 'dietitian_patient_profile_modal' user_id=patient.id %}" class="btn btn-sm action-btn btn-outline-secondary"
-                               data-bs-toggle="modal" data-bs-target="#patientProfileModal"
-                               hx-get="{% url 'dietitian_patient_profile_modal' user_id=patient.id %}" hx-target="#modal-content-placeholder" hx-trigger="click">
+                            <button type="button" class="btn btn-sm action-btn btn-outline-success"
+                                    data-bs-toggle="modal" data-bs-target="#Consultation"
+                                    hx-get="{% url 'create_consultation' patient_id=patient.id %}" hx-target="#modal-content-placeholder1" hx-trigger="click"
+                                    title="{% trans 'New Consultation:' %}">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm action-btn btn-outline-secondary"
+                                    data-bs-toggle="modal" data-bs-target="#patientProfileModal"
+                                    hx-get="{% url 'dietitian_patient_profile_modal' user_id=patient.id %}" hx-target="#modal-content-placeholder" hx-trigger="click"
+                                    title="{% trans 'Detailed Profile of' %}">
                                 <i class="bi bi-person"></i>
+                            </button>
+                            <a href="{% url 'bilan_patient' patient.id %}" class="btn btn-sm action-btn btn-outline-secondary" title="{% trans 'Assessment form' %}">
+                                <i class="bi bi-clipboard2-heart"></i>
                             </a>
-                            <button class="btn btn-sm action-btn btn-outline-primary"
+                            <button type="button" class="btn btn-sm action-btn btn-outline-primary"
                                     data-bs-toggle="modal" data-bs-target="#emailModal"
-                                    hx-get="{% url 'prepare_email' patient.id %}" hx-target="#email-modal-content" hx-trigger="click">
+                                    hx-get="{% url 'prepare_email' patient.id %}" hx-target="#email-modal-content" hx-trigger="click"
+                                    title="{% trans 'Send a message to' %}">
                                 <i class="bi bi-envelope"></i>
                             </button>
                         </td>
@@ -103,7 +132,7 @@
 
     <!-- MODALES -->
     <div class="modal fade" id="patientProfileModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content border-0 shadow" style="border-radius:20px; overflow:hidden;">
                 <div id="modal-content-placeholder">
                     <div class="p-5 text-center"><div class="spinner-border" style="color:var(--nutri-green);" role="status"><span class="visually-hidden">{% trans "Loading..." %}</span></div></div>
@@ -113,7 +142,7 @@
     </div>
 
     <div class="modal fade" id="Consultation" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content border-0 shadow" style="border-radius:20px; overflow:hidden;">
                 <div id="modal-content-placeholder1">
                     <div class="p-5 text-center"><div class="spinner-border" style="color:var(--nutri-green);" role="status"></div></div>
@@ -131,25 +160,18 @@
     </div>
 
     {% if is_paginated %}
-    <nav aria-label="Navigation des pages" class="mt-4">
-        <ul class="pagination justify-content-center shadow-sm">
+    <nav class="mt-4">
+        <ul class="pagination pagination-sm justify-content-center shadow-sm flex-wrap">
             {% if page_obj.has_previous %}
-                <li class="page-item"><a class="page-link" href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&laquo; {% trans "Beginning" %}</a></li>
                 <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{% trans "Previous" %}</a></li>
-            {% else %}
-                <li class="page-item disabled"><span class="page-link">&laquo; {% trans "Beginning" %}</span></li>
-                <li class="page-item disabled"><span class="page-link">{% trans "Previous" %}</span></li>
-            {% endif %}
-            <li class="page-item active"><span class="page-link px-4">{% trans "Page" %} {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
+            {% else %}<li class="page-item disabled"><span class="page-link">{% trans "Previous" %}</span></li>{% endif %}
+            <li class="page-item active"><span class="page-link px-3">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
             {% if page_obj.has_next %}
                 <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{% trans "Next" %}</a></li>
-                <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{% trans "End" %} &raquo;</a></li>
-            {% else %}
-                <li class="page-item disabled"><span class="page-link">{% trans "Next" %}</span></li>
-                <li class="page-item disabled"><span class="page-link">{% trans "End" %} &raquo;</span></li>
-            {% endif %}
+            {% else %}<li class="page-item disabled"><span class="page-link">{% trans "Next" %}</span></li>{% endif %}
         </ul>
     </nav>
     {% endif %}
+
 </div>
 {% endblock %}
