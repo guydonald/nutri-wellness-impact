@@ -96,7 +96,6 @@ class CustomLoginView(BaseAuthView, LoginView):
         # 1. Force la connexion pour creer la session
         auth_login(self.request, form.user)
         if self.request.headers.get('HX-Request'):
-            # 2. Redirige vers 'home' (home_redirect_view)
             success_url = reverse("home")
             return HttpResponse(status=204, headers={'HX-Redirect': success_url})
         return super().form_valid(form)
@@ -135,27 +134,24 @@ class CustomPasswordChangeView(BaseAuthView, PasswordChangeView):
         return redirect(self.success_url)
 
 
-class CustomPasswordResetView(BaseAuthView, PasswordResetView):
+class CustomPasswordResetView(PasswordResetView):
+    """Demande de reinitialisation - PAGE PLEINE (plus de modale).
+ 
+    On n'herite plus de BaseAuthView ni ne force success_url :
+    allauth gere lui-meme la redirection vers la saisie du code.
+    """
     template_name = "account/password_reset.html"
-    ajax_template_name = "account/partials/password_reset_form.html"
-    success_url = reverse_lazy("account_reset_password_done")
 
 
-class CustomPasswordResetDoneView(BaseAuthView, PasswordResetDoneView):
+class CustomPasswordResetDoneView(PasswordResetDoneView):
+    """Confirmation d'envoi - PAGE PLEINE."""
     template_name = "account/password_reset_done.html"
-    ajax_template_name = "account/partials/password_reset_done_inner.html"
 
 
-class CustomPasswordResetFromKeyView(BaseAuthView, PasswordResetFromKeyView):
+class CustomPasswordResetFromKeyView(PasswordResetFromKeyView):
+    """Saisie du nouveau mot de passe - PAGE PLEINE."""
     template_name = "account/password_reset_from_key.html"
-    ajax_template_name = "account/partials/password_reset_from_key_inner.html"
-    success_url = reverse_lazy("index")
-
-    def form_valid(self, form):
-        response = super(PasswordResetFromKeyView, self).form_valid(form)
-        if self.request.headers.get('HX-Request'):
-            return render(self.request, "account/partials/password_reset_from_key_done_inner.html")
-        return response
+    success_url = reverse_lazy("account_reset_password_from_key_done")
 
 
 class CustomEmailVerificationSentView(BaseAuthView, EmailVerificationSentView):

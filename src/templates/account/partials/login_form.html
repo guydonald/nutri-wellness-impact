@@ -32,10 +32,10 @@
                {% trans "Register" %}
             </a>
         </p>
-        <a href="javascript:void(0);"
-           hx-get="{% url 'account_reset_password' %}" hx-target="#authModalContent"
-           class="small text-decoration-none text-muted">
-           {% trans "Forgotten password?" %}
+        <a href="{% url 'account_reset_password' %}"
+            class="small text-decoration-none text-muted"
+            onclick="var m=bootstrap.Modal.getInstance(document.getElementById('authModal')); if(m){m.hide();}">
+            {% trans "Forgotten password?" %}
         </a>
     </div>
 </div>
