@@ -25,6 +25,11 @@ class ProfileCompletionMiddleware:
                     reverse('complete_profile'),
                     reverse('account_logout'),
                     reverse('home'),
+                    # Pages publiques : le patient peut toujours les consulter
+                    reverse('index'),
+                    reverse('resume'),
+                    reverse('project'),
+                    reverse('contact'),
                 ]
 
                 # --- Prefixes toujours autorises (comptes, langue, statiques, medias, admin) ---

@@ -13,10 +13,14 @@ from django.db.models import Avg, Count, Q
 from django.forms import modelformset_factory
 from django.http import Http404, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 from django.views.generic import DetailView, ListView
 import io
+from datetime import timedelta
+
+from django.utils import timezone
 from django.http import FileResponse
 from .pdf_export import generer_bilan_pdf, generer_plan_pdf, generer_suivi_pdf
 
@@ -29,6 +33,7 @@ from .forms import (
     BilanSection5Form,
     BilanSection6Form,
     ConsultationForm,
+    EssentialProfileForm,
     FoodDiaryForm,
     PatientProfileForm,
     PatientProfileUpdateForm,
@@ -99,7 +104,7 @@ def home_redirect_view(request):
     if role == 'patient':
         profile = getattr(request.user, 'profile', None)
         if profile and profile.age:
-            return redirect('my_medical_record')
+            return redirect('patient_home')
         return redirect('complete_profile')
 
     return redirect('account_logout')
@@ -170,32 +175,136 @@ def bilan_view(request, patient_id=None):
             messages.success(request, _("Assessment saved successfully!"))
             if patient_id:
                 return redirect('patient_record', patient_id=patient_id)
-            return redirect('patient_profile')
+            return redirect('patient_home')
         messages.error(request, _("Please check the highlighted fields."))
     else:
         forms_ctx = _build_bilan_forms(profile, include_praticien=is_dietitian)
 
     forms_ctx['profile'] = profile
     forms_ctx['patient'] = patient
+    sections, percent = _bilan_progress(profile)
+    forms_ctx['sections'] = {sec['key']: sec for sec in sections}
+    forms_ctx['bilan_percent'] = percent
     return render(request, 'patients/bilan_form.html', forms_ctx)
 
 
 @login_required
 @user_passes_test(is_patient_check, login_url='/')
 def complete_profile(request):
+    """Etape 1 du patient : 6 champs essentiels au lieu du bilan complet."""
     profile, _created = PatientProfile.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
-        form = PatientProfileForm(request.POST, instance=profile)
+        form = EssentialProfileForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
-            messages.success(request, _("Profile saved successfully!"))
-            return redirect('my_medical_record')
+            messages.success(request, _("Welcome! Your space is ready."))
+            return redirect('patient_home')
         messages.error(request, _("Please check the highlighted fields."))
     else:
-        form = PatientProfileForm(instance=profile)
+        form = EssentialProfileForm(instance=profile)
 
-    return render(request, 'patients/patient_profile_form.html', {'form': form})
+    return render(request, 'patients/start_profile.html', {'form': form})
+
+
+# =========================================================
+#  ESPACE PATIENT : tableau de bord guide
+# =========================================================
+BILAN_SECTION_TITLES = [
+    _("Identity and reason for consulting"),
+    _("Health history"),
+    _("Daily life"),
+    _("Body measurements"),
+    _("Meals and drinks"),
+    _("Appetite and goals"),
+]
+
+
+def _bilan_progress(profile):
+    """Avancement du bilan, section par section (les cases a cocher sont ignorees :
+    on ne peut pas distinguer 'non' de 'pas encore repondu')."""
+    sections = []
+    total_filled = total_fields = 0
+    for (name, FormClass), title in zip(SECTION_FORMS, BILAN_SECTION_TITLES):
+        filled = count = 0
+        for field_name in FormClass._meta.fields:
+            field = PatientProfile._meta.get_field(field_name)
+            if field.get_internal_type() == 'BooleanField':
+                continue
+            count += 1
+            value = getattr(profile, field_name, None) if profile else None
+            if value not in (None, ''):
+                filled += 1
+        sections.append({
+            'key': name, 'title': title, 'filled': filled, 'total': count,
+            'percent': int(round(100 * filled / count)) if count else 0,
+        })
+        total_filled += filled
+        total_fields += count
+    percent = int(round(100 * total_filled / total_fields)) if total_fields else 0
+    return sections, percent
+
+
+@login_required
+@user_passes_test(is_patient_check, login_url='/')
+def patient_home(request):
+    """Page d'accueil du patient : ou il en est, et quoi faire ensuite."""
+    profile, _created = PatientProfile.objects.get_or_create(user=request.user)
+    sections, bilan_percent = _bilan_progress(profile)
+
+    week_ago = timezone.localdate() - timedelta(days=7)
+    meals_total = request.user.food_entries.count()
+    meals_week = request.user.food_entries.filter(date__gte=week_ago).count()
+    has_plan = MealPlan.objects.filter(patient=request.user).exists()
+    last_consult = request.user.consultations.order_by('-date_consultation').first()
+
+    steps = [
+        {
+            'key': 'account', 'icon': 'bi-person-check', 'done': True,
+            'title': _("Create your account"),
+            'text': _("Done - welcome to Nutri-Wellness Impact."),
+        },
+        {
+            'key': 'essentials', 'icon': 'bi-person-vcard', 'done': profile.is_complete,
+            'title': _("Give the essentials"),
+            'text': _("Age, height and weight: the basis of your follow-up."),
+            'url': reverse('complete_profile'), 'cta': _("Complete my information"),
+        },
+        {
+            'key': 'bilan', 'icon': 'bi-clipboard2-heart', 'done': bilan_percent >= 70,
+            'title': _("Fill in your nutrition assessment"),
+            'text': _("About 10 minutes. You can stop and come back later: everything you enter is saved."),
+            'url': reverse('bilan'), 'cta': _("Continue my assessment") if bilan_percent else _("Start my assessment"),
+            'percent': bilan_percent,
+        },
+        {
+            'key': 'diary', 'icon': 'bi-egg-fried', 'done': meals_total > 0,
+            'title': _("Write down what you eat"),
+            'text': _("Note your meals for a few days. Your dietitian uses them to adapt your plan."),
+            'url': reverse('my_medical_record') + '?tab=diary&add=1', 'cta': _("Log a meal"),
+        },
+        {
+            'key': 'plan', 'icon': 'bi-card-checklist', 'done': has_plan, 'waiting': not has_plan,
+            'title': _("Receive your meal plan"),
+            'text': _("Your plan is ready: check it every day.") if has_plan
+                    else _("Your dietitian prepares it after your consultation. Nothing to do on your side."),
+            'url': reverse('my_medical_record') + '?tab=plan', 'cta': _("See my plan"),
+        },
+    ]
+    next_step = next((st for st in steps if not st['done'] and not st.get('waiting')), None)
+    done_count = sum(1 for st in steps if st['done'])
+
+    return render(request, 'patients/home_patient.html', {
+        'profile': profile,
+        'steps': steps,
+        'next_step': next_step,
+        'done_count': done_count,
+        'steps_total': len(steps),
+        'progress_percent': int(round(100 * done_count / len(steps))),
+        'meals_week': meals_week,
+        'has_plan': has_plan,
+        'last_consult': last_consult,
+    })
 
 
 class PatientProfileView(LoginRequiredMixin, IsPatientMixin, DetailView):

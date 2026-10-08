@@ -1,9 +1,206 @@
 {% extends 'bases.html' %}
 {% load static i18n %}
+
 {% block content %}
+<style>
+    :root { --nutri-green:#5a8f3d; --nutri-green-dark:#2f5e2f; --nutri-green-light:#eaf3e3; --nutri-red:#d62828; --nutri-orange:#f4a020; }
+    .space-hero { background: linear-gradient(135deg, var(--nutri-green), var(--nutri-green-dark)); color:#fff;
+                  border-radius: 26px; padding: 2rem 2.2rem; }
+    .space-hero .progress { height: 10px; background: rgba(255,255,255,.25); border-radius: 50px; }
+    .space-hero .progress-bar { background: #fff; border-radius: 50px; }
 
-<div class="container py-5 text-center">
-    <h1 class="fw-bolder" style="color:#2f5e2f;">{% trans "Welcome to your space" %}</h1>
+    .next-card { background:#fff; border:2px solid var(--nutri-green); border-radius: 22px; padding: 1.6rem; }
+    .next-label { color: var(--nutri-green); font-weight: 800; font-size: .78rem; letter-spacing: 1px; text-transform: uppercase; }
+    .btn-nutri { background:var(--nutri-green); color:#fff; border:none; border-radius:50px; font-weight:700; transition:all .25s ease; }
+    .btn-nutri:hover { background:var(--nutri-green-dark); color:#fff; transform:translateY(-2px); }
+    .btn-nutri-outline { background:transparent; color:var(--nutri-green-dark); border:2px solid var(--nutri-green); border-radius:50px; font-weight:700; }
+    .btn-nutri-outline:hover { background:var(--nutri-green); color:#fff; }
+
+    .step-list { list-style: none; padding: 0; margin: 0; }
+    .step-item { display:flex; gap: 1rem; align-items:flex-start; padding: 1.1rem 1.2rem; border-radius: 18px;
+                 background:#fff; border: 1px solid #eef2ec; margin-bottom: .75rem; }
+    .step-item.is-next { border-color: var(--nutri-green); box-shadow: 0 10px 26px rgba(47,94,47,.10); }
+    .step-dot { width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0; display:flex; align-items:center;
+                justify-content:center; font-size: 1.15rem; background: #f1f4ef; color: #8a9784; }
+    .step-item.is-done .step-dot { background: var(--nutri-green); color: #fff; }
+    .step-item.is-waiting .step-dot { background: #fef3e0; color: var(--nutri-orange); }
+    .step-item.is-next .step-dot { background: var(--nutri-green-light); color: var(--nutri-green-dark); }
+    .step-title { font-weight: 700; color: #2d3748; margin-bottom: .15rem; }
+    .step-item.is-done .step-title { color: var(--nutri-green-dark); }
+    .step-text { font-size: .88rem; color: #6b7a66; margin-bottom: 0; }
+    .step-item .progress { height: 6px; border-radius: 50px; background: #eef2ec; max-width: 220px; }
+    .step-item .progress-bar { background: var(--nutri-green); }
+
+    .info-card { background:#fff; border:1px solid #eef2ec; border-radius: 20px; padding: 1.3rem 1.4rem; height: 100%; }
+    .info-label { font-size: .75rem; text-transform: uppercase; letter-spacing: .5px; color: #8a9784; font-weight: 700; }
+    .info-value { font-size: 1.5rem; font-weight: 800; color: var(--nutri-green-dark); line-height: 1.2; }
+    .info-icon { width: 40px; height: 40px; border-radius: 12px; display:flex; align-items:center; justify-content:center;
+                 background: var(--nutri-green-light); color: var(--nutri-green-dark); font-size: 1.15rem; }
+
+    .quick-link { display:flex; align-items:center; gap:.8rem; padding: 1rem 1.1rem; border-radius: 18px; background:#fff;
+                  border:1px solid #eef2ec; text-decoration:none; color:#2d3748; font-weight:600; transition: all .2s ease; height:100%; }
+    .quick-link:hover { border-color: var(--nutri-green); color: var(--nutri-green-dark); transform: translateY(-2px); }
+    .quick-link i { font-size: 1.3rem; color: var(--nutri-green); }
+    .section-h { color: var(--nutri-green-dark); font-weight: 800; font-size: 1.1rem; }
+</style>
+
+<div class="container py-4 py-md-5">
+
+    <!-- ===== BIENVENUE + PROGRESSION ===== -->
+    <div class="space-hero mb-4">
+        <div class="row align-items-center g-3">
+            <div class="col-md-8">
+                <h1 class="h3 fw-bolder mb-1">
+                    {% if user.first_name %}{% blocktrans with name=user.first_name %}Hello {{ name }}!{% endblocktrans %}{% else %}{% trans "Hello!" %}{% endif %}
+                </h1>
+                <p class="mb-0 opacity-75">{% trans "This is your space. Here is where you are in your follow-up and what to do next." %}</p>
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex justify-content-between small fw-bold mb-1">
+                    <span>{% trans "My progress" %}</span>
+                    <span>{% blocktrans with done=done_count total=steps_total %}{{ done }} of {{ total }} steps{% endblocktrans %}</span>
+                </div>
+                <div class="progress"><div class="progress-bar" style="width: {{ progress_percent }}%;"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- ===== COLONNE PRINCIPALE ===== -->
+        <div class="col-lg-8">
+
+            {% if next_step %}
+            <div class="next-card mb-4">
+                <div class="next-label mb-2"><i class="bi bi-arrow-right-circle-fill me-1"></i>{% trans "Your next step" %}</div>
+                <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
+                    <div>
+                        <h2 class="h5 fw-bolder mb-1" style="color: var(--nutri-green-dark);">{{ next_step.title }}</h2>
+                        <p class="text-muted mb-0 small">{{ next_step.text }}</p>
+                    </div>
+                    <a href="{{ next_step.url }}" class="btn btn-nutri px-4 py-2 flex-shrink-0">
+                        {{ next_step.cta }}<i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            <div class="next-card mb-4">
+                <div class="next-label mb-2"><i class="bi bi-stars me-1"></i>{% trans "Well done" %}</div>
+                <p class="mb-0">{% trans "You have completed all the steps. Keep logging your meals and follow your plan: your dietitian follows your progress." %}</p>
+            </div>
+            {% endif %}
+
+            <h2 class="section-h mb-3">{% trans "How your follow-up works" %}</h2>
+            <ol class="step-list">
+                {% for step in steps %}
+                <li class="step-item {% if step.done %}is-done{% elif step.waiting %}is-waiting{% elif step == next_step %}is-next{% endif %}">
+                    <div class="step-dot">
+                        {% if step.done %}<i class="bi bi-check-lg"></i>
+                        {% elif step.waiting %}<i class="bi bi-hourglass-split"></i>
+                        {% else %}<i class="bi {{ step.icon }}"></i>{% endif %}
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+                            <div>
+                                <div class="step-title">{{ forloop.counter }}. {{ step.title }}</div>
+                                <p class="step-text">{{ step.text }}</p>
+                            </div>
+                            {% if step.url and not step.waiting %}
+                                <a href="{{ step.url }}" class="btn btn-sm {% if step.done %}btn-light rounded-pill{% else %}btn-nutri-outline{% endif %} px-3">
+                                    {% if step.done %}{% trans "View" %}{% else %}{{ step.cta }}{% endif %}
+                                </a>
+                            {% endif %}
+                        </div>
+                        {% if step.key == 'bilan' %}
+                        <div class="d-flex align-items-center gap-2 mt-2">
+                            <div class="progress flex-grow-1"><div class="progress-bar" style="width: {{ step.percent }}%;"></div></div>
+                            <small class="text-muted fw-bold">{{ step.percent }}%</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ol>
+        </div>
+
+        <!-- ===== COLONNE LATERALE ===== -->
+        <div class="col-lg-4">
+            <div class="row g-3">
+                <div class="col-6 col-lg-12">
+                    <div class="info-card">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="info-label">{% trans "Next appointment" %}</span>
+                            <span class="info-icon"><i class="bi bi-calendar-event"></i></span>
+                        </div>
+                        {% if profile.next_appointment %}
+                            <div class="info-value">{{ profile.next_appointment|date:"j F Y" }}</div>
+                        {% else %}
+                            <div class="small text-muted">{% trans "Not scheduled yet. Your dietitian will set it." %}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-6 col-lg-12">
+                    <div class="info-card">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="info-label">{% trans "Meals logged this week" %}</span>
+                            <span class="info-icon"><i class="bi bi-egg-fried"></i></span>
+                        </div>
+                        <div class="info-value">{{ meals_week }}</div>
+                        <a href="{% url 'my_medical_record' %}?tab=diary&add=1" class="small fw-bold text-decoration-none" style="color: var(--nutri-green);">
+                            <i class="bi bi-plus-circle me-1"></i>{% trans "Log a meal" %}
+                        </a>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-12">
+                    <div class="info-card">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="info-label">{% trans "My BMI" %}</span>
+                            <span class="info-icon"><i class="bi bi-activity"></i></span>
+                        </div>
+                        {% if profile.bmi %}
+                            <div class="info-value">{{ profile.bmi|floatformat:1 }}</div>
+                            <span class="badge rounded-pill bg-{{ profile.bmi_status.color }}">{{ profile.bmi_status.label }}</span>
+                        {% else %}
+                            <div class="small text-muted">{% trans "Enter your height and weight to see it." %}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-6 col-lg-12">
+                    <div class="info-card">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="info-label">{% trans "Last consultation" %}</span>
+                            <span class="info-icon"><i class="bi bi-clipboard2-pulse"></i></span>
+                        </div>
+                        {% if last_consult %}
+                            <div class="info-value">{{ last_consult.date_consultation|date:"j F Y" }}</div>
+                            {% if last_consult.weight %}<div class="small text-muted">{% trans "Weight" %} : {{ last_consult.weight }} kg</div>{% endif %}
+                        {% else %}
+                            <div class="small text-muted">{% trans "None yet." %}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ACCES RAPIDES ===== -->
+    <h2 class="section-h mt-5 mb-3">{% trans "Quick access" %}</h2>
+    <div class="row g-3">
+        <div class="col-6 col-md-3">
+            <a class="quick-link" href="{% url 'bilan' %}"><i class="bi bi-clipboard2-heart"></i>{% trans "My assessment" %}</a>
+        </div>
+        <div class="col-6 col-md-3">
+            <a class="quick-link" href="{% url 'my_medical_record' %}"><i class="bi bi-graph-up"></i>{% trans "My follow-up" %}</a>
+        </div>
+        <div class="col-6 col-md-3">
+            {% if has_plan %}
+            <a class="quick-link" href="{% url 'export_plan_pdf' user.id %}"><i class="bi bi-file-earmark-pdf"></i>{% trans "My plan (PDF)" %}</a>
+            {% else %}
+            <a class="quick-link" href="{% url 'my_medical_record' %}?tab=plan"><i class="bi bi-card-checklist"></i>{% trans "My meal plan" %}</a>
+            {% endif %}
+        </div>
+        <div class="col-6 col-md-3">
+            <a class="quick-link" href="{% url 'community_feed' %}"><i class="bi bi-people"></i>{% trans "Community" %}</a>
+        </div>
+    </div>
 </div>
-
 {% endblock %}

@@ -28,7 +28,8 @@
     .navbar-nav .nav-link { color: #2d3748 !important; font-weight: 600; transition: 0.2s; font-size: 0.95rem; position: relative; }
     .navbar-nav .nav-link:hover { color: var(--nutri-green) !important; }
     .navbar-nav .nav-link::after { content: ''; position: absolute; bottom: 0; left: 50%; width: 0; height: 2px; background: var(--nutri-green); transition: all 0.25s ease; transform: translateX(-50%); }
-    .navbar-nav .nav-link:hover::after { width: 60%; }
+    .navbar-nav .nav-link:hover::after, .navbar-nav .nav-link.active-link::after { width: 60%; }
+    .navbar-nav .nav-link.active-link { color: var(--nutri-green-dark) !important; }
     .btn-auth-outline { border: 2px solid var(--nutri-green); color: var(--nutri-green-dark); font-weight: 700; transition: all 0.2s ease; }
     .btn-auth-outline:hover { background: var(--nutri-green); color: #fff; transform: translateY(-1px); }
     .btn-auth-full { background-color: var(--nutri-green); color: white; font-weight: 700; transition: all 0.2s ease; border: none; }
@@ -71,19 +72,33 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">{% trans "Contact" %}</a></li>
                 {% else %}
                     {# --- Liens applicatifs : visibles UNIQUEMENT si connecte --- #}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'community_feed' %}">{% trans "Community" %}</a></li>
                     {% if user.role == "patient" %}
+                        {% url 'patient_home' as url_space %}{% url 'bilan' as url_bilan %}{% url 'my_medical_record' as url_record %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'my_medical_record' %}">
-                               <i class="bi bi-file-medical me-1"></i><b>{% trans "My Tracking" %}</b>
+                            <a class="nav-link {% if request.path == url_space %}active-link{% endif %}" href="{{ url_space }}">
+                                <i class="bi bi-house-heart me-1"></i>{% trans "My space" %}
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == url_bilan %}active-link{% endif %}" href="{{ url_bilan }}">
+                                <i class="bi bi-clipboard2-heart me-1"></i>{% trans "My assessment" %}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == url_record %}active-link{% endif %}" href="{{ url_record }}">
+                                <i class="bi bi-graph-up me-1"></i>{% trans "My follow-up" %}
+                            </a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'community_feed' %}"><i class="bi bi-people me-1"></i>{% trans "Community" %}</a></li>
                     {% elif user.role == "dietitian" %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'community_feed' %}">{% trans "Community" %}</a></li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'dietitian_dashboard' %}">
                                 <i class="bi bi-columns-gap me-1"></i>{% trans "Office" %}
                             </a>
                         </li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'community_feed' %}">{% trans "Community" %}</a></li>
                     {% endif %}
                 {% endif %}
 

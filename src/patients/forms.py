@@ -139,6 +139,32 @@ class BilanPraticienForm(forms.ModelForm):
         }
 
 
+class EssentialProfileForm(forms.ModelForm):
+    """Premiere etape du patient : seulement l'essentiel (moins de 2 minutes).
+    Le bilan complet se remplit ensuite, a son rythme, depuis son espace."""
+    class Meta:
+        model = PatientProfile
+        fields = ['age', 'gender', 'height', 'weight', 'phone', 'pathology']
+        widgets = {
+            'age': forms.NumberInput(attrs={'min': 1, 'max': 120, 'placeholder': '35'}),
+            'height': forms.NumberInput(attrs={'step': '0.1', 'placeholder': '165'}),
+            'weight': forms.NumberInput(attrs={'step': '0.1', 'placeholder': '70'}),
+            'phone': forms.TextInput(attrs={'placeholder': '+237 6XX XX XX XX'}),
+        }
+        labels = {
+            'pathology': _("Why are you consulting?"),
+        }
+        help_texts = {
+            'phone': _("Optional - lets your dietitian reach you."),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Les 4 informations indispensables pour calculer l'IMC et demarrer le suivi
+        for name in ('age', 'gender', 'height', 'weight'):
+            self.fields[name].required = True
+
+
 class PatientProfileForm(forms.ModelForm):
     """Bilan complet en un seul formulaire (pour la nutritionniste)."""
     class Meta:

@@ -6,6 +6,9 @@ urlpatterns = [
     # --- Redirection apres connexion ---
     path('home/', views.home_redirect_view, name='home'),
 
+    # --- Espace patient (tableau de bord guide) ---
+    path('my-space/', views.patient_home, name='patient_home'),
+
     # --- Profil patient ---
     path('complete_profile/', views.complete_profile, name='complete_profile'),
     path('profile/patient/', views.PatientProfileView.as_view(), name='patient_profile'),

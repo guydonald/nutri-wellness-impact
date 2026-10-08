@@ -52,15 +52,20 @@
 <div class="container py-4 py-md-5">
 
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-        <h2 class="h3 mb-0 record-title">
-            <i class="bi bi-folder2-open me-2"></i>{% trans "Medical File" %}
-        </h2>
+        <div>
+            <a href="{% url 'patient_home' %}" class="small text-decoration-none fw-bold" style="color:var(--nutri-green);">
+                <i class="bi bi-arrow-left me-1"></i>{% trans "Back to my space" %}
+            </a>
+            <h2 class="h3 mb-0 mt-1 record-title">
+                <i class="bi bi-folder2-open me-2"></i>{% trans "My follow-up" %}
+            </h2>
+        </div>
         <div class="d-flex gap-2 flex-wrap top-actions">
             <a href="{% url 'export_plan_pdf' user.id %}" class="btn btn-nutri-outline px-3 py-2">
                 <i class="bi bi-file-earmark-pdf me-1"></i><span class="d-none d-sm-inline">{% trans "Download my meal plan" %}</span><span class="d-sm-none">PDF</span>
             </a>
             <button type="button" class="btn btn-nutri px-3 py-2" data-bs-toggle="modal" data-bs-target="#addFoodModal">
-                <i class="bi bi-plus-lg me-1"></i>{% trans "Rate my meal" %}
+                <i class="bi bi-plus-lg me-1"></i>{% trans "Log a meal" %}
             </button>
         </div>
     </div>
@@ -122,7 +127,7 @@
             {% empty %}
             <div class="text-center py-5 shadow-sm rounded-4 bg-light border">
                 <i class="bi bi-clipboard2-x fs-1 text-muted mb-3 d-block"></i>
-                <p class="text-muted mb-0">{% trans "No consultation recorded." %}</p>
+                <p class="text-muted mb-0">{% trans "No consultation yet. Your dietitian records it during your appointment, then you will see it here." %}</p>
             </div>
             {% endfor %}
 
@@ -179,7 +184,7 @@
                                 </td>
                             </tr>
                             {% empty %}
-                            <tr><td colspan="5" class="text-center py-4 text-muted">{% trans "Empty diary." %}</td></tr>
+                            <tr><td colspan="5" class="text-center py-4 text-muted">{% trans "Nothing logged yet. Use the &quot;Log a meal&quot; button to write down what you ate." %}</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -244,7 +249,7 @@
             {% else %}
             <div class="text-center py-5 bg-light rounded-4 shadow-sm">
                 <i class="bi bi-card-list fs-1 text-muted mb-3 d-block"></i>
-                <p class="text-muted mb-0">{% trans "No meal plan has been defined yet." %}</p>
+                <p class="text-muted mb-0">{% trans "Your dietitian will prepare your meal plan after your consultation. It will appear here." %}</p>
             </div>
             {% endif %}
         </div>
@@ -400,5 +405,23 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+</script>
+{% endblock %}
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+    // Liens directs depuis l'espace patient : ?tab=diary|plan|medical et ?add=1 (ouvre "Noter un repas")
+    document.addEventListener('DOMContentLoaded', function () {
+        var params = new URLSearchParams(window.location.search);
+        var tab = params.get('tab');
+        if (tab) {
+            var btn = document.getElementById(tab + '-tab');
+            if (btn) { bootstrap.Tab.getOrCreateInstance(btn).show(); }
+        }
+        if (params.get('add') === '1') {
+            var modal = document.getElementById('addFoodModal');
+            if (modal) { bootstrap.Modal.getOrCreateInstance(modal).show(); }
+        }
+    });
 </script>
 {% endblock %}
