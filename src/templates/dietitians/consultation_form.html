@@ -10,6 +10,7 @@
                   letter-spacing:.5px; margin:1.4rem 0 .8rem; padding-bottom:.35rem;
                   border-bottom:1px solid #eef2ec; display:flex; align-items:center; gap:.5rem; }
         .cs-sec:first-of-type { margin-top:0; }
+        .wz-step > .cs-sec:first-child, .wz-step > .cs-patho:first-child, .wz-step > .cs-alert-box:first-child { margin-top:0; }
         .cs-patho { background:#fef3e0; border-left:4px solid #f4a020; border-radius:14px; padding:1rem 1.2rem; margin-top:1.2rem; }
         .cs-patho .cs-sec { color:#b9750c; border-bottom-color:#f6d9a8; margin-top:0; }
         .cs-alert-box { background:#fdecec; border-left:4px solid #d62828; border-radius:14px; padding:1rem 1.2rem; margin-top:1rem; }
@@ -18,10 +19,11 @@
         label.form-label, .cs-body label { font-size:.85rem; font-weight:600; color:#4a5568; }
     </style>
 
-    <form method="post" action="{% url 'create_consultation' patient_id=patient.id %}">
+    <form method="post" action="{% url 'create_consultation' patient_id=patient.id %}" data-wizard novalidate>
         {% csrf_token %}
 
-        <!-- MESURES CLINIQUES -->
+        <div class="wz-step" data-title="{% trans "Measurements" %}" data-icon="bi-heart-pulse">
+<!-- MESURES CLINIQUES -->
         <div class="cs-sec"><i class="bi bi-heart-pulse"></i>{% trans "Clinical Measurements" %}</div>
         <div class="row g-3">
             <div class="col-md-3">{{ form.weight.label_tag }}{{ form.weight }}</div>
@@ -41,7 +43,10 @@
             <div class="col-md-3">{{ form.appetite.label_tag }}{{ form.appetite }}</div>
         </div>
 
-        <!-- SUIVI NUTRITIONNEL (tous patients) -->
+        </div>
+
+        <div class="wz-step" data-title="{% trans "Nutritional follow-up" %}" data-icon="bi-clipboard2-check">
+<!-- SUIVI NUTRITIONNEL (tous patients) -->
         <div class="cs-sec"><i class="bi bi-clipboard2-check"></i>{% trans "Nutritional Assessment" %}</div>
         <div class="row g-3">
             <div class="col-md-3">{{ form.salt_intake.label_tag }}{{ form.salt_intake }}</div>
@@ -69,7 +74,10 @@
         </div>
         {% endif %}
 
-        <!-- SIGNES D'ALERTE -->
+        </div>
+
+        <div class="wz-step" data-title="{% trans "Warning Signs" %}" data-icon="bi-exclamation-triangle">
+<!-- SIGNES D'ALERTE -->
         <div class="cs-alert-box">
             <div class="cs-sec"><i class="bi bi-exclamation-triangle-fill"></i>{% trans "Warning Signs" %}</div>
             <div class="row g-2">
@@ -95,7 +103,10 @@
             </div>
         </div>
 
-        <!-- ANALYSE PES -->
+        </div>
+
+        <div class="wz-step" data-title="{% trans "Analysis and goals" %}" data-icon="bi-bullseye">
+<!-- ANALYSE PES -->
         <div class="cs-sec"><i class="bi bi-file-medical"></i>{% trans "Nutritional Analysis (PES)" %}</div>
         <div class="mb-3">
             <label class="form-label">{% trans "Diagnosis (Problem, Etiology, Symptoms)" %}</label>
@@ -111,9 +122,14 @@
             <div class="col-md-6">{{ form.next_appointment.label_tag }}{{ form.next_appointment }}</div>
         </div>
 
-        <div class="mt-4 d-flex justify-content-between">
-            <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
-            <button type="submit" class="btn text-white rounded-pill px-4" style="background:#5a8f3d; font-weight:700;">
+</div>
+
+                <!-- Boutons : le composant "data-wizard" affiche Precedent / Suivant puis Enregistrer -->
+        <div class="wz-nav mt-4 d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-light rounded-pill px-3" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+            <button type="button" class="btn btn-light rounded-pill px-3 ms-auto" data-wz-prev><i class="bi bi-arrow-left me-1"></i>{% trans "Previous" %}</button>
+            <button type="button" class="btn text-white rounded-pill px-4" style="background:#5a8f3d; font-weight:700;" data-wz-next>{% trans "Next" %}<i class="bi bi-arrow-right ms-1"></i></button>
+            <button type="submit" class="btn text-white rounded-pill px-4" style="background:#5a8f3d; font-weight:700;" data-wz-submit>
                 <i class="bi bi-check-lg me-1"></i>{% trans "Save consultation" %}
             </button>
         </div>

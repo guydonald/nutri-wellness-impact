@@ -12,6 +12,7 @@ from django.urls import reverse_lazy, reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 from django.views.decorators.http import require_POST
+from django.views.decorators.cache import cache_control
 
 # Allauth imports
 from allauth.account.models import EmailAddress, EmailConfirmation
@@ -38,28 +39,37 @@ def index_project(request):
 
 def index_contact(request):
     if request.method == "POST":
-        name = request.POST.get("name")
-        email = request.POST.get("email")
-        phone = request.POST.get("phone")
-        message = request.POST.get("message")
+        name = (request.POST.get("name") or "").strip()
+        email = (request.POST.get("email") or "").strip()
+        phone = (request.POST.get("phone") or "").strip()
+        message = (request.POST.get("message") or "").strip()
 
-        subject = f"Nouveau message de {name}"
-        body = f"""
-        Nom: {name}
-        Email: {email}
-        Téléphone: {phone}
+        if not message:
+            messages.error(request, _("Please write your message."))
+            return redirect('contact')
 
-        Message:
-        {message}
-        """
-
-        send_mail(
-            subject,
-            body,
-            settings.DEFAULT_FROM_EMAIL,               # expediteur
-            ["contact@nutri-wellnessimpact.com"],      # destinataire (corrige : bon domaine)
-            fail_silently=False,
+        # 1. Le message est d'abord ENREGISTRE : la nutritionniste le retrouve dans son bureau
+        #    (rubrique Messages), meme si l'envoi de l'email echoue.
+        from patients.models import InboxMessage
+        InboxMessage.objects.create(
+            kind=InboxMessage.KIND_CONTACT,
+            name=name[:150], email=email[:254], phone=phone[:30], message=message,
         )
+
+        # 2. Toutes les dieteticiennes sont prevenues par e-mail (en arriere-plan si EMAIL_QUEUE=True)
+        from patients.notifications import notify_new_contact_message
+        if not notify_new_contact_message(request, name, email, phone, message):
+            # aucune dieteticienne enregistree : on garde l'ancienne adresse de contact
+            try:
+                from patients.notifications import send_app_email
+                send_app_email(
+                    "Nouveau message de %s" % name,
+                    "Nom: %s\nEmail: %s\nTéléphone: %s\n\nMessage:\n%s" % (name, email, phone, message),
+                    ["contact@nutri-wellnessimpact.com"], category="notification",
+                    reply_to=[email] if email else None,
+                )
+            except Exception:
+                logging.getLogger(__name__).exception("Envoi de l'email de contact impossible")
 
         messages.success(request, _("Your message has been sent successfully! We will get back to you soon."))
         return redirect('contact')
@@ -211,3 +221,22 @@ class CustomEmailView(BaseAuthView, EmailView):
             messages.success(self.request, _("A new code has been sent!"))
             return render(self.request, self.ajax_template_name)
         return response
+
+
+# ============================================================
+# APPLICATION INSTALLABLE (PWA)
+# ============================================================
+@cache_control(max_age=86400, public=True)
+def pwa_manifest(request):
+    return render(request, "pwa/manifest.webmanifest", content_type="application/manifest+json")
+
+
+@cache_control(max_age=0, no_cache=True)  # le navigateur doit toujours voir la derniere version
+def pwa_service_worker(request):
+    response = render(request, "pwa/sw.js", content_type="application/javascript")
+    response["Service-Worker-Allowed"] = "/"
+    return response
+
+
+def pwa_offline(request):
+    return render(request, "pwa/offline.html")

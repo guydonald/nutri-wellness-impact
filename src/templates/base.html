@@ -11,6 +11,14 @@
         <title> Nutri-Wellness Impact</title>
         <!-- Favicon-->
         <link rel="icon" href="{% static 'img/logo.png' %}" type="image/png">
+        <!-- Application installable (PWA) -->
+        <link rel="manifest" href="{% url 'pwa_manifest' %}">
+        <meta name="theme-color" content="#5a8f3d">
+        <link rel="apple-touch-icon" href="{% static 'pwa/apple-touch-icon.png' %}">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="Nutri-Wellness">
         <!-- Polices et icones (CDN compresses et mis en cache) -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -119,6 +127,260 @@
                 }
             });
         </script>        
+        <!-- ===== FENETRE DE CONFIRMATION (remplace les alertes du navigateur) =====
+             Usage : <form ... data-confirm="Message" data-confirm-title="Titre"
+                           data-confirm-ok="Texte du bouton" data-confirm-variant="danger|success|warning">
+             Fonctionne aussi sur un lien <a href="..." data-confirm="...">. -->
+        <div class="modal fade" id="nutriConfirmModal" tabindex="-1" aria-hidden="true" aria-labelledby="nutriConfirmTitle">
+            <div class="modal-dialog modal-dialog-centered" style="max-width:380px;">
+                <div class="modal-content border-0 shadow" style="border-radius:20px; overflow:hidden;">
+                    <div class="modal-body text-center py-4 px-4">
+                        <div class="mb-3" id="nutriConfirmIcon"><i class="bi bi-exclamation-circle-fill" style="font-size:3rem;"></i></div>
+                        <h5 class="fw-bold" id="nutriConfirmTitle">{% trans "Are you sure?" %}</h5>
+                        <p class="text-muted small mb-0" id="nutriConfirmText"></p>
+                        <div class="d-flex gap-2 justify-content-center mt-4">
+                            <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                            <button type="button" class="btn btn-danger rounded-pill px-4 fw-bold" id="nutriConfirmOk">{% trans "Confirm" %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            (function () {
+                var modalEl = document.getElementById('nutriConfirmModal');
+                if (!modalEl) return;
+                var okBtn = document.getElementById('nutriConfirmOk');
+                var icon = document.getElementById('nutriConfirmIcon');
+                var pending = null;   // action a executer si l'utilisateur confirme
+                var ICONS = { danger: 'bi-exclamation-circle-fill', warning: 'bi-exclamation-triangle-fill',
+                              success: 'bi-check-circle-fill' };
+                var COLORS = { danger: '#d62828', warning: '#f4a020', success: '#5a8f3d' };
+                var defaultTitle = document.getElementById('nutriConfirmTitle').textContent;
+                var defaultOk = okBtn.textContent;
+
+                function ask(el, action) {
+                    var variant = el.dataset.confirmVariant || 'danger';
+                    document.getElementById('nutriConfirmTitle').textContent = el.dataset.confirmTitle || defaultTitle;
+                    document.getElementById('nutriConfirmText').textContent = el.dataset.confirm || '';
+                    okBtn.textContent = el.dataset.confirmOk || defaultOk;
+                    okBtn.className = 'btn rounded-pill px-4 fw-bold text-white';
+                    okBtn.style.background = COLORS[variant] || COLORS.danger;
+                    icon.innerHTML = '<i class="bi ' + (ICONS[variant] || ICONS.danger) + '" style="font-size:3rem;color:'
+                                     + (COLORS[variant] || COLORS.danger) + ';"></i>';
+                    pending = action;
+                    bootstrap.Modal.getOrCreateInstance(modalEl).show();
+                }
+
+                okBtn.addEventListener('click', function () {
+                    var action = pending;
+                    pending = null;
+                    bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+                    if (action) action();
+                });
+
+                // Formulaires
+                document.addEventListener('submit', function (e) {
+                    var form = e.target;
+                    if (!form.matches || !form.matches('form[data-confirm]')) return;
+                    if (form.dataset.confirmed === '1') { form.dataset.confirmed = ''; return; }
+                    e.preventDefault();
+                    var submitter = e.submitter || null;
+                    ask(form, function () {
+                        form.dataset.confirmed = '1';
+                        if (form.requestSubmit) { form.requestSubmit(submitter); } else { form.submit(); }
+                    });
+                }, true);
+
+                // Liens et boutons hors formulaire
+                document.addEventListener('click', function (e) {
+                    var el = e.target.closest && e.target.closest('a[data-confirm], button[data-confirm]:not([type="submit"])');
+                    if (!el) return;
+                    e.preventDefault();
+                    ask(el, function () {
+                        if (el.tagName === 'A' && el.href) { window.location.href = el.href; }
+                    });
+                });
+            })();
+        </script>
+
+        <!-- ===== FORMULAIRES EN ETAPES (composant reutilisable) =====
+             Usage : <form data-wizard> ... <div class="wz-step" data-title="Titre"> ... </div> ...
+                     boutons [data-wz-prev], [data-wz-next], [data-wz-submit] (affiches au bon moment).
+             Fonctionne aussi dans les fenetres chargees par HTMX. -->
+        <style>
+            .wz-head { margin-bottom:1rem; }
+            .wz-dots { display:flex; gap:.25rem; }
+            .wz-dot { flex:1; display:flex; flex-direction:column; align-items:center; gap:.3rem; background:none; border:0; padding:0; cursor:pointer; position:relative; }
+            .wz-dot:not(:last-child)::after { content:''; position:absolute; top:15px; left:calc(50% + 18px); right:calc(-50% + 18px); height:3px; border-radius:3px; background:#e4ebe0; }
+            .wz-dot.done:not(:last-child)::after { background:#5a8f3d; }
+            .wz-dot .n { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.82rem;
+                         border:2px solid #dfe7da; background:#fff; color:#8a9884; z-index:1; transition:all .25s ease; }
+            .wz-dot.done .n { background:#5a8f3d; border-color:#5a8f3d; color:#fff; }
+            .wz-dot.current .n { border-color:#5a8f3d; color:#2f5e2f; box-shadow:0 0 0 4px rgba(90,143,61,.18); }
+            .wz-dot .t { font-size:.7rem; font-weight:700; color:#8a9884; text-align:center; line-height:1.15; }
+            .wz-dot.current .t { color:#2f5e2f; } .wz-dot.done .t { color:#5a8f3d; }
+            @media (max-width:575.98px) { .wz-dot .t { display:none; } }
+            .wz-count { font-size:.75rem; font-weight:800; text-transform:uppercase; letter-spacing:.5px; color:#f4a020; margin-top:.7rem; }
+            .wz-flash { display:flex; align-items:center; gap:.6rem; background:#e3f1da; color:#2f5e2f; border-radius:14px; padding:.6rem .9rem;
+                        font-size:.88rem; font-weight:600; margin-top:.7rem; animation: wzPop .45s cubic-bezier(.2,1.4,.4,1) both; }
+            .wz-flash i { font-size:1.2rem; }
+            @keyframes wzPop { from { opacity:0; transform:translateY(-6px) scale(.97); } to { opacity:1; transform:none; } }
+            .wz-step { animation: wzFade .25s ease both; }
+            @keyframes wzFade { from { opacity:0; transform:translateX(8px); } to { opacity:1; transform:none; } }
+        </style>
+        <script>
+            (function () {
+                var T = {
+                    step: '{{ _("Step")|escapejs }}', of: '{{ _("of")|escapejs }}',
+                    done: '{% trans "Step {n} completed: {title}" as wz_done %}{{ wz_done|escapejs }}'
+                };
+                function init(form) {
+                    if (form.dataset.wizardReady) return;
+                    var steps = Array.prototype.slice.call(form.querySelectorAll('.wz-step'));
+                    if (steps.length < 2) return;
+                    form.dataset.wizardReady = '1';
+                    var prev = form.querySelector('[data-wz-prev]'), next = form.querySelector('[data-wz-next]'),
+                        submit = form.querySelector('[data-wz-submit]');
+                    var done = steps.map(function () { return false; });
+                    var head = document.createElement('div');
+                    head.className = 'wz-head';
+                    head.innerHTML = '<div class="wz-dots"></div><div class="wz-count"></div><div class="wz-flash-slot"></div>';
+                    // en-tete place juste avant la premiere etape
+                    steps[0].parentNode.insertBefore(head, steps[0]);
+                    var dots = head.querySelector('.wz-dots');
+                    steps.forEach(function (st, i) {
+                        var b = document.createElement('button');
+                        b.type = 'button'; b.className = 'wz-dot';
+                        b.innerHTML = '<span class="n">' + (i + 1) + '</span><span class="t"></span>';
+                        b.querySelector('.t').textContent = st.dataset.title || '';
+                        b.addEventListener('click', function () { go(i, false); });
+                        dots.appendChild(b);
+                    });
+                    var current = 0;
+                    function render() {
+                        steps.forEach(function (st, i) { st.style.display = i === current ? '' : 'none'; });
+                        Array.prototype.forEach.call(dots.children, function (d, i) {
+                            d.classList.toggle('current', i === current);
+                            d.classList.toggle('done', done[i] && i !== current);
+                            d.querySelector('.n').innerHTML = (done[i] && i !== current) ? '<i class="bi bi-check-lg"></i>' : (i + 1);
+                        });
+                        head.querySelector('.wz-count').textContent = T.step + ' ' + (current + 1) + ' ' + T.of + ' ' + steps.length
+                                                                       + ' — ' + (steps[current].dataset.title || '');
+                        if (prev) prev.style.display = current > 0 ? '' : 'none';
+                        if (next) next.style.display = current < steps.length - 1 ? '' : 'none';
+                        if (submit) submit.style.display = current === steps.length - 1 ? '' : 'none';
+                    }
+                    function flash(i) {
+                        var slot = head.querySelector('.wz-flash-slot');
+                        var msg = T.done.replace('{n}', i + 1).replace('{title}', steps[i].dataset.title || '');
+                        slot.innerHTML = '<div class="wz-flash" role="status"><i class="bi bi-check-circle-fill"></i><span></span></div>';
+                        slot.querySelector('span').textContent = msg;
+                    }
+                    function go(i, markDone) {
+                        if (i < 0 || i >= steps.length) return;
+                        if (markDone) { done[current] = true; flash(current); }
+                        else { head.querySelector('.wz-flash-slot').innerHTML = ''; }
+                        current = i; render();
+                        var scroller = form.closest('.modal-body') || null;
+                        if (scroller) scroller.scrollTop = 0; else head.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        var first = steps[current].querySelector('input:not([type=hidden]), select, textarea');
+                        if (first && window.matchMedia('(min-width: 768px)').matches) first.focus({ preventScroll: true });
+                    }
+                    if (prev) prev.addEventListener('click', function () { go(current - 1, false); });
+                    if (next) next.addEventListener('click', function () { go(current + 1, true); });
+                    // Touche Entree dans un champ : etape suivante (et pas envoi du formulaire)
+                    form.addEventListener('keydown', function (e) {
+                        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA' && current < steps.length - 1) {
+                            e.preventDefault(); go(current + 1, true);
+                        }
+                    });
+                    // Erreurs renvoyees par le serveur : ouvrir l'etape concernee
+                    var errorStep = steps.findIndex(function (st) { return st.querySelector('.is-invalid, .errorlist, .invalid-feedback'); });
+                    current = errorStep > -1 ? errorStep : 0;
+                    render();
+                }
+                function scan(root) { (root || document).querySelectorAll('form[data-wizard]').forEach(init); }
+                document.addEventListener('DOMContentLoaded', function () { scan(); });
+                document.addEventListener('htmx:afterSettle', function (e) { scan(e.target); });
+                window.NutriWizard = { scan: scan };
+            })();
+        </script>
+
+        <!-- ===== INSTALLER L'APPLICATION SUR LE TELEPHONE ===== -->
+        <div id="installBanner" class="d-none" role="dialog" aria-live="polite"
+             style="position:fixed; left:12px; right:12px; bottom:12px; z-index:1080; background:#fff; border-radius:18px;
+                    box-shadow:0 10px 30px rgba(0,0,0,.18); padding:14px 16px; max-width:480px; margin:0 auto;">
+            <div class="d-flex align-items-center gap-3">
+                <img src="{% static 'pwa/icon-192.png' %}" alt="" width="48" height="48" style="border-radius:12px;">
+                <div class="flex-grow-1">
+                    <div class="fw-bold" style="color:#2f5e2f;">{% trans "Install the application" %}</div>
+                    <div class="small text-muted" id="installHint">{% trans "Add Nutri-Wellness to your home screen: faster, and opens like an app." %}</div>
+                    <div class="small text-muted d-none" id="installHintIos">
+                        {% trans "On iPhone: tap the Share button" %} <i class="bi bi-box-arrow-up"></i> {% trans 'then "Add to Home Screen".' %}
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex gap-2 mt-3 justify-content-end">
+                <button type="button" class="btn btn-sm btn-light rounded-pill px-3" id="installLater">{% trans "Later" %}</button>
+                <button type="button" class="btn btn-sm rounded-pill px-3 text-white fw-bold" style="background:#5a8f3d;" id="installNow">{% trans "Install" %}</button>
+            </div>
+        </div>
+        <script>
+            (function () {
+                // 1. Service worker : cache des fichiers statiques + page hors connexion
+                if ('serviceWorker' in navigator) {
+                    window.addEventListener('load', function () {
+                        navigator.serviceWorker.register('{% url "pwa_service_worker" %}', { scope: '/' }).catch(function () {});
+                    });
+                }
+
+                // 2. Proposition d'installation (mobile uniquement, pas si deja installee)
+                var banner = document.getElementById('installBanner');
+                if (!banner) return;
+                var standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+                var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+                var isIos = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+                var KEY = 'nutriInstallLater';
+                function snoozed() {
+                    try { return Date.now() < parseInt(localStorage.getItem(KEY) || '0', 10); } catch (e) { return false; }
+                }
+                function snooze(days) {
+                    try { localStorage.setItem(KEY, String(Date.now() + days * 864e5)); } catch (e) {}
+                }
+                if (standalone || !isMobile || snoozed()) return;
+
+                var deferredPrompt = null;
+                var installBtn = document.getElementById('installNow');
+
+                window.addEventListener('beforeinstallprompt', function (e) {   // Android / Chrome
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    banner.classList.remove('d-none');
+                });
+                if (isIos) {                                                    // iPhone : pas d'invite automatique
+                    document.getElementById('installHint').classList.add('d-none');
+                    document.getElementById('installHintIos').classList.remove('d-none');
+                    installBtn.textContent = '{% trans "OK" %}';
+                    setTimeout(function () { banner.classList.remove('d-none'); }, 2500);
+                }
+                installBtn.addEventListener('click', function () {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        deferredPrompt.userChoice.finally(function () { deferredPrompt = null; });
+                    } else {
+                        snooze(30);
+                    }
+                    banner.classList.add('d-none');
+                });
+                document.getElementById('installLater').addEventListener('click', function () {
+                    snooze(7);
+                    banner.classList.add('d-none');
+                });
+                window.addEventListener('appinstalled', function () { banner.classList.add('d-none'); });
+            })();
+        </script>
+
         <!-- Core theme JS-->
         <!--<script src="{% static 'js/scripts.js' %}"></script>-->
     </body>

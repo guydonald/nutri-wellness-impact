@@ -1,0 +1,166 @@
+{% extends "bases.html" %}
+{% load i18n %}
+{% block content %}
+
+<style>
+    :root { --nutri-green:#5a8f3d; --nutri-green-dark:#2f5e2f; --nutri-green-light:#eaf3e3; --nutri-orange:#f4a020; }
+    .dash-title { color:var(--nutri-green-dark); font-weight:800; }
+    .btn-nutri { background:var(--nutri-green); color:#fff; border:none; border-radius:50px; font-weight:700; }
+    .btn-nutri:hover { background:var(--nutri-green-dark); color:#fff; }
+    .filter-pills .btn { border-radius:50px; font-weight:600; font-size:.85rem; border:1px solid #e4ebe0; color:var(--nutri-green-dark); background:#fff; }
+    .filter-pills .btn.active { background:var(--nutri-green); border-color:var(--nutri-green); color:#fff; }
+    .msg-card { border:1px solid #eef2ec; border-radius:18px; background:#fff; padding:1rem 1.2rem; margin-bottom:.8rem; }
+    .msg-card.unread { border-left:5px solid var(--nutri-orange); background:#fffdf7; }
+    .msg-kind { font-size:.72rem; font-weight:700; border-radius:50px; padding:.2rem .6rem; }
+    .msg-kind.contact { background:#e7f0fb; color:#1d4f91; }
+    .msg-kind.bilan { background:var(--nutri-green-light); color:var(--nutri-green-dark); }
+    .msg-body { white-space:pre-line; font-size:.92rem; color:#3b4637; }
+    .new-dot { width:9px; height:9px; border-radius:50%; background:var(--nutri-orange); display:inline-block; }
+    .msg-actions .btn { border-radius:10px; font-size:.8rem; }
+    .inbox-tabs { border-bottom:2px solid #eef2ec; gap:.3rem; }
+    .inbox-tab { color:#6b7a66; font-weight:700; border-bottom:3px solid transparent; margin-bottom:-2px;
+                 padding:.6rem 1rem; text-decoration:none; white-space:nowrap; }
+    .inbox-tab:hover { color:var(--nutri-green-dark); }
+    .inbox-tab.active { color:var(--nutri-green-dark); border-bottom-color:var(--nutri-green); }
+    .msg-card.is-history { opacity:.92; }
+    .reply-thread { border-left:3px solid var(--nutri-green); padding-left:.9rem; margin-left:.2rem; }
+    .reply-item { padding:.35rem 0; }
+    .reply-form textarea { border-radius:12px; }
+</style>
+
+<div class="container py-4 py-md-5">
+    <a href="{% url 'dietitian_dashboard' %}" class="small fw-bold text-decoration-none" style="color:var(--nutri-green);"><i class="bi bi-arrow-left me-1"></i>{% trans "Back to the office" %}</a>
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-2 mb-3">
+        <div>
+            <h2 class="dash-title mb-1"><i class="bi bi-envelope me-2"></i>{% trans "Messages" %}</h2>
+            <p class="text-muted mb-0">
+                {% if unread_total %}
+                    {% blocktrans count counter=unread_total %}{{ counter }} unread message{% plural %}{{ counter }} unread messages{% endblocktrans %}
+                {% else %}
+                    {% trans "You are up to date: no unread message." %}
+                {% endif %}
+            </p>
+        </div>
+        {% if unread_total %}
+        {% trans "Mark all as read?" as c_title %}{% trans "All messages to handle will move to the history." as c_text %}{% trans "Mark all as read" as c_ok %}
+        <form method="post" action="{% url 'inbox_mark_all_read' %}"
+              data-confirm="{{ c_text }}" data-confirm-title="{{ c_title }}" data-confirm-ok="{{ c_ok }}" data-confirm-variant="success">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-nutri px-3 py-2"><i class="bi bi-check2-all me-1"></i>{% trans "Mark all as read" %}</button>
+        </form>
+        {% endif %}
+    </div>
+
+    <!-- Onglets : a traiter / historique -->
+    <div class="inbox-tabs d-flex mb-3" role="tablist">
+        <a class="inbox-tab {% if box == 'new' %}active{% endif %}" href="?box=new" role="tab">
+            <i class="bi bi-inbox me-1"></i>{% trans "To handle" %}
+            <span class="badge rounded-pill ms-1 {% if unread_total %}bg-warning text-dark{% else %}bg-light text-muted{% endif %}">{{ unread_total }}</span>
+        </a>
+        <a class="inbox-tab {% if box == 'history' %}active{% endif %}" href="?box=history" role="tab">
+            <i class="bi bi-archive me-1"></i>{% trans "History" %}
+            <span class="badge rounded-pill bg-light text-muted ms-1">{{ history_total }}</span>
+        </a>
+    </div>
+    <p class="small text-muted mb-3">
+        {% if box == 'new' %}{% trans "Once marked as read or answered, a message moves to the history." %}
+        {% else %}{% trans "Messages already read or answered. Mark one as unread to put it back in To handle." %}{% endif %}
+    </p>
+
+    <div class="filter-pills d-flex gap-2 flex-wrap mb-4">
+        <a href="?box={{ box }}&kind=all" class="btn btn-sm px-3 {% if kind == 'all' %}active{% endif %}">{% trans "All" %}</a>
+        <a href="?box={{ box }}&kind=contact" class="btn btn-sm px-3 {% if kind == 'contact' %}active{% endif %}"><i class="bi bi-chat-left-text me-1"></i>{% trans "Contact form" %}</a>
+        <a href="?box={{ box }}&kind=bilan" class="btn btn-sm px-3 {% if kind == 'bilan' %}active{% endif %}"><i class="bi bi-clipboard2-heart me-1"></i>{% trans "Assessments" %}</a>
+    </div>
+
+    {% for msg in page_obj %}
+    <div class="msg-card shadow-sm {% if not msg.is_read %}unread{% else %}is-history{% endif %}">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                {% if not msg.is_read %}<span class="new-dot" title="{% trans 'Unread' %}"></span>{% endif %}
+                <span class="msg-kind {{ msg.kind }}">
+                    {% if msg.kind == 'bilan' %}<i class="bi bi-clipboard2-heart me-1"></i>{% trans "Assessment" %}{% else %}<i class="bi bi-chat-left-text me-1"></i>{% trans "Contact" %}{% endif %}
+                </span>
+                <strong>{{ msg.name|default:msg.email|default:_("Anonymous") }}</strong>
+            </div>
+            <small class="text-muted">{{ msg.created_at|date:"d M Y, H:i" }}</small>
+        </div>
+
+        {% if msg.kind == 'bilan' %}
+            <p class="msg-body mb-2">{% trans "This patient has filled in or updated their nutrition assessment." %}</p>
+        {% else %}
+            <p class="msg-body mb-2">{{ msg.message }}</p>
+        {% endif %}
+
+        <div class="small text-muted mb-2">
+            {% if msg.email %}<span class="me-3"><i class="bi bi-envelope me-1"></i><a href="mailto:{{ msg.email }}">{{ msg.email }}</a></span>{% endif %}
+            {% if msg.phone %}<span class="me-3"><i class="bi bi-telephone me-1"></i><a href="tel:{{ msg.phone }}">{{ msg.phone }}</a></span>{% endif %}
+        </div>
+
+        {% if msg.replies.all %}
+        <div class="reply-thread mb-2">
+            {% for r in msg.replies.all %}
+            <div class="reply-item">
+                <div class="small fw-bold" style="color:var(--nutri-green-dark);">
+                    <i class="bi bi-reply-fill me-1"></i>{% trans "Your reply" %}
+                    <span class="text-muted fw-normal">· {{ r.author.get_full_name|default:"" }} · {{ r.created_at|date:"d M Y, H:i" }}</span>
+                </div>
+                <div class="msg-body">{{ r.body }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="msg-actions d-flex gap-2 flex-wrap">
+            {% if msg.email or msg.patient %}
+                <button type="button" class="btn btn-sm text-white" style="background:var(--nutri-green);"
+                        data-bs-toggle="collapse" data-bs-target="#reply-{{ msg.id }}" aria-expanded="false">
+                    <i class="bi bi-reply me-1"></i>{% trans "Reply" %}
+                </button>
+            {% endif %}
+            {% if msg.kind == 'bilan' and msg.patient %}
+                <a href="{% url 'bilan_patient' msg.patient.id %}" class="btn btn-sm btn-outline-success"><i class="bi bi-clipboard2-heart me-1"></i>{% trans "See the assessment" %}</a>
+                <a href="{% url 'patient_record' msg.patient.id %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-folder2-open me-1"></i>{% trans "Medical File" %}</a>
+            {% endif %}
+            <form method="post" action="{% url 'inbox_toggle_read' msg.id %}" class="d-inline">
+                {% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit" class="btn btn-sm btn-outline-success">
+                    {% if msg.is_read %}<i class="bi bi-envelope me-1"></i>{% trans "Mark as unread" %}{% else %}<i class="bi bi-envelope-open me-1"></i>{% trans "Mark as read" %}{% endif %}
+                </button>
+            </form>
+            {% trans "Delete this message?" as confirm_title %}{% trans "This message and its replies will be permanently deleted." as confirm_text %}{% trans "Delete" as confirm_ok %}
+            <form method="post" action="{% url 'inbox_delete' msg.id %}" class="d-inline"
+                  data-confirm="{{ confirm_text }}" data-confirm-title="{{ confirm_title }}" data-confirm-ok="{{ confirm_ok }}" data-confirm-variant="danger">
+                {% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit" class="btn btn-sm btn-outline-danger" title="{% trans 'Delete' %}"><i class="bi bi-trash"></i></button>
+            </form>
+        </div>
+
+        {% if msg.email or msg.patient %}
+        <div class="collapse mt-3" id="reply-{{ msg.id }}">
+            <form method="post" action="{% url 'inbox_reply' msg.id %}" class="reply-form">
+                {% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <label class="form-label small fw-bold mb-1" for="body-{{ msg.id }}">
+                    {% trans "Your reply will be sent by email to" %} {% firstof msg.email msg.patient.email %}
+                </label>
+                <textarea name="body" id="body-{{ msg.id }}" rows="4" class="form-control mb-2" required
+                          placeholder="{% trans 'Write your reply here...' %}"></textarea>
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-sm btn-light" data-bs-toggle="collapse" data-bs-target="#reply-{{ msg.id }}">{% trans "Cancel" %}</button>
+                    <button type="submit" class="btn btn-sm text-white fw-bold" style="background:var(--nutri-green);"><i class="bi bi-send me-1"></i>{% trans "Send the reply" %}</button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    {% empty %}
+    <div class="text-center text-muted py-5">
+        {% if box == 'new' %}<i class="bi bi-check2-circle fs-1 d-block mb-2" style="color:var(--nutri-green);"></i>{% trans "Everything has been handled. New messages will appear here." %}
+        {% else %}<i class="bi bi-archive fs-1 d-block mb-2"></i>{% trans "No messages here." %}{% endif %}
+    </div>
+    {% endfor %}
+
+    {% include "components/pagination.html" with page_obj=page_obj %}
+</div>
+{% endblock %}

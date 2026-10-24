@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, pgettext_lazy
 import uuid
 
 
@@ -129,7 +129,12 @@ class PatientProfile(models.Model):
     snack_times = models.CharField(max_length=100, blank=True, verbose_name=_("Snack times"))
     meal_place = models.CharField(
         max_length=20, blank=True,
-        choices=[('home', _('Home')), ('work', _('Work')), ('outside', _('Eating out'))],
+        # pgettext : "Home" seul est traduit "Accueil" (lien du menu) ; ici il faut "A la maison"
+        choices=[
+            ('home', pgettext_lazy("meal place", "Home")),
+            ('work', _('Work')),
+            ('outside', _('Eating out')),
+        ],
         verbose_name=_("Usual place for meals")
     )
     eat_with = models.CharField(
@@ -385,3 +390,137 @@ class FoodDiary(models.Model):
             "date": self.date,
             "meal": self.get_meal_time_display()
         }
+
+# =========================================================
+#  BOITE DE RECEPTION DE LA NUTRITIONNISTE
+#  (messages du formulaire de contact + bilans remplis par les patients)
+# =========================================================
+class InboxMessage(models.Model):
+    KIND_CONTACT = 'contact'
+    KIND_BILAN = 'bilan'
+    KIND_CHOICES = [
+        (KIND_CONTACT, _("Contact form message")),
+        (KIND_BILAN, _("Assessment filled in by a patient")),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    kind = models.CharField(max_length=20, choices=KIND_CHOICES, default=KIND_CONTACT, verbose_name=_("Type"))
+    patient = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True,
+        related_name='inbox_messages', verbose_name=_("Patient")
+    )
+    name = models.CharField(max_length=150, blank=True, verbose_name=_("Name"))
+    email = models.EmailField(blank=True, verbose_name=_("Email"))
+    phone = models.CharField(max_length=30, blank=True, verbose_name=_("Phone"))
+    message = models.TextField(blank=True, verbose_name=_("Message"))
+    is_read = models.BooleanField(default=False, verbose_name=_("Read"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Received on"))
+
+    class Meta:
+        ordering = ['is_read', '-created_at']
+        verbose_name = _("Inbox message")
+        verbose_name_plural = _("Inbox messages")
+
+    def __str__(self):
+        return "%s - %s" % (self.get_kind_display(), self.name or self.email)
+
+    @classmethod
+    def notify_bilan(cls, patient):
+        """Previent la nutritionniste qu'un patient a enregistre son bilan.
+        Un seul avis non lu par patient : on le remonte au lieu d'en empiler."""
+        from django.utils import timezone
+        existing = cls.objects.filter(kind=cls.KIND_BILAN, patient=patient, is_read=False).first()
+        if existing:
+            cls.objects.filter(pk=existing.pk).update(created_at=timezone.now())
+            return existing, False
+        return cls.objects.create(
+            kind=cls.KIND_BILAN, patient=patient,
+            name=patient.get_full_name(), email=patient.email,
+        ), True
+
+
+class InboxReply(models.Model):
+    """Reponse de la nutritionniste a un message, envoyee par e-mail depuis l'application."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    message = models.ForeignKey(InboxMessage, on_delete=models.CASCADE, related_name='replies', verbose_name=_("Message"))
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name=_("Author"))
+    subject = models.CharField(max_length=255, verbose_name=_("Subject"))
+    body = models.TextField(verbose_name=_("Reply"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Sent on"))
+
+    class Meta:
+        ordering = ['created_at']
+        verbose_name = _("Reply")
+        verbose_name_plural = _("Replies")
+
+    def __str__(self):
+        return self.subject
+
+
+# =========================================================
+#  FILE D'ATTENTE DES E-MAILS
+#  Le site enregistre l'e-mail ici et repond tout de suite ;
+#  la commande "process_email_queue" (tache permanente) les envoie en arriere-plan.
+# =========================================================
+class QueuedEmail(models.Model):
+    STATUS_PENDING = 'pending'
+    STATUS_SENT = 'sent'
+    STATUS_FAILED = 'failed'
+    STATUS_CHOICES = [
+        (STATUS_PENDING, _("Pending")),
+        (STATUS_SENT, _("Sent")),
+        (STATUS_FAILED, _("Failed")),
+    ]
+    MAX_ATTEMPTS = 5
+
+    # Categorie (en-tete X-Nutri-Category). Les e-mails "account" (codes de connexion,
+    # mot de passe oublie...) ne gardent PAS leur contenu une fois envoyes : un code
+    # lisible dans la base serait une faille. Les autres gardent tout pour l'historique.
+    CATEGORY_ACCOUNT = 'account'
+    CATEGORY_CHOICES = [
+        ('account', _("Account (codes, password)")),
+        ('notification', _("Notification to dietitians")),
+        ('reply', _("Reply to a message")),
+        ('patient', _("Email to a patient")),
+        ('other', _("Other")),
+    ]
+    HEADER_CATEGORY = 'X-Nutri-Category'
+
+    subject = models.CharField(max_length=255, verbose_name=_("Subject"))
+    body = models.TextField(blank=True, verbose_name=_("Content"))
+    html_body = models.TextField(blank=True, verbose_name=_("HTML content"))
+    from_email = models.CharField(max_length=254, blank=True, verbose_name=_("Sender"))
+    to = models.JSONField(default=list, verbose_name=_("Recipients"))
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default=CATEGORY_ACCOUNT,
+                                db_index=True, verbose_name=_("Category"))
+    body_erased = models.BooleanField(default=False, verbose_name=_("Content erased after sending"))
+    cc = models.JSONField(default=list, blank=True)
+    bcc = models.JSONField(default=list, blank=True)
+    reply_to = models.JSONField(default=list, blank=True)
+    headers = models.JSONField(default=dict, blank=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=STATUS_PENDING, db_index=True,
+                              verbose_name=_("Status"))
+    attempts = models.PositiveSmallIntegerField(default=0, verbose_name=_("Attempts"))
+    last_error = models.TextField(blank=True, verbose_name=_("Last error"))
+    next_attempt_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Next attempt"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created on"))
+    sent_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Sent on"))
+
+    class Meta:
+        ordering = ['created_at']
+        verbose_name = _("Queued email")
+        verbose_name_plural = _("Queued emails")
+
+    def __str__(self):
+        return "%s -> %s (%s)" % (self.subject, ", ".join(self.to), self.get_status_display())
+
+    def mark_sent(self):
+        """Marque l'e-mail comme envoye ; efface le contenu des e-mails de compte (codes)."""
+        from django.utils import timezone
+        self.status = self.STATUS_SENT
+        self.sent_at = timezone.now()
+        self.last_error = ""
+        if self.category == self.CATEGORY_ACCOUNT:
+            self.body = ""
+            self.html_body = ""
+            self.body_erased = True

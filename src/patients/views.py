@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.db import transaction
-from django.db.models import Avg, Count, Q
+from django.db.models import Avg, Count, F, Q
 from django.forms import modelformset_factory
 from django.http import Http404, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
@@ -18,7 +18,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 from django.views.generic import DetailView, ListView
 import io
-from datetime import timedelta
+from datetime import datetime, time as dtime, timedelta
 
 from django.utils import timezone
 from django.http import FileResponse
@@ -39,7 +39,7 @@ from .forms import (
     PatientProfileUpdateForm,
     UserUpdateForm,
 )
-from .models import Consultation, FoodDiary, MealPlan, PatientProfile
+from .models import Consultation, FoodDiary, InboxMessage, InboxReply, MealPlan, PatientProfile
 
 User = get_user_model()
 
@@ -134,22 +134,49 @@ SECTION_FORMS = [
 ]
 
 
-def _build_bilan_forms(profile, data=None, include_praticien=False):
-    """Instancie chaque section sur la meme instance de profil."""
-    ctx = {}
-    for name, FormClass in SECTION_FORMS:
-        ctx[name] = FormClass(data, instance=profile, prefix=name)
-    if include_praticien:
-        ctx['form7'] = BilanPraticienForm(data, instance=profile, prefix='form7')
-    return ctx
+# Chaque etape du bilan : formulaire, icone et phrase d'explication
+BILAN_STEP_META = [
+    ('form1', 'bi-person-vcard', _("Who you are and why you are consulting.")),
+    ('form2', 'bi-capsule', _("Illnesses, treatments and allergies. Only what you know.")),
+    ('form3', 'bi-moon-stars', _("Sleep, physical activity, stress and habits.")),
+    ('form4', 'bi-rulers', _("Height, weight and other measurements if you know them. Your dietitian will take the others.")),
+    ('form5', 'bi-egg-fried', _("What a usual day of meals looks like for you, and what you drink.")),
+    ('form6', 'bi-bullseye', _("Your appetite, your eating habits and what you expect from the follow-up.")),
+]
+
+
+def _bilan_steps(profile, is_dietitian):
+    """Liste des etapes (avec avancement) ; la nutritionniste a une 7e etape : ses notes."""
+    sections, _percent = _bilan_progress(profile)
+    # Champs deja donnes a l'inscription (age, sexe, taille, poids...) : ne comptent pas
+    # pour savoir si le patient a "commence" une etape du bilan.
+    essentials = set(EssentialProfileForm._meta.fields)
+    steps = []
+    for idx, (sec, (key, icon, intro)) in enumerate(zip(sections, BILAN_STEP_META), start=1):
+        form_class = dict(SECTION_FORMS)[key]
+        started = any(
+            getattr(profile, f, None) not in (None, '')
+            for f in form_class._meta.fields
+            if f not in essentials and PatientProfile._meta.get_field(f).get_internal_type() != 'BooleanField'
+        )
+        steps.append({'num': idx, 'key': key, 'form_class': form_class, 'icon': icon, 'intro': intro,
+                      'title': sec['title'], 'filled': sec['filled'], 'total': sec['total'], 'started': started})
+    if is_dietitian:
+        filled = sum(1 for f in BilanPraticienForm._meta.fields if getattr(profile, f, None) not in (None, ''))
+        steps.append({'num': len(steps) + 1, 'key': 'form7', 'form_class': BilanPraticienForm,
+                      'icon': 'bi-journal-medical', 'title': _("Practitioner's Notes"),
+                      'intro': _("Your observations, diagnosis and dietary plan. Not visible to the patient."),
+                      'filled': filled, 'total': len(BilanPraticienForm._meta.fields), 'started': bool(filled)})
+    return steps
 
 
 @login_required
 def bilan_view(request, patient_id=None):
     """
-    Bilan initial.
-      /bilan/              -> le patient remplit le sien
-      /bilan/<patient_id>/ -> la nutritionniste remplit celui d'un patient
+    Bilan initial, UNE ETAPE PAR PAGE (chaque etape est enregistree avant de passer a la suivante).
+      /bilan/?step=2              -> le patient remplit le sien
+      /bilan/<patient_id>/?step=2 -> la nutritionniste remplit celui d'un patient
+    Boutons du formulaire (champ "action") : next, prev, goto_<n>, quit, finish.
     """
     is_dietitian = is_dietitian_check(request.user)
 
@@ -159,33 +186,89 @@ def bilan_view(request, patient_id=None):
             return HttpResponseForbidden(_("Access denied."))
         patient = get_object_or_404(User, id=patient_id, role='patient')
         profile, _created = PatientProfile.objects.get_or_create(user=patient)
+        base_url = reverse('bilan_patient', args=[patient_id])
     else:
         # SECURITE : un dieteticien n'a pas de bilan personnel
         if not is_patient_check(request.user):
             return redirect('dietitian_dashboard')
         profile, _created = PatientProfile.objects.get_or_create(user=request.user)
         patient = request.user
+        base_url = reverse('bilan')
+
+    steps = _bilan_steps(profile, is_dietitian)
+    total = len(steps)
+    if 'step' not in request.GET and request.method == 'GET':
+        # Reprendre la ou on s'etait arrete : premiere etape pas encore commencee.
+        # (les infos donnees a l'inscription ne comptent pas : un nouveau patient commence a l'etape 1)
+        num = next((s['num'] for s in steps if not s['started']), 1)
+    else:
+        try:
+            num = min(max(int(request.GET.get('step', 1)), 1), total)
+        except (TypeError, ValueError):
+            num = 1
+    step = steps[num - 1]
 
     if request.method == 'POST':
-        forms_ctx = _build_bilan_forms(profile, request.POST, include_praticien=is_dietitian)
-        if all(f.is_valid() for f in forms_ctx.values()):
-            with transaction.atomic():
-                for f in forms_ctx.values():
-                    f.save()
-            messages.success(request, _("Assessment saved successfully!"))
-            if patient_id:
-                return redirect('patient_record', patient_id=patient_id)
-            return redirect('patient_home')
+        form = step['form_class'](request.POST, instance=profile, prefix=step['key'])
+        action = request.POST.get('action', 'next')
+        if form.is_valid():
+            form.save()
+            if action == 'prev':
+                return redirect('%s?step=%d' % (base_url, max(num - 1, 1)))
+            if action.startswith('goto_'):
+                try:
+                    target = min(max(int(action[5:]), 1), total)
+                except ValueError:
+                    target = num
+                return redirect('%s?step=%d' % (base_url, target))
+            if action in ('quit', 'finish') or (action == 'next' and num == total):
+                return _bilan_leave(request, patient, patient_id, finished=(action != 'quit'))
+            # Etape suivante + bandeau "etape terminee"
+            return redirect('%s?step=%d&done=%d' % (base_url, num + 1, num))
         messages.error(request, _("Please check the highlighted fields."))
+        has_errors = True
     else:
-        forms_ctx = _build_bilan_forms(profile, include_praticien=is_dietitian)
+        form = step['form_class'](instance=profile, prefix=step['key'])
+        has_errors = False
 
-    forms_ctx['profile'] = profile
-    forms_ctx['patient'] = patient
-    sections, percent = _bilan_progress(profile)
-    forms_ctx['sections'] = {sec['key']: sec for sec in sections}
-    forms_ctx['bilan_percent'] = percent
-    return render(request, 'patients/bilan_form.html', forms_ctx)
+    # Etape qui vient d'etre terminee (affichee en haut de la page suivante)
+    done_step = None
+    try:
+        done_num = int(request.GET.get('done', 0))
+        if 1 <= done_num <= total:
+            done_step = steps[done_num - 1]
+    except (TypeError, ValueError):
+        pass
+
+    _sections, percent = _bilan_progress(profile)
+    return render(request, 'patients/bilan_form.html', {
+        'profile': profile,
+        'patient': patient,
+        'form': form,
+        'step': step,
+        'steps': steps,
+        'step_num': num,
+        'steps_total': total,
+        'steps_left': total - num,
+        'is_last': num == total,
+        'done_step': done_step,
+        'has_errors': has_errors,
+        'bilan_percent': percent,
+        'step_percent': int(round(100 * (num - 1) / total)),
+    })
+
+
+def _bilan_leave(request, patient, patient_id, finished):
+    """Sortie du bilan (bouton "Terminer" ou "Enregistrer et quitter")."""
+    if patient_id:
+        messages.success(request, _("Assessment saved successfully!"))
+        return redirect('patient_record', patient_id=patient_id)
+    # Le patient a rempli son bilan : la nutritionniste est prevenue (bureau + e-mail, une fois)
+    _msg, is_new = InboxMessage.notify_bilan(patient)
+    if is_new:
+        from .notifications import notify_new_bilan
+        notify_new_bilan(request, patient)
+    return redirect(reverse('patient_home') + ('?saved=done' if finished else '?saved=1'))
 
 
 @login_required
@@ -304,6 +387,8 @@ def patient_home(request):
         'meals_week': meals_week,
         'has_plan': has_plan,
         'last_consult': last_consult,
+        'just_saved': request.GET.get('saved') in ('1', 'done'),
+        'bilan_finished': request.GET.get('saved') == 'done',
     })
 
 
@@ -665,13 +750,9 @@ def send_patient_email(request, patient_id):
     )
 
     try:
-        send_mail(
-            subject=subject,
-            message=full_message,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[patient.email],
-            fail_silently=False,
-        )
+        from .notifications import send_app_email
+        send_app_email(subject, full_message, [patient.email], category="patient",
+                       reply_to=[request.user.email] if request.user.email else None)
     except Exception:
         # On ne revele aucun detail technique a l'utilisateur
         return HttpResponse(
@@ -739,3 +820,269 @@ def export_plan_pdf(request, patient_id):
     generer_plan_pdf(buffer, patient, profile, plans)
     return _pdf_reponse(buffer, "plan_alimentaire_%s.pdf" % _slug_patient(patient))
  
+
+# =========================================================
+#  BOITE DE RECEPTION  (bureau de la nutritionniste)
+# =========================================================
+@login_required
+@user_passes_test(is_dietitian_check, login_url='/')
+def dietitian_inbox(request):
+    """Deux onglets : "A traiter" (non lus) et "Historique" (lus ou repondus).
+    Des qu'un message est marque comme lu ou qu'on y repond, il passe dans l'historique."""
+    box = request.GET.get('box', 'new')
+    if box not in ('new', 'history'):
+        box = 'new'
+    kind = request.GET.get('kind', 'all')
+    if kind not in ('all', InboxMessage.KIND_CONTACT, InboxMessage.KIND_BILAN):
+        kind = 'all'
+
+    qs = (InboxMessage.objects.select_related('patient').prefetch_related('replies__author')
+          .filter(is_read=(box == 'history')).order_by('-created_at'))
+    if kind != 'all':
+        qs = qs.filter(kind=kind)
+    page = Paginator(qs, 15).get_page(request.GET.get('page'))
+    return render(request, 'dietitians/inbox.html', {
+        'page_obj': page,
+        'box': box,
+        'kind': kind,
+        'unread_total': InboxMessage.objects.filter(is_read=False).count(),
+        'history_total': InboxMessage.objects.filter(is_read=True).count(),
+    })
+
+
+@login_required
+@user_passes_test(is_dietitian_check, login_url='/')
+@require_POST
+def inbox_toggle_read(request, message_id):
+    msg = get_object_or_404(InboxMessage, id=message_id)
+    msg.is_read = not msg.is_read
+    msg.save(update_fields=['is_read'])
+    return redirect(request.POST.get('next') or 'dietitian_inbox')
+
+
+@login_required
+@user_passes_test(is_dietitian_check, login_url='/')
+@require_POST
+def inbox_mark_all_read(request):
+    InboxMessage.objects.filter(is_read=False).update(is_read=True)
+    messages.success(request, _("All messages are marked as read."))
+    return redirect('dietitian_inbox')
+
+
+@login_required
+@user_passes_test(is_dietitian_check, login_url='/')
+@require_POST
+def inbox_delete(request, message_id):
+    get_object_or_404(InboxMessage, id=message_id).delete()
+    messages.warning(request, _("The message has been deleted."))
+    return redirect(request.POST.get('next') or 'dietitian_inbox')
+
+
+# =========================================================
+#  UTILISATEURS : vue d'ensemble pour la nutritionniste
+#  (qui est inscrit, qui se connecte, qui a rempli son bilan, activite recente)
+# =========================================================
+USER_FILTERS = ('all', 'active', 'inactive', 'new', 'never', 'dormant', 'bilan_todo')
+
+
+@login_required
+@user_passes_test(is_dietitian_check, login_url='/')
+def dietitian_users(request):
+    now = timezone.now()
+    week_ago = now - timedelta(days=7)
+    month_ago = now - timedelta(days=30)
+
+    patients = User.objects.filter(role='patient')
+    stats = {
+        'total': patients.count(),
+        'active': patients.filter(is_active=True).count(),
+        'inactive': patients.filter(is_active=False).count(),
+        'new_week': patients.filter(date_joined__gte=week_ago).count(),
+        'new_month': patients.filter(date_joined__gte=month_ago).count(),
+        'seen_week': patients.filter(last_login__gte=week_ago).count(),
+        'never': patients.filter(last_login__isnull=True).count(),
+        'dietitians': User.objects.filter(role='dietitian').count(),
+        'bilan_todo': patients.filter(
+            Q(profile__isnull=True) | Q(profile__age__isnull=True) | Q(profile__weight__isnull=True)).count(),
+    }
+
+    # ---- Liste filtree ----
+    show = request.GET.get('show', 'all')
+    if show not in USER_FILTERS:
+        show = 'all'
+    role = request.GET.get('role', 'patient')
+    if role not in ('patient', 'dietitian', 'all'):
+        role = 'patient'
+    q = (request.GET.get('q') or '').strip()
+
+    qs = User.objects.select_related('profile').annotate(
+        meals_count=Count('food_entries', distinct=True),
+        consult_count=Count('consultations', distinct=True),
+    )
+    if role != 'all':
+        qs = qs.filter(role=role)
+    if q:
+        qs = qs.filter(Q(first_name__icontains=q) | Q(last_name__icontains=q)
+                       | Q(email__icontains=q) | Q(profile__phone__icontains=q))
+    if show == 'active':
+        qs = qs.filter(is_active=True)
+    elif show == 'inactive':
+        qs = qs.filter(is_active=False)
+    elif show == 'new':
+        qs = qs.filter(date_joined__gte=week_ago)
+    elif show == 'never':
+        qs = qs.filter(last_login__isnull=True)
+    elif show == 'dormant':
+        # se sont deja connectes, mais pas depuis 30 jours
+        qs = qs.filter(last_login__lt=month_ago)
+    elif show == 'bilan_todo':
+        qs = qs.filter(role='patient').filter(
+            Q(profile__isnull=True) | Q(profile__age__isnull=True) | Q(profile__weight__isnull=True))
+
+    order = request.GET.get('order', 'recent')
+    ordering = {
+        'recent': ['-date_joined'],
+        'login': [F('last_login').desc(nulls_last=True)],
+        'name': ['last_name', 'first_name', 'email'],
+    }.get(order, ['-date_joined'])
+    qs = qs.order_by(*ordering)
+
+    page = Paginator(qs, 20).get_page(request.GET.get('page'))
+    rows = []
+    bilan_done = 0
+    for u in page:
+        profile = getattr(u, 'profile', None)
+        percent = _bilan_progress(profile)[1] if (profile and u.role == 'patient') else None
+        rows.append({'user': u, 'profile': profile, 'bilan_percent': percent})
+
+    # Nombre de bilans bien avances (>= 70 %) sur l'ensemble des patients
+    for profile in PatientProfile.objects.filter(user__role='patient'):
+        if _bilan_progress(profile)[1] >= 70:
+            bilan_done += 1
+    stats['bilan_done'] = bilan_done
+
+    # ---- Activite recente : seulement le nouveau (non vu), sauf si on demande l'historique ----
+    activity_all = request.GET.get('activity') == 'all'
+    seen = request.user.activity_seen_at
+    new_events = _recent_activity(since=seen)
+    activity_new_count = len(new_events)
+    events = _recent_activity() if activity_all else new_events
+    activity_page = Paginator(events, 8).get_page(request.GET.get('apage'))
+
+    return render(request, 'dietitians/users.html', {
+        'stats': stats,
+        'rows': rows,
+        'page_obj': page,
+        'show': show,
+        'role': role,
+        'order': order,
+        'q': q,
+        'activity_page': activity_page,
+        'activity_all': activity_all,
+        'activity_new_count': activity_new_count,
+    })
+
+
+def _recent_activity(since=None, per_source=200):
+    """Fil d'activite : inscriptions, bilans, repas notes, consultations, messages.
+    since : n'afficher que ce qui est arrive apres cette date (le reste a deja ete vu)."""
+    def recent(qs, field):
+        if since:
+            qs = qs.filter(**{field + '__gt': since})
+        return qs.order_by('-' + field)[:per_source]
+
+    events = []
+    for u in recent(User.objects.filter(role='patient'), 'date_joined'):
+        events.append({'when': u.date_joined, 'icon': 'bi-person-plus', 'color': '#1d4f91',
+                       'who': u, 'text': _("created an account")})
+    for p in recent(PatientProfile.objects.select_related('user').filter(
+            updated_at__isnull=False, user__role='patient'), 'updated_at'):
+        events.append({'when': p.updated_at, 'icon': 'bi-clipboard2-heart', 'color': '#5a8f3d',
+                       'who': p.user, 'text': _("updated their assessment")})
+    for f in recent(FoodDiary.objects.select_related('patient'), 'created_at'):
+        events.append({'when': f.created_at, 'icon': 'bi-egg-fried', 'color': '#f4a020',
+                       'who': f.patient, 'text': _("logged a meal")})
+    consults = Consultation.objects.select_related('patient')
+    if since:
+        consults = consults.filter(date_consultation__gt=timezone.localdate(since))
+    for c in consults.order_by('-date_consultation')[:per_source]:
+        when = timezone.make_aware(datetime.combine(c.date_consultation, dtime(12, 0)))
+        events.append({'when': when, 'icon': 'bi-heart-pulse', 'color': '#d62828',
+                       'who': c.patient, 'text': _("had a consultation")})
+    for m in recent(InboxMessage.objects.filter(kind=InboxMessage.KIND_CONTACT), 'created_at'):
+        events.append({'when': m.created_at, 'icon': 'bi-chat-left-text', 'color': '#6f42c1',
+                       'who': None, 'name': m.name or m.email, 'text': _("sent a message")})
+    events = [e for e in events if e['when'] and (not since or e['when'] > since)]
+    events.sort(key=lambda e: e['when'], reverse=True)
+    return events
+
+
+@login_required
+@user_passes_test(is_dietitian_check, login_url='/')
+@require_POST
+def activity_mark_seen(request):
+    """Tout ce qui est deja affiche disparait du fil (reste visible dans l'historique)."""
+    request.user.activity_seen_at = timezone.now()
+    request.user.save(update_fields=['activity_seen_at'])
+    messages.success(request, _("Recent activity marked as seen."))
+    return redirect(request.POST.get('next') or 'dietitian_users')
+
+
+@login_required
+@user_passes_test(is_dietitian_check, login_url='/')
+@require_POST
+def dietitian_toggle_user(request, user_id):
+    """Active / desactive un compte patient (un compte desactive ne peut plus se connecter)."""
+    target = get_object_or_404(User, id=user_id, role='patient')
+    target.is_active = not target.is_active
+    target.save(update_fields=['is_active'])
+    if target.is_active:
+        messages.success(request, _("The account has been reactivated."))
+    else:
+        messages.warning(request, _("The account has been deactivated: this person can no longer log in."))
+    return redirect(request.POST.get('next') or 'dietitian_users')
+
+
+
+@login_required
+@user_passes_test(is_dietitian_check, login_url='/')
+@require_POST
+def inbox_reply(request, message_id):
+    """Repondre a un message depuis l'application : l'e-mail part a l'expediteur
+    (ou au patient) et la reponse reste visible sous le message."""
+    msg = get_object_or_404(InboxMessage, id=message_id)
+    back = request.POST.get('next') or reverse('dietitian_inbox')
+    body = (request.POST.get('body') or '').strip()
+    recipient = msg.email or (msg.patient.email if msg.patient else '')
+    if not body:
+        messages.error(request, _("Please write your reply."))
+        return redirect(back)
+    if not recipient:
+        messages.error(request, _("This message has no email address: you cannot reply by email."))
+        return redirect(back)
+
+    if msg.kind == InboxMessage.KIND_BILAN:
+        subject = str(_("Your nutrition assessment"))
+    else:
+        subject = "Re: %s" % (str(_("Your message to Nutri-Wellness Impact")))
+    greeting = msg.name or (msg.patient.get_full_name() if msg.patient else '') or recipient
+    signature = request.user.get_full_name() if request.user.get_full_name() != request.user.email else ''
+    text = "%s %s,\n\n%s\n\n%s\n%s\nNutri-Wellness Impact" % (
+        _("Hello"), greeting, body, _("Kind regards,"), signature)
+    if msg.kind == InboxMessage.KIND_CONTACT and msg.message:
+        text += "\n\n----- %s -----\n%s" % (_("Your message"), msg.message)
+
+    from .notifications import send_app_email
+    try:
+        send_app_email(subject, text, [recipient], category="reply",
+                       reply_to=[request.user.email] if request.user.email else None)
+    except Exception:
+        messages.error(request, _("The email could not be sent. Please try again later."))
+        return redirect(back)
+
+    InboxReply.objects.create(message=msg, author=request.user, subject=subject, body=body)
+    if not msg.is_read:
+        msg.is_read = True
+        msg.save(update_fields=['is_read'])
+    messages.success(request, _("Your reply has been sent to %(email)s.") % {'email': recipient})
+    return redirect(back)

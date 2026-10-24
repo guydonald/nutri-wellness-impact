@@ -77,6 +77,7 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'patients.context_processors.inbox_unread',
             ],
         },
     },
@@ -268,3 +269,16 @@ DEFAULT_FROM_EMAIL = env("EMAIL_HOST_USER")
 EMAIL_PORT = env.int("EMAIL_PORT", 587)
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend")
+
+# ---- E-mails en arriere-plan ----
+# EMAIL_QUEUE=True dans le .env : les e-mails sont ranges dans une file d'attente et la page
+# repond tout de suite. Ils sont envoyes par la tache permanente :
+#     python manage.py process_email_queue --loop
+# ATTENTION : sans cette tache, plus aucun e-mail ne part (codes de connexion compris).
+# Dans les deux cas, chaque e-mail est enregistre (historique dans l'admin Django).
+EMAIL_QUEUE = env.bool("EMAIL_QUEUE", False)
+REAL_EMAIL_BACKEND = EMAIL_BACKEND
+if EMAIL_QUEUE:
+    EMAIL_BACKEND = "patients.email_backend.QueuedEmailBackend"
+else:
+    EMAIL_BACKEND = "patients.email_backend.LoggedEmailBackend"

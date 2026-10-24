@@ -39,6 +39,9 @@ class ProfileCompletionMiddleware:
                     '/static/',
                     '/media/',
                     '/admin/',
+                    '/sw.js',                 # application installable (PWA)
+                    '/manifest.webmanifest',
+                    '/offline/',
                 ]
 
                 path = request.path

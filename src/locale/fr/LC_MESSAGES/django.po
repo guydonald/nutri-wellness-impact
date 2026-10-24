@@ -226,7 +226,8 @@ msgstr "Adresse"
 msgid "Phone"
 msgstr "Téléphone"
 
-#: .\patients\models.py:58 .\patients\pdf_export.py:162 .\patients\views.py:256
+#: .\patients\models.py:58 .\patients\pdf_export.py:162
+#: .\patients\views.py:256
 #: .\templates\dietitians\partials\patient_profile_detail.html:22
 #: .\templates\patients\patient_profile.html:94
 msgid "Occupation"
@@ -344,7 +345,8 @@ msgstr "Activité modérée"
 msgid "Intense activity"
 msgstr "Activité intense"
 
-#: .\patients\models.py:96 .\patients\pdf_export.py:191 .\patients\views.py:256
+#: .\patients\models.py:96 .\patients\pdf_export.py:191
+#: .\patients\views.py:256
 #: .\templates\dietitians\partials\patient_profile_detail.html:65
 #: .\templates\patients\patient_profile.html:95
 msgid "Activity level"
@@ -1356,8 +1358,8 @@ msgid ""
 "account:"
 msgstr ""
 "Vous recevez cet e-mail car la modification suivante a été apportée à votre "
-"compte :Vous recevez cet e-mail car la modification suivante a été apportée à"
-" votre compte :"
+"compte :Vous recevez cet e-mail car la modification suivante a été apportée "
+"à votre compte :"
 
 #: .\templates\account\email\base_notification.txt:10
 #, python-format
@@ -1402,17 +1404,17 @@ msgid ""
 "email address to register an account on %(site_domain)s."
 msgstr ""
 "Vous recevez cet e-mail car l'utilisateur %(user_display)s a indiqué votre "
-"adresse pour créer un compte sur %(site_domain)s.Vous recevez cet e-mail car "
-"l'utilisateur %(user_display)s a indiqué votre adresse pour créer un compte "
-"sur %(site_domain)s."
+"adresse pour créer un compte sur %(site_domain)s.Vous recevez cet e-mail car"
+" l'utilisateur %(user_display)s a indiqué votre adresse pour créer un compte"
+" sur %(site_domain)s."
 
 #: .\templates\account\email\email_confirmation_message.txt:7
 msgid ""
 "Your email verification code is listed below. Please enter it in your open "
 "browser window."
 msgstr ""
-"Votre code de vérification est indiqué ci-dessous. Veuillez le saisir dans la"
-" fenêtre de votre navigateur.Votre code de vérification est indiqué ci-"
+"Votre code de vérification est indiqué ci-dessous. Veuillez le saisir dans "
+"la fenêtre de votre navigateur.Votre code de vérification est indiqué ci-"
 "dessous. Veuillez le saisir dans la fenêtre de votre navigateur."
 
 #: .\templates\account\email\email_confirmation_message.txt:9
@@ -1509,9 +1511,9 @@ msgstr "Mot de passe défini"
 #: .\templates\account\email\unknown_account_message.txt:4
 #, python-format
 msgid ""
-"You are receiving this email because you, or someone else, tried to access an"
-" account with email %(email)s. However, we do not have any record of such an "
-"account in our database."
+"You are receiving this email because you, or someone else, tried to access "
+"an account with email %(email)s. However, we do not have any record of such "
+"an account in our database."
 msgstr ""
 "Vous recevez cet e-mail car vous, ou quelqu'un d'autre, a tenté d'accéder à "
 "un compte avec l'adresse %(email)s. Cependant, aucun compte de ce type "
@@ -1608,9 +1610,9 @@ msgid ""
 "Unable to confirm %(email)s because it is already confirmed by a different "
 "account."
 msgstr ""
-"Impossible de confirmer %(email)s car cette adresse est déjà confirmée par un"
-" autre compte.Impossible de confirmer %(email)s car cette adresse est déjà "
-"confirmée par un autre compte."
+"Impossible de confirmer %(email)s car cette adresse est déjà confirmée par "
+"un autre compte.Impossible de confirmer %(email)s car cette adresse est déjà"
+" confirmée par un autre compte."
 
 #: .\templates\account\messages\email_confirmation_sent.txt:2
 #, python-format
@@ -1773,10 +1775,10 @@ msgid ""
 "you don't see it, check your <b>junk mail</b>."
 msgstr ""
 "Nous avons envoyé un lien de réinitialisation à votre "
-"adresse.<br><br><strong>Note :</strong> si vous ne le voyez pas, vérifiez vos"
-" <b>courriers indésirables</b>.Nous avons envoyé un lien de réinitialisation "
-"à votre adresse.<br><br><strong>Note :</strong> si vous ne le voyez pas, "
-"vérifiez vos <b>courriers indésirables</b>."
+"adresse.<br><br><strong>Note :</strong> si vous ne le voyez pas, vérifiez "
+"vos <b>courriers indésirables</b>.Nous avons envoyé un lien de "
+"réinitialisation à votre adresse.<br><br><strong>Note :</strong> si vous ne "
+"le voyez pas, vérifiez vos <b>courriers indésirables</b>."
 
 #: .\templates\account\partials\password_reset_done_inner.html:19
 msgid "Got it"
@@ -1802,9 +1804,9 @@ msgstr "Retour à la connexion"
 #: .\templates\account\partials\password_reset_from_key_done_inner.html:11
 msgid "Your new password has been successfully saved. You can now log in."
 msgstr ""
-"Votre nouveau mot de passe a bien été enregistré. Vous pouvez maintenant vous"
-" connecter.Votre nouveau mot de passe a bien été enregistré. Vous pouvez "
-"maintenant vous connecter."
+"Votre nouveau mot de passe a bien été enregistré. Vous pouvez maintenant "
+"vous connecter.Votre nouveau mot de passe a bien été enregistré. Vous pouvez"
+" maintenant vous connecter."
 
 #: .\templates\account\partials\password_reset_from_key_inner.html:7
 msgid "Link expired"
@@ -1844,12 +1846,12 @@ msgstr "Déjà un compte ?"
 
 #: .\templates\account\password_reset_done.html:16
 msgid ""
-"We have sent you an email. If you have not received it please check your spam"
-" folder. Otherwise contact us if you do not receive it in a few minutes."
+"We have sent you an email. If you have not received it please check your "
+"spam folder. Otherwise contact us if you do not receive it in a few minutes."
 msgstr ""
 "Nous vous avons envoyé un e-mail. Si vous ne l'avez pas reçu, vérifiez vos "
-"courriers indésirables. Sinon, contactez-nous si vous ne le recevez pas dans "
-"quelques minutes.Nous vous avons envoyé un e-mail. Si vous ne l'avez pas "
+"courriers indésirables. Sinon, contactez-nous si vous ne le recevez pas dans"
+" quelques minutes.Nous vous avons envoyé un e-mail. Si vous ne l'avez pas "
 "reçu, vérifiez vos courriers indésirables. Sinon, contactez-nous si vous ne "
 "le recevez pas dans quelques minutes."
 
@@ -1874,9 +1876,9 @@ msgid ""
 "reset</a>."
 msgstr ""
 "Le lien de réinitialisation n'est pas valide, peut-être parce qu'il a déjà "
-"été utilisé. Veuillez demander une <a href=\"%(passwd_reset_url)s\">nouvelle "
-"réinitialisation</a>.Le lien de réinitialisation n'est pas valide, peut-être "
-"parce qu'il a déjà été utilisé. Veuillez demander une <a "
+"été utilisé. Veuillez demander une <a href=\"%(passwd_reset_url)s\">nouvelle"
+" réinitialisation</a>.Le lien de réinitialisation n'est pas valide, peut-"
+"être parce qu'il a déjà été utilisé. Veuillez demander une <a "
 "href=\"%(passwd_reset_url)s\">nouvelle réinitialisation</a>."
 
 #: .\templates\account\password_reset_from_key_done.html:12
@@ -1917,11 +1919,11 @@ msgstr "Recevez un code de connexion"
 
 #: .\templates\account\request_login_code.html:20
 msgid ""
-"Entrez votre adresse e-mail, nous vous enverrons un code à usage unique pour "
-"vous connecter en toute sécurité sans mot de passe."
+"Entrez votre adresse e-mail, nous vous enverrons un code à usage unique pour"
+" vous connecter en toute sécurité sans mot de passe."
 msgstr ""
-"Entrez votre adresse e-mail, nous vous enverrons un code à usage unique pour "
-"vous connecter en toute sécurité sans mot de passe.Entrez votre adresse "
+"Entrez votre adresse e-mail, nous vous enverrons un code à usage unique pour"
+" vous connecter en toute sécurité sans mot de passe.Entrez votre adresse "
 "e-mail, nous vous enverrons un code à usage unique pour vous connecter en "
 "toute sécurité sans mot de passe."
 
@@ -1995,8 +1997,8 @@ msgstr "Attention :"
 
 #: .\templates\account\snippets\warn_no_email.html:3
 msgid ""
-"You currently do not have any email address set up. You should really add an "
-"email address so you can receive notifications, reset your password, etc."
+"You currently do not have any email address set up. You should really add an"
+" email address so you can receive notifications, reset your password, etc."
 msgstr ""
 "Vous n'avez actuellement aucune adresse e-mail configurée. Vous devriez en "
 "ajouter une pour recevoir des notifications, réinitialiser votre mot de "
@@ -2014,17 +2016,18 @@ msgstr "Vérifiez votre adresse e-mail"
 #: .\templates\account\verification_sent.html:12
 msgid ""
 "We have sent an email to you for verification. Follow the link provided to "
-"finalize the signup process. If you do not see the verification email in your"
-" main inbox, check your spam folder. Please contact us if you do not receive "
-"the verification email within a few minutes."
+"finalize the signup process. If you do not see the verification email in "
+"your main inbox, check your spam folder. Please contact us if you do not "
+"receive the verification email within a few minutes."
 msgstr ""
-"Nous vous avons envoyé un e-mail de vérification. Suivez le lien fourni pour "
-"finaliser l'inscription. Si vous ne voyez pas l'e-mail dans votre boîte de "
-"réception, vérifiez vos courriers indésirables. Contactez-nous si vous ne le "
-"recevez pas dans quelques minutes.Nous vous avons envoyé un e-mail de "
-"vérification. Suivez le lien fourni pour finaliser l'inscription. Si vous ne "
-"voyez pas l'e-mail dans votre boîte de réception, vérifiez vos courriers "
-"indésirables. Contactez-nous si vous ne le recevez pas dans quelques minutes."
+"Nous vous avons envoyé un e-mail de vérification. Suivez le lien fourni pour"
+" finaliser l'inscription. Si vous ne voyez pas l'e-mail dans votre boîte de "
+"réception, vérifiez vos courriers indésirables. Contactez-nous si vous ne le"
+" recevez pas dans quelques minutes.Nous vous avons envoyé un e-mail de "
+"vérification. Suivez le lien fourni pour finaliser l'inscription. Si vous ne"
+" voyez pas l'e-mail dans votre boîte de réception, vérifiez vos courriers "
+"indésirables. Contactez-nous si vous ne le recevez pas dans quelques "
+"minutes."
 
 #: .\templates\account\verified_email_required.html:13
 msgid ""
@@ -2056,9 +2059,10 @@ msgid ""
 "<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your "
 "email address</a>."
 msgstr ""
-"<strong>Note :</strong> vous pouvez encore <a href=\"%(email_url)s\">modifier"
-" votre adresse e-mail</a>.<strong>Note :</strong> vous pouvez encore <a "
-"href=\"%(email_url)s\">modifier votre adresse e-mail</a>."
+"<strong>Note :</strong> vous pouvez encore <a "
+"href=\"%(email_url)s\">modifier votre adresse e-mail</a>.<strong>Note "
+":</strong> vous pouvez encore <a href=\"%(email_url)s\">modifier votre "
+"adresse e-mail</a>."
 
 #: .\templates\community\feed.html:20
 msgid "Advice & Community"
@@ -2190,8 +2194,8 @@ msgid ""
 "well-being."
 msgstr ""
 "Un suivi nutritionnel personnalisé et des outils simples pour transformer "
-"votre bien-être au quotidien.Un suivi nutritionnel personnalisé et des outils"
-" simples pour transformer votre bien-être au quotidien."
+"votre bien-être au quotidien.Un suivi nutritionnel personnalisé et des "
+"outils simples pour transformer votre bien-être au quotidien."
 
 #: .\templates\components\home.html:185 .\templates\components\resume.html:89
 #: .\templates\components\resume.html:90
@@ -2228,12 +2232,12 @@ msgstr "La nutrition est le fondement de la santé"
 
 #: .\templates\components\home.html:223
 msgid ""
-"The foods we eat every day directly influence how our bodies grow, function, "
-"heal, and protect themselves against disease. We work alongside healthcare "
+"The foods we eat every day directly influence how our bodies grow, function,"
+" heal, and protect themselves against disease. We work alongside healthcare "
 "professionals to give daily support for a healthy lifestyle."
 msgstr ""
-"Les aliments que nous consommons chaque jour influencent directement la façon"
-" dont notre corps grandit, fonctionne, guérit et se protège contre les "
+"Les aliments que nous consommons chaque jour influencent directement la "
+"façon dont notre corps grandit, fonctionne, guérit et se protège contre les "
 "maladies. Nous collaborons avec des professionnels de santé pour offrir un "
 "accompagnement quotidien vers un mode de vie sain.Les aliments que nous "
 "consommons chaque jour influencent directement la façon dont notre corps "
@@ -2260,8 +2264,9 @@ msgstr "Maladies chroniques"
 #: .\templates\components\home.html:239
 msgid "Managing diabetes, hypertension and obesity with clinical follow-up."
 msgstr ""
-"Gérer le diabète, l'hypertension et l'obésité grâce à un suivi clinique.Gérer"
-" le diabète, l'hypertension et l'obésité grâce à un suivi clinique."
+"Gérer le diabète, l'hypertension et l'obésité grâce à un suivi "
+"clinique.Gérer le diabète, l'hypertension et l'obésité grâce à un suivi "
+"clinique."
 
 #: .\templates\components\home.html:245
 msgid "Local Food Culture"
@@ -2271,8 +2276,8 @@ msgstr "Culture alimentaire locale"
 msgid "Meal plans built on local foods like Ndole, Millet and Yam."
 msgstr ""
 "Des plans de repas basés sur des aliments locaux comme le Ndolé, le Mil et "
-"l'Igname.Des plans de repas basés sur des aliments locaux comme le Ndolé, le "
-"Mil et l'Igname."
+"l'Igname.Des plans de repas basés sur des aliments locaux comme le Ndolé, le"
+" Mil et l'Igname."
 
 #: .\templates\components\home.html:257
 msgid "Our Philosophy"
@@ -2285,12 +2290,12 @@ msgid ""
 "health needs, it becomes a powerful tool for lifelong transformation."
 msgstr ""
 "Une alimentation saine n'est pas une question de restriction, mais de choix "
-"éclairés. Lorsque la nutrition s'aligne sur le mode de vie, la culture et les"
-" besoins de santé de chacun, elle devient un puissant outil de transformation"
-" durable.Une alimentation saine n'est pas une question de restriction, mais "
-"de choix éclairés. Lorsque la nutrition s'aligne sur le mode de vie, la "
-"culture et les besoins de santé de chacun, elle devient un puissant outil de "
-"transformation durable."
+"éclairés. Lorsque la nutrition s'aligne sur le mode de vie, la culture et "
+"les besoins de santé de chacun, elle devient un puissant outil de "
+"transformation durable.Une alimentation saine n'est pas une question de "
+"restriction, mais de choix éclairés. Lorsque la nutrition s'aligne sur le "
+"mode de vie, la culture et les besoins de santé de chacun, elle devient un "
+"puissant outil de transformation durable."
 
 #: .\templates\components\home.html:263
 msgid "Our Aim"
@@ -2301,10 +2306,11 @@ msgid ""
 "To support our clients with personalized follow-up and simple tools to "
 "improve overall well-being, and to live a purposeful life."
 msgstr ""
-"Accompagner nos clients avec un suivi personnalisé et des outils simples pour"
-" améliorer leur bien-être général et vivre une vie qui a du sens.Accompagner "
-"nos clients avec un suivi personnalisé et des outils simples pour améliorer "
-"leur bien-être général et vivre une vie qui a du sens."
+"Accompagner nos clients avec un suivi personnalisé et des outils simples "
+"pour améliorer leur bien-être général et vivre une vie qui a du "
+"sens.Accompagner nos clients avec un suivi personnalisé et des outils "
+"simples pour améliorer leur bien-être général et vivre une vie qui a du "
+"sens."
 
 #: .\templates\components\navbar.html:78
 msgid "My Tracking"
@@ -2333,8 +2339,9 @@ msgstr "Nos solutions numériques"
 #: .\templates\components\projects.html:84
 msgid "Tools designed for clinical expertise and daily support."
 msgstr ""
-"Des outils conçus pour l'expertise clinique et l'accompagnement quotidien.Des"
-" outils conçus pour l'expertise clinique et l'accompagnement quotidien."
+"Des outils conçus pour l'expertise clinique et l'accompagnement "
+"quotidien.Des outils conçus pour l'expertise clinique et l'accompagnement "
+"quotidien."
 
 #: .\templates\components\projects.html:93
 msgid "Clinical Expertise"
@@ -2346,23 +2353,23 @@ msgstr "Soins cliniques et suivi"
 
 #: .\templates\components\projects.html:95
 msgid ""
-"This platform is the heart of our monitoring system. It allows the dietitian "
-"to record comprehensive <strong>anthropometric and biochemical "
+"This platform is the heart of our monitoring system. It allows the dietitian"
+" to record comprehensive <strong>anthropometric and biochemical "
 "assessments</strong>. Thanks to the integration of the <strong>nutritional "
 "diagnosis (PES format)</strong>, we ensure scientific care for patients "
 "suffering from cardiac and metabolic pathologies."
 msgstr ""
 "Cette plateforme est le cœur de notre système de suivi. Elle permet au "
 "diététicien d'enregistrer des <strong>évaluations anthropométriques et "
-"biochimiques</strong> complètes. Grâce à l'intégration du <strong>diagnostic "
-"nutritionnel (format PES)</strong>, nous assurons une prise en charge "
+"biochimiques</strong> complètes. Grâce à l'intégration du <strong>diagnostic"
+" nutritionnel (format PES)</strong>, nous assurons une prise en charge "
 "scientifique des patients atteints de pathologies cardiaques et "
 "métaboliques.Cette plateforme est le cœur de notre système de suivi. Elle "
-"permet au diététicien d'enregistrer des <strong>évaluations anthropométriques"
-" et biochimiques</strong> complètes. Grâce à l'intégration du "
-"<strong>diagnostic nutritionnel (format PES)</strong>, nous assurons une "
-"prise en charge scientifique des patients atteints de pathologies cardiaques "
-"et métaboliques."
+"permet au diététicien d'enregistrer des <strong>évaluations "
+"anthropométriques et biochimiques</strong> complètes. Grâce à l'intégration "
+"du <strong>diagnostic nutritionnel (format PES)</strong>, nous assurons une "
+"prise en charge scientifique des patients atteints de pathologies cardiaques"
+" et métaboliques."
 
 #: .\templates\components\projects.html:97
 msgid "Monitoring of blood pressure and lipid profile"
@@ -2395,13 +2402,13 @@ msgstr ""
 "C'est ici que le diététicien publie les <strong>programmes nutritionnels "
 "personnalisés</strong>. L'application donne accès à des plans de repas "
 "structurés (comme nos menus sur 7 jours) incluant des alternatives locales "
-"telles que le <strong>Ndolé, le Mil ou l'Igname</strong>, tout en respectant "
-"les index glycémiques pour stabiliser le diabète.C'est ici que le diététicien"
-" publie les <strong>programmes nutritionnels personnalisés</strong>. "
-"L'application donne accès à des plans de repas structurés (comme nos menus "
-"sur 7 jours) incluant des alternatives locales telles que le <strong>Ndolé, "
-"le Mil ou l'Igname</strong>, tout en respectant les index glycémiques pour "
-"stabiliser le diabète."
+"telles que le <strong>Ndolé, le Mil ou l'Igname</strong>, tout en respectant"
+" les index glycémiques pour stabiliser le diabète.C'est ici que le "
+"diététicien publie les <strong>programmes nutritionnels "
+"personnalisés</strong>. L'application donne accès à des plans de repas "
+"structurés (comme nos menus sur 7 jours) incluant des alternatives locales "
+"telles que le <strong>Ndolé, le Mil ou l'Igname</strong>, tout en respectant"
+" les index glycémiques pour stabiliser le diabète."
 
 #: .\templates\components\projects.html:114
 msgid "Weekly menus adapted"
@@ -2442,17 +2449,17 @@ msgstr "Conseil nutritionnel personnalisé"
 
 #: .\templates\components\resume.html:115
 msgid ""
-"Providing evidence-based therapy to manage <strong>Non-Communicable Diseases "
-"(NCDs)</strong>. We focus on long-term vitality and clinical recovery through"
-" personalized follow-up and digital monitoring tools."
+"Providing evidence-based therapy to manage <strong>Non-Communicable Diseases"
+" (NCDs)</strong>. We focus on long-term vitality and clinical recovery "
+"through personalized follow-up and digital monitoring tools."
 msgstr ""
-"Proposer une thérapie fondée sur des preuves pour gérer les <strong>maladies "
-"non transmissibles (MNT)</strong>. Nous mettons l'accent sur la vitalité à "
+"Proposer une thérapie fondée sur des preuves pour gérer les <strong>maladies"
+" non transmissibles (MNT)</strong>. Nous mettons l'accent sur la vitalité à "
 "long terme et la récupération clinique grâce à un suivi personnalisé et des "
-"outils numériques.Proposer une thérapie fondée sur des preuves pour gérer les"
-" <strong>maladies non transmissibles (MNT)</strong>. Nous mettons l'accent "
-"sur la vitalité à long terme et la récupération clinique grâce à un suivi "
-"personnalisé et des outils numériques."
+"outils numériques.Proposer une thérapie fondée sur des preuves pour gérer "
+"les <strong>maladies non transmissibles (MNT)</strong>. Nous mettons "
+"l'accent sur la vitalité à long terme et la récupération clinique grâce à un"
+" suivi personnalisé et des outils numériques."
 
 #: .\templates\components\resume.html:123
 msgid "2020 - 2021"
@@ -2464,7 +2471,8 @@ msgstr "Hôpital régional de Bafoussam"
 
 #: .\templates\components\resume.html:128
 msgid ""
-"Conducted clinical consultations and nutrition therapy for hospital patients."
+"Conducted clinical consultations and nutrition therapy for hospital "
+"patients."
 msgstr ""
 "Réalisation de consultations cliniques et de thérapies nutritionnelles pour "
 "les patients hospitalisés.Réalisation de consultations cliniques et de "
@@ -2476,8 +2484,8 @@ msgid ""
 "health."
 msgstr ""
 "Sensibilisation à l'impact direct des habitudes alimentaires sur la santé "
-"métabolique.Sensibilisation à l'impact direct des habitudes alimentaires sur "
-"la santé métabolique."
+"métabolique.Sensibilisation à l'impact direct des habitudes alimentaires sur"
+" la santé métabolique."
 
 #: .\templates\components\resume.html:130
 msgid ""
@@ -2502,8 +2510,8 @@ msgstr "Centre médical Nkongni"
 
 #: .\templates\components\resume.html:143
 msgid ""
-"Managed public health nutrition interventions by identifying determinants of "
-"food insecurity and malnutrition."
+"Managed public health nutrition interventions by identifying determinants of"
+" food insecurity and malnutrition."
 msgstr ""
 "Gestion d'interventions de nutrition en santé publique en identifiant les "
 "déterminants de l'insécurité alimentaire et de la malnutrition.Gestion "
@@ -2544,16 +2552,16 @@ msgstr "Université de Dschang"
 #: .\templates\components\resume.html:163
 msgid ""
 "Advanced training in public health nutrition, therapeutic dietetics and "
-"nutrition education. Expertise in community nutrition programmes, nutritional"
-" assessment and the dietary management of chronic diseases."
+"nutrition education. Expertise in community nutrition programmes, "
+"nutritional assessment and the dietary management of chronic diseases."
 msgstr ""
-"Formation avancée en nutrition de santé publique, diététique thérapeutique et"
-" éducation nutritionnelle. Expertise en programmes de nutrition "
+"Formation avancée en nutrition de santé publique, diététique thérapeutique "
+"et éducation nutritionnelle. Expertise en programmes de nutrition "
 "communautaire, évaluation nutritionnelle et prise en charge diététique des "
 "maladies chroniques.Formation avancée en nutrition de santé publique, "
-"diététique thérapeutique et éducation nutritionnelle. Expertise en programmes"
-" de nutrition communautaire, évaluation nutritionnelle et prise en charge "
-"diététique des maladies chroniques."
+"diététique thérapeutique et éducation nutritionnelle. Expertise en "
+"programmes de nutrition communautaire, évaluation nutritionnelle et prise en"
+" charge diététique des maladies chroniques."
 
 #: .\templates\components\resume.html:172
 msgid "2018 - 2020"
@@ -2570,14 +2578,14 @@ msgstr "Nutrition et diététique"
 #: .\templates\components\resume.html:178
 msgid ""
 "Specialized study of nutritional needs and management of chronic diseases. "
-"Developed expertise in clinical monitoring and nutritional interventions for "
-"nutrient deficiencies."
+"Developed expertise in clinical monitoring and nutritional interventions for"
+" nutrient deficiencies."
 msgstr ""
 "Étude spécialisée des besoins nutritionnels et de la gestion des maladies "
 "chroniques. Expertise développée en suivi clinique et interventions "
-"nutritionnelles pour les carences.Étude spécialisée des besoins nutritionnels"
-" et de la gestion des maladies chroniques. Expertise développée en suivi "
-"clinique et interventions nutritionnelles pour les carences."
+"nutritionnelles pour les carences.Étude spécialisée des besoins "
+"nutritionnels et de la gestion des maladies chroniques. Expertise développée"
+" en suivi clinique et interventions nutritionnelles pour les carences."
 
 #: .\templates\components\resume.html:187
 msgid "Key Competencies"
@@ -3056,7 +3064,8 @@ msgstr "Nombre de patients"
 msgid "Patients"
 msgstr "Patients"
 
-#: .\templates\patients\add_food.html:3 .\templates\patients\my_record.html:259
+#: .\templates\patients\add_food.html:3
+#: .\templates\patients\my_record.html:259
 msgid "Write down your meal"
 msgstr "Notez votre repas"
 
@@ -3088,8 +3097,8 @@ msgstr "Enregistrer le repas"
 
 #: .\templates\patients\bilan_form.html:32
 msgid ""
-"Fill in what you can. Nothing is mandatory except the basics — your dietitian"
-" will complete the rest."
+"Fill in what you can. Nothing is mandatory except the basics — your "
+"dietitian will complete the rest."
 msgstr ""
 "Remplissez ce que vous pouvez. Rien n'est obligatoire hormis l'essentiel — "
 "votre diététicienne complétera le reste."
@@ -3184,8 +3193,8 @@ msgid ""
 "Your assessment form is incomplete. Filling it in helps your dietitian "
 "provide better care."
 msgstr ""
-"Votre formulaire de bilan est incomplet. Le remplir aide votre diététicienne "
-"à vous offrir un meilleur suivi."
+"Votre formulaire de bilan est incomplet. Le remplir aide votre diététicienne"
+" à vous offrir un meilleur suivi."
 
 #: .\templates\patients\patient_profile.html:64
 msgid "Complete it now"
@@ -3218,8 +3227,8 @@ msgid ""
 "Fill in what you can. Only the basics are needed to get started — your "
 "dietitian will complete the rest."
 msgstr ""
-"Remplissez ce que vous pouvez. Seul l'essentiel est nécessaire pour commencer"
-" — votre diététicienne complétera le reste."
+"Remplissez ce que vous pouvez. Seul l'essentiel est nécessaire pour "
+"commencer — votre diététicienne complétera le reste."
 
 #: .\templates\patients\patient_profile_form.html:66
 msgid "Reason for Consultation"
@@ -3358,8 +3367,8 @@ msgstr "Créez votre compte"
 msgid ""
 "Free and quick. Then give your age, height and weight: less than 2 minutes."
 msgstr ""
-"Gratuit et rapide. Indiquez ensuite votre âge, votre taille et votre poids : "
-"moins de 2 minutes."
+"Gratuit et rapide. Indiquez ensuite votre âge, votre taille et votre poids :"
+" moins de 2 minutes."
 
 #: patients/espace_patient
 msgid "Tell us about your habits"
@@ -3442,8 +3451,8 @@ msgid ""
 "You have completed all the steps. Keep logging your meals and follow your "
 "plan: your dietitian follows your progress."
 msgstr ""
-"Vous avez terminé toutes les étapes. Continuez à noter vos repas et à suivre "
-"votre plan : votre nutritionniste suit vos progrès."
+"Vous avez terminé toutes les étapes. Continuez à noter vos repas et à suivre"
+" votre plan : votre nutritionniste suit vos progrès."
 
 #: patients/espace_patient
 msgid "How your follow-up works"
@@ -3515,16 +3524,16 @@ msgstr "Faisons connaissance"
 
 #: patients/espace_patient
 msgid ""
-"Just the essentials to open your space. The detailed assessment comes later, "
-"at your own pace."
+"Just the essentials to open your space. The detailed assessment comes later,"
+" at your own pace."
 msgstr ""
 "Juste l'essentiel pour ouvrir votre espace. Le bilan détaillé viendra "
 "ensuite, à votre rythme."
 
 #: patients/espace_patient
 msgid ""
-"Your information is only visible to you and your dietitian. Height and weight"
-" are used to calculate your BMI."
+"Your information is only visible to you and your dietitian. Height and "
+"weight are used to calculate your BMI."
 msgstr ""
 "Vos informations ne sont visibles que par vous et votre nutritionniste. La "
 "taille et le poids servent à calculer votre IMC."
@@ -3560,8 +3569,8 @@ msgstr ""
 
 #: patients/espace_patient
 msgid ""
-"Not sure about an answer? Leave it blank, you will see it together during the"
-" consultation."
+"Not sure about an answer? Leave it blank, you will see it together during "
+"the consultation."
 msgstr ""
 "Pas sûr d'une réponse ? Laissez vide, vous la verrez ensemble pendant la "
 "consultation."
@@ -3587,8 +3596,8 @@ msgid ""
 "Height, weight and other measurements if you know them. Your dietitian will "
 "take the others."
 msgstr ""
-"Taille, poids et autres mesures si vous les connaissez. Votre nutritionniste "
-"prendra les autres."
+"Taille, poids et autres mesures si vous les connaissez. Votre nutritionniste"
+" prendra les autres."
 
 #: patients/espace_patient
 msgid "What a usual day of meals looks like for you, and what you drink."
@@ -3609,16 +3618,16 @@ msgstr ""
 
 #: patients/espace_patient
 msgid ""
-"No consultation yet. Your dietitian records it during your appointment, then "
-"you will see it here."
+"No consultation yet. Your dietitian records it during your appointment, then"
+" you will see it here."
 msgstr ""
 "Pas encore de consultation. Votre nutritionniste l'enregistre lors de votre "
 "rendez-vous, vous la verrez ensuite ici."
 
 #: patients/espace_patient
 msgid ""
-"Nothing logged yet. Use the &quot;Log a meal&quot; button to write down what "
-"you ate."
+"Nothing logged yet. Use the &quot;Log a meal&quot; button to write down what"
+" you ate."
 msgstr ""
 "Rien de noté pour l'instant. Utilisez le bouton &quot;Noter un repas&quot; "
 "pour écrire ce que vous avez mangé."
@@ -3628,8 +3637,8 @@ msgid ""
 "Your dietitian will prepare your meal plan after your consultation. It will "
 "appear here."
 msgstr ""
-"Votre nutritionniste préparera votre plan de repas après votre consultation. "
-"Il apparaîtra ici."
+"Votre nutritionniste préparera votre plan de repas après votre consultation."
+" Il apparaîtra ici."
 
 #: patients/espace_patient
 msgid "Welcome! Your space is ready."
@@ -3734,6 +3743,574 @@ msgstr "Pourquoi consultez-vous ?"
 msgid "Optional - lets your dietitian reach you."
 msgstr "Facultatif - permet à votre nutritionniste de vous joindre."
 
+msgid "Contact form message"
+msgstr "Message du formulaire de contact"
+
+msgid "Assessment filled in by a patient"
+msgstr "Bilan rempli par un patient"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Read"
+msgstr "Lu"
+
+msgid "Received on"
+msgstr "Reçu le"
+
+msgid "Inbox message"
+msgstr "Message reçu"
+
+msgid "Inbox messages"
+msgstr "Messages reçus"
+
+msgid "All messages are marked as read."
+msgstr "Tous les messages sont marqués comme lus."
+
+msgid "The message has been deleted."
+msgstr "Le message a été supprimé."
+
+msgid "Please write your message."
+msgstr "Veuillez écrire votre message."
+
+msgid "Your assessment has been saved."
+msgstr "Votre bilan a bien été enregistré."
+
+msgid ""
+"Your dietitian has received it and will see it in her space. You can come "
+"back to complete or modify it at any time."
+msgstr ""
+"Votre nutritionniste l'a reçu et le verra dans son espace. Vous pouvez "
+"revenir le compléter ou le modifier à tout moment."
+
+msgid "Review my assessment"
+msgstr "Revoir mon bilan"
+
+msgid "Your assessment has NOT been saved yet."
+msgstr "Votre bilan n'a PAS encore été enregistré."
+
+msgid ""
+"Some answers need to be corrected: they are shown in red below. Correct "
+"them, then press Save again."
+msgstr ""
+"Certaines réponses doivent être corrigées : elles sont signalées en rouge "
+"ci-dessous. Corrigez-les, puis appuyez de nouveau sur Enregistrer."
+
+msgid "Saving..."
+msgstr "Enregistrement…"
+
+msgid "Messages"
+msgstr "Messages"
+
+msgid "Contact form messages and assessments filled in by your patients."
+msgstr "Messages du formulaire de contact et bilans remplis par vos patients."
+
+msgid "Open"
+msgstr "Ouvrir"
+
+msgid "Back to the office"
+msgstr "Retour à l'espace praticien"
+
+msgid "You are up to date: no unread message."
+msgstr "Vous êtes à jour : aucun message non lu."
+
+msgid "Mark all as read"
+msgstr "Tout marquer comme lu"
+
+msgid "All"
+msgstr "Tous"
+
+msgid "Unread"
+msgstr "Non lus"
+
+msgid "Contact form"
+msgstr "Formulaire de contact"
+
+msgid "Assessments"
+msgstr "Bilans"
+
+msgid "Assessment"
+msgstr "Bilan"
+
+msgid "Anonymous"
+msgstr "Anonyme"
+
+msgid "This patient has filled in or updated their nutrition assessment."
+msgstr "Ce patient a rempli ou mis à jour son bilan nutritionnel."
+
+msgid "See the assessment"
+msgstr "Voir le bilan"
+
+msgid "Reply by email"
+msgstr "Répondre par e-mail"
+
+msgid "Mark as unread"
+msgstr "Marquer comme non lu"
+
+msgid "Mark as read"
+msgstr "Marquer comme lu"
+
+msgid "Delete this message?"
+msgstr "Supprimer ce message ?"
+
+msgid "No messages here."
+msgstr "Aucun message ici."
+
+msgctxt "meal place"
+msgid "Home"
+msgstr "À la maison / à domicile"
+
+#, python-format
+msgid "You have %(counter)s unread message."
+msgid_plural "You have %(counter)s unread messages."
+msgstr[0] "Vous avez %(counter)s message non lu."
+msgstr[1] "Vous avez %(counter)s messages non lus."
+msgstr[2] "Vous avez %(counter)s messages non lus."
+
+#, python-format
+msgid "%(counter)s unread message"
+msgid_plural "%(counter)s unread messages"
+msgstr[0] "%(counter)s message non lu"
+msgstr[1] "%(counter)s messages non lus"
+msgstr[2] "%(counter)s messages non lus"
+
+msgid "Users"
+msgstr "Utilisateurs"
+
+msgid ""
+"Who is registered, who uses the application and who has not yet filled in "
+"their assessment."
+msgstr ""
+"Qui est inscrit, qui utilise l'application et qui n'a pas encore rempli son "
+"bilan."
+
+msgid "active"
+msgstr "actifs"
+
+msgid "deactivated"
+msgstr "désactivés"
+
+msgid "New this week"
+msgstr "Nouveaux cette semaine"
+
+msgid "in 30 days"
+msgstr "en 30 jours"
+
+msgid "Logged in this week"
+msgstr "Connectés cette semaine"
+
+msgid "Sorted by last login"
+msgstr "Cliquer pour trier par dernière connexion"
+
+msgid "Assessments well advanced"
+msgstr "Bilans bien avancés"
+
+msgid "70% or more filled in"
+msgstr "Remplis à 70 % ou plus"
+
+msgid "Essentials missing"
+msgstr "Infos de base manquantes"
+
+msgid "Age or weight not given"
+msgstr "Âge ou poids non renseigné"
+
+msgid "Never logged in"
+msgstr "Jamais connectés"
+
+msgid "To call back?"
+msgstr "À relancer ?"
+
+msgid "Name, email or phone..."
+msgstr "Nom, e-mail ou téléphone…"
+
+msgid "Most recent registrations"
+msgstr "Inscriptions les plus récentes"
+
+msgid "Last login"
+msgstr "Dernière connexion"
+
+msgid "Name (A-Z)"
+msgstr "Nom (A-Z)"
+
+msgid "New (7 days)"
+msgstr "Nouveaux (7 jours)"
+
+msgid "Inactive for 30 days"
+msgstr "Absents depuis 30 jours"
+
+msgid "Deactivated"
+msgstr "Désactivé"
+
+msgid "Registered"
+msgstr "Inscrit le"
+
+msgid "Meals"
+msgstr "Repas"
+
+msgid "Consult."
+msgstr "Consult."
+
+msgid "Never"
+msgstr "Jamais"
+
+msgid "Not started"
+msgstr "Pas commencé"
+
+msgid "Call"
+msgstr "Appeler"
+
+msgid "Deactivate this account? The person will no longer be able to log in."
+msgstr "Désactiver ce compte ? La personne ne pourra plus se connecter."
+
+msgid "Reactivate this account?"
+msgstr "Réactiver ce compte ?"
+
+msgid "Deactivate"
+msgstr "Désactiver"
+
+msgid "Reactivate"
+msgstr "Réactiver"
+
+msgid "No users match this filter."
+msgstr "Aucun utilisateur ne correspond à ce filtre."
+
+msgid "Recent activity"
+msgstr "Activité récente"
+
+msgid "No activity yet."
+msgstr "Aucune activité pour le moment."
+
+#, python-format
+msgid "%(t)s ago"
+msgstr "il y a %(t)s"
+
+msgid "created an account"
+msgstr "a créé son compte"
+
+msgid "updated their assessment"
+msgstr "a mis à jour son bilan"
+
+msgid "logged a meal"
+msgstr "a noté un repas"
+
+msgid "had a consultation"
+msgstr "a eu une consultation"
+
+msgid "sent a message"
+msgstr "a envoyé un message"
+
+msgid "The account has been reactivated."
+msgstr "Le compte a été réactivé."
+
+msgid "The account has been deactivated: this person can no longer log in."
+msgstr "Le compte a été désactivé : cette personne ne peut plus se connecter."
+
+msgid "70%% or more filled in"
+msgstr "Remplis à 70 %% ou plus"
+
+msgid "Pending"
+msgstr "En attente"
+
+msgid "Sent"
+msgstr "Envoyé"
+
+msgid "Failed"
+msgstr "Échec"
+
+msgid "Queued email"
+msgstr "E-mail en file d'attente"
+
+msgid "Queued emails"
+msgstr "E-mails en file d'attente"
+
+msgid "No internet connection"
+msgstr "Pas de connexion internet"
+
+msgid ""
+"Check your mobile data or Wi-Fi, then try again. If you were filling in a "
+"form, it has not been sent yet."
+msgstr ""
+"Vérifiez vos données mobiles ou le Wi-Fi, puis réessayez. Si vous "
+"remplissiez un formulaire, il n'a pas encore été envoyé."
+
+msgid "Try again"
+msgstr "Réessayer"
+
+msgid "Install the application"
+msgstr "Installer l'application"
+
+msgid "Add Nutri-Wellness to your home screen: faster, and opens like an app."
+msgstr ""
+"Ajoutez Nutri-Wellness à votre écran d'accueil : plus rapide, et s'ouvre "
+"comme une application."
+
+msgid "On iPhone: tap the Share button"
+msgstr "Sur iPhone : touchez le bouton Partager"
+
+msgid "then \"Add to Home Screen\"."
+msgstr "puis « Sur l'écran d'accueil »."
+
+msgid "Later"
+msgstr "Plus tard"
+
+msgid "Install"
+msgstr "Installer"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Author"
+msgstr "Auteur"
+
+msgid "Sent on"
+msgstr "Envoyé le"
+
+msgid "Replies"
+msgstr "Réponses"
+
+msgid "Account (codes, password)"
+msgstr "Compte (codes, mot de passe)"
+
+msgid "Notification to dietitians"
+msgstr "Notification aux diététiciennes"
+
+msgid "Reply to a message"
+msgstr "Réponse à un message"
+
+msgid "Email to a patient"
+msgstr "E-mail à un patient"
+
+msgid "Other"
+msgstr "Autre"
+
+msgid "HTML content"
+msgstr "Contenu HTML"
+
+msgid "Sender"
+msgstr "Expéditeur"
+
+msgid "Recipients"
+msgstr "Destinataires"
+
+msgid "Category"
+msgstr "Catégorie"
+
+msgid "Content erased after sending"
+msgstr "Contenu effacé après l'envoi"
+
+msgid "Status"
+msgstr "Statut"
+
+msgid "Attempts"
+msgstr "Tentatives"
+
+msgid "Last error"
+msgstr "Dernière erreur"
+
+msgid "Next attempt"
+msgstr "Prochain essai"
+
+msgid "Created on"
+msgstr "Créé le"
+
+msgid "Please write your reply."
+msgstr "Veuillez écrire votre réponse."
+
+msgid "This message has no email address: you cannot reply by email."
+msgstr ""
+"Ce message n'a pas d'adresse e-mail : impossible de répondre par e-mail."
+
+msgid "Your nutrition assessment"
+msgstr "Votre bilan nutritionnel"
+
+msgid "Your message to Nutri-Wellness Impact"
+msgstr "Votre message à Nutri-Wellness Impact"
+
+msgid "Your message"
+msgstr "Votre message"
+
+#, python-format
+msgid "Your reply has been sent to %(email)s."
+msgstr "Votre réponse a été envoyée à %(email)s."
+
+msgid "Your reply"
+msgstr "Votre réponse"
+
+msgid "Your reply will be sent by email to"
+msgstr "Votre réponse sera envoyée par e-mail à"
+
+msgid "Write your reply here..."
+msgstr "Écrivez votre réponse ici…"
+
+msgid "Send the reply"
+msgstr "Envoyer la réponse"
+
+#, python-format
+msgid "%(start)s–%(end)s of %(total)s"
+msgstr "%(start)s–%(end)s sur %(total)s"
+
+msgid "Pages"
+msgstr "Pages"
+
+msgid "Activity seen until"
+msgstr "Activité vue jusqu'au"
+
+msgid "Recent activity marked as seen."
+msgstr "Activité récente marquée comme vue."
+
+msgid "Activity history"
+msgstr "Historique de l'activité"
+
+msgid "Mark as seen"
+msgstr "Marquer comme vu"
+
+msgid "Nothing new since your last visit."
+msgstr "Rien de nouveau depuis votre dernier passage."
+
+msgid "Show only what is new"
+msgstr "N'afficher que les nouveautés"
+
+msgid "See the full history"
+msgstr "Voir tout l'historique"
+
+msgid "Are you sure?"
+msgstr "Êtes-vous sûr ?"
+
+msgid "This message and its replies will be permanently deleted."
+msgstr "Ce message et ses réponses seront définitivement supprimés."
+
+msgid "Deactivate this account?"
+msgstr "Désactiver ce compte ?"
+
+msgid ""
+"The person will no longer be able to log in. You can reactivate the account "
+"at any time."
+msgstr ""
+"La personne ne pourra plus se connecter. Vous pourrez réactiver le compte à "
+"tout moment."
+
+msgid "The person will be able to log in again."
+msgstr "La personne pourra de nouveau se connecter."
+
+msgid "To handle"
+msgstr "À traiter"
+
+msgid "History"
+msgstr "Historique"
+
+msgid "Once marked as read or answered, a message moves to the history."
+msgstr ""
+"Dès qu'un message est marqué comme lu ou qu'on y répond, il passe dans "
+"l'historique."
+
+msgid ""
+"Messages already read or answered. Mark one as unread to put it back in To "
+"handle."
+msgstr ""
+"Messages déjà lus ou traités. Marquez-en un comme non lu pour le remettre "
+"dans « À traiter »."
+
+msgid "Everything has been handled. New messages will appear here."
+msgstr "Tout a été traité. Les nouveaux messages apparaîtront ici."
+
+msgid "Mark all as read?"
+msgstr "Tout marquer comme lu ?"
+
+msgid "All messages to handle will move to the history."
+msgstr "Tous les messages à traiter passeront dans l'historique."
+
+msgid ""
+"Your observations, diagnosis and dietary plan. Not visible to the patient."
+msgstr ""
+"Vos observations, votre diagnostic et le plan alimentaire. Non visible par "
+"le patient."
+
+#, python-format
+msgid "Step %(n)s of %(total)s"
+msgstr "Étape %(n)s sur %(total)s"
+
+msgid "Steps"
+msgstr "Étapes"
+
+#, python-format
+msgid "Step %(n)s completed: %(title)s"
+msgstr "Étape %(n)s terminée : %(title)s"
+
+msgid "Your answers are saved."
+msgstr "Vos réponses sont enregistrées."
+
+msgid "This is the last step!"
+msgstr "C'est la dernière étape !"
+
+msgid "This step has NOT been saved yet."
+msgstr "Cette étape n'a PAS encore été enregistrée."
+
+msgid ""
+"Some answers need to be corrected: they are shown in red below. Correct "
+"them, then continue."
+msgstr ""
+"Certaines réponses doivent être corrigées : elles sont signalées en rouge "
+"ci-dessous. Corrigez-les, puis continuez."
+
+msgid "Save and finish later"
+msgstr "Enregistrer et finir plus tard"
+
+msgid "Finish my assessment"
+msgstr "Terminer mon bilan"
+
+msgid "Save and continue"
+msgstr "Enregistrer et continuer"
+
+msgid "Well done, your assessment is complete!"
+msgstr "Bravo, votre bilan est terminé !"
+
+msgid ""
+"You can continue it whenever you want: you will start again where you left "
+"off."
+msgstr ""
+"Vous pouvez le continuer quand vous voulez : vous reprendrez là où vous vous"
+" êtes arrêté."
+
+msgid "Measurements"
+msgstr "Mesures"
+
+msgid "Nutritional follow-up"
+msgstr "Suivi nutritionnel"
+
+msgid "Analysis and goals"
+msgstr "Analyse et objectifs"
+
+msgid "Step"
+msgstr "Étape"
+
+msgid "of"
+msgstr "sur"
+
+msgid "Back to my profile"
+msgstr "Retour à mon profil"
+
+msgid "Your name and personal details."
+msgstr "Votre nom et vos informations personnelles."
+
+msgid "Health, habits, meals, measurements..."
+msgstr "Santé, habitudes, repas, mesures…"
+
+msgid ""
+"These answers are in your nutrition assessment. Modify them step by step."
+msgstr ""
+"Ces réponses se trouvent dans votre bilan nutritionnel. Modifiez-les étape "
+"par étape."
+
+#, python-format
+msgid "%(counter)s step left."
+msgid_plural "%(counter)s steps left."
+msgstr[0] "Encore %(counter)s étape."
+msgstr[1] "Encore %(counter)s étapes."
+msgstr[2] "Encore %(counter)s étapes."
+
+msgid "Step {n} completed: {title}"
+msgstr "Étape {n} terminée : {title}"
+
 #~ msgid "Export PDF"
 #~ msgstr "Exporter en PDF"
 
@@ -3799,8 +4376,8 @@ msgstr "Facultatif - permet à votre nutritionniste de vous joindre."
 #~ "\"Healthy nutrition is not about restriction, but about making informed "
 #~ "choices.\""
 #~ msgstr ""
-#~ "« Une alimentation saine n'est pas une question de restriction, mais de choix"
-#~ " éclairés. »"
+#~ "« Une alimentation saine n'est pas une question de restriction, mais de "
+#~ "choix éclairés. »"
 
 #~ msgid "Send us a message"
 #~ msgstr "Envoyez-nous un message"

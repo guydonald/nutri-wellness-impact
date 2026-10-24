@@ -120,6 +120,12 @@ class BilanSection6Form(forms.ModelForm):
             'motivation_level': forms.NumberInput(attrs={'min': 0, 'max': 10}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Le maximum n'etait verifie que par le navigateur : on le controle aussi cote serveur
+        from django.core.validators import MaxValueValidator
+        self.fields['motivation_level'].validators.append(MaxValueValidator(10))
+
 
 class BilanPraticienForm(forms.ModelForm):
     """10-13. Reserve a la nutritionniste"""
@@ -184,8 +190,21 @@ class PatientProfileForm(forms.ModelForm):
                 field.widget.attrs.setdefault('rows', 2)
 
 
+class PersonalInfoForm(forms.ModelForm):
+    """Page "Modifier mon profil" du patient : seulement ses informations personnelles.
+    Tout le reste (sante, habitudes, repas...) se modifie dans le bilan, etape par etape.
+    SECURITE : la liste est fermee -> un patient ne peut pas toucher aux notes de la nutritionniste."""
+    class Meta:
+        model = PatientProfile
+        fields = ['birth_date', 'age', 'gender', 'phone', 'occupation', 'address']
+        widgets = {
+            'birth_date': forms.DateInput(attrs={'type': 'date'}),
+            'phone': forms.TextInput(attrs={'placeholder': '+237 6XX XX XX XX'}),
+        }
+
+
 # Alias de compatibilite avec l'ancien code
-PatientProfileUpdateForm = PatientProfileForm
+PatientProfileUpdateForm = PersonalInfoForm
 
 
 class UserUpdateForm(forms.ModelForm):

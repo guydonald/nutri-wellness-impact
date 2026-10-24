@@ -1,0 +1,56 @@
+{% extends "admin/base.html" %}
+{% load static %}
+{# Admin aux couleurs de Nutri-Wellness Impact, plus lisible #}
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block extrastyle %}{{ block.super }}
+<link rel="icon" href="{% static 'img/logo.png' %}" type="image/png">
+<style>
+    :root, html[data-theme="light"] {
+        --primary: #5a8f3d;
+        --secondary: #2f5e2f;
+        --accent: #f4a020;
+        --primary-fg: #fff;
+        --header-bg: #2f5e2f;
+        --header-color: #eaf3e3;
+        --header-link-color: #fff;
+        --breadcrumbs-bg: #5a8f3d;
+        --breadcrumbs-link-fg: #fff;
+        --link-fg: #2f6b2a;
+        --link-hover-color: #1d4718;
+        --link-selected-fg: #2f5e2f;
+        --button-bg: #5a8f3d;
+        --button-hover-bg: #2f5e2f;
+        --default-button-bg: #2f5e2f;
+        --default-button-hover-bg: #1d4718;
+        --selected-row: #eaf3e3;
+        --selected-bg: #eaf3e3;
+        --object-tools-bg: #5a8f3d;
+        --object-tools-hover-bg: #2f5e2f;
+    }
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) { --header-bg:#1d3a1d; --breadcrumbs-bg:#2f5e2f; --primary:#7fb35f; --link-fg:#9fd27f; }
+    }
+    html[data-theme="dark"] { --header-bg:#1d3a1d; --breadcrumbs-bg:#2f5e2f; --primary:#7fb35f; --link-fg:#9fd27f; }
+
+    body { font-size: 15px; }
+    #branding h1 { display:flex; align-items:center; gap:10px; font-weight:700; }
+    #branding h1 img { height:34px; background:#fff; border-radius:8px; padding:2px; }
+    #content h1 { color: var(--secondary); font-weight:700; }
+    .module h2, .module caption, .inline-group h2 { font-size:14px; letter-spacing:.2px; }
+    #result_list td, #result_list th { padding:10px 8px; vertical-align:middle; }
+    #changelist-filter h2 { background: var(--secondary); }
+    fieldset.module h2, fieldset .fieldset-heading { background: var(--primary); color:#fff; }
+    .dashboard .module table th { font-weight:600; }
+    .help, .help p { color:#55624f; }
+</style>
+{% endblock %}
+
+{% block branding %}
+<div id="site-name"><a href="{% url 'admin:index' %}">
+    <h1 id="site-name-text"><img src="{% static 'img/logo.png' %}" alt="">{{ site_header|default:_('Django administration') }}</h1>
+</a></div>
+{% if user.is_anonymous %}{% include "admin/color_theme_toggle.html" %}{% endif %}
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

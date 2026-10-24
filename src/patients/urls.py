@@ -21,6 +21,14 @@ urlpatterns = [
     # --- Espace dieteticien ---
     path('dietitian/dashboard/', views.DietitianPatientListView.as_view(), name='dietitian_dashboard'),
     path('dietitian/statistics/', views.dietitian_stats_view, name='dietitian_statistics'),
+    path('dietitian/users/', views.dietitian_users, name='dietitian_users'),
+    path('dietitian/activity/seen/', views.activity_mark_seen, name='activity_mark_seen'),
+    path('dietitian/users/<uuid:user_id>/toggle-active/', views.dietitian_toggle_user, name='dietitian_toggle_user'),
+    path('dietitian/inbox/', views.dietitian_inbox, name='dietitian_inbox'),
+    path('dietitian/inbox/read-all/', views.inbox_mark_all_read, name='inbox_mark_all_read'),
+    path('dietitian/inbox/<uuid:message_id>/toggle/', views.inbox_toggle_read, name='inbox_toggle_read'),
+    path('dietitian/inbox/<uuid:message_id>/delete/', views.inbox_delete, name='inbox_delete'),
+    path('dietitian/inbox/<uuid:message_id>/reply/', views.inbox_reply, name='inbox_reply'),
     path('dietitian/patient/<uuid:user_id>/details/modal/', views.dietitian_patient_profile_modal, name='dietitian_patient_profile_modal'),
     path('export/patients/excel/', views.export_patients_excel, name='export_patients_excel'),
 

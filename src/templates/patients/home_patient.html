@@ -46,6 +46,25 @@
 
 <div class="container py-4 py-md-5">
 
+    {% if just_saved %}
+    <!-- ===== CONFIRMATION D'ENREGISTREMENT DU BILAN (bien visible, ne disparait pas) ===== -->
+    <div class="alert border-0 shadow-sm d-flex align-items-start gap-3 mb-4 alert-dismissible fade show" role="alert"
+         style="background:#e3f1da; color:#2f5e2f; border-radius:18px; padding:1.1rem 1.3rem;">
+        <i class="bi bi-check-circle-fill fs-2 lh-1"></i>
+        <div>
+            {% if bilan_finished %}
+            <div class="fw-bolder fs-5">{% trans "Well done, your assessment is complete!" %}</div>
+            <div class="small">{% trans "Your dietitian has received it and will see it in her space. You can come back to complete or modify it at any time." %}</div>
+            {% else %}
+            <div class="fw-bolder fs-5">{% trans "Your assessment has been saved." %}</div>
+            <div class="small">{% trans "You can continue it whenever you want: you will start again where you left off." %}</div>
+            {% endif %}
+            <a href="{% url 'bilan' %}" class="small fw-bold" style="color:#2f5e2f;">{% if bilan_finished %}{% trans "Review my assessment" %}{% else %}{% trans "Continue my assessment" %}{% endif %} <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
     <!-- ===== BIENVENUE + PROGRESSION ===== -->
     <div class="space-hero mb-4">
         <div class="row align-items-center g-3">

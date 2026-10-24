@@ -6,36 +6,60 @@
     :root { --nutri-green:#5a8f3d; --nutri-green-dark:#2f5e2f; --nutri-green-light:#eaf3e3; --nutri-orange:#f4a020; }
     .bilan-head {
         background: linear-gradient(135deg, var(--nutri-green), var(--nutri-green-dark));
-        color:#fff; border-radius: 26px; padding: 2rem 2.5rem; margin-bottom: 1.5rem;
+        color:#fff; border-radius: 24px; padding: 1.6rem 2rem; margin-bottom: 1.2rem;
     }
-    .accordion-item { border:1px solid #eef2ec; border-radius:18px !important; overflow:hidden; margin-bottom:1rem; }
-    .accordion-button { font-weight:700; color: var(--nutri-green-dark); background:#fff; }
-    .accordion-button:not(.collapsed) { background: var(--nutri-green-light); color: var(--nutri-green-dark); box-shadow:none; }
-    .accordion-button:focus { box-shadow: 0 0 0 .2rem rgba(90,143,61,.2); }
-    .sec-num {
-        display:inline-flex; align-items:center; justify-content:center;
-        width:28px; height:28px; border-radius:50%;
-        background: var(--nutri-green); color:#fff; font-size:.8rem; margin-right:.8rem;
-    }
-    .btn-nutri { background:var(--nutri-green); color:#fff; border:none; border-radius:14px; font-weight:700; transition:all .25s ease; }
-    .btn-nutri:hover { background:var(--nutri-green-dark); color:#fff; transform:translateY(-2px); }
-    .progress-hint { font-size:.85rem; opacity:.85; }
-    .form-label { font-weight:600; font-size:.9rem; }
     .bilan-head .progress { height:10px; background:rgba(255,255,255,.25); border-radius:50px; }
-    .bilan-head .progress-bar { background:#fff; border-radius:50px; }
-    .sec-count { margin-left:auto; margin-right:.8rem; font-size:.75rem; font-weight:700; border-radius:50px;
-                 padding:.25rem .65rem; background:#f1f4ef; color:#6b7a66; white-space:nowrap; }
-    .sec-count.full { background:var(--nutri-green); color:#fff; }
-    .sec-intro { background:#f8faf6; border-radius:14px; padding:.8rem 1rem; font-size:.88rem; color:#55624f; margin-bottom:1.2rem; }
-    .save-bar { position:sticky; bottom:0; z-index:5; background:rgba(255,255,255,.95); backdrop-filter:blur(6px);
-                border-top:1px solid #eef2ec; padding:1rem 0; margin-top:1.5rem; }
+    .bilan-head .progress-bar { background:#fff; border-radius:50px; transition: width .6s ease; }
+
+    /* ---- Fil des etapes ---- */
+    .stepper { display:flex; gap:.25rem; overflow-x:auto; padding:.3rem .1rem .6rem; margin-bottom:1rem; scrollbar-width:none; }
+    .stepper::-webkit-scrollbar { display:none; }
+    .stepper .st { flex:1 0 auto; min-width:64px; display:flex; flex-direction:column; align-items:center; gap:.35rem;
+                   background:none; border:0; padding:.2rem .3rem; cursor:pointer; position:relative; }
+    .stepper .st:not(:last-child)::after { content:''; position:absolute; top:18px; left:calc(50% + 22px); right:calc(-50% + 22px);
+                   height:3px; border-radius:3px; background:#e4ebe0; }
+    .stepper .st.is-done:not(:last-child)::after { background:var(--nutri-green); }
+    .stepper .dot { width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+                    font-weight:800; font-size:.9rem; background:#fff; border:2px solid #dfe7da; color:#8a9884; transition:all .3s ease; z-index:1; }
+    .stepper .st.is-done .dot { background:var(--nutri-green); border-color:var(--nutri-green); color:#fff; }
+    .stepper .st.is-current .dot { background:#fff; border-color:var(--nutri-green); color:var(--nutri-green-dark);
+                                   box-shadow:0 0 0 5px rgba(90,143,61,.18); transform:scale(1.08); }
+    .stepper .lbl { font-size:.72rem; font-weight:700; color:#8a9884; text-align:center; max-width:110px; line-height:1.15; }
+    .stepper .st.is-current .lbl { color:var(--nutri-green-dark); }
+    .stepper .st.is-done .lbl { color:var(--nutri-green); }
+    @media (max-width: 767.98px) { .stepper .lbl { display:none; } .stepper .st { min-width:44px; } }
+
+    /* ---- Bandeau "etape terminee" ---- */
+    .step-done { display:flex; align-items:center; gap:.9rem; background:#e3f1da; color:var(--nutri-green-dark);
+                 border-radius:18px; padding:1rem 1.2rem; margin-bottom:1rem; animation: popIn .55s cubic-bezier(.2,1.4,.4,1) both; }
+    .step-done .check { width:44px; height:44px; border-radius:50%; background:var(--nutri-green); color:#fff; flex-shrink:0;
+                        display:flex; align-items:center; justify-content:center; font-size:1.4rem; animation: popIn .6s .15s both; }
+    @keyframes popIn { from { opacity:0; transform:translateY(-8px) scale(.96); } to { opacity:1; transform:none; } }
+
+    /* ---- Carte de l'etape ---- */
+    .step-card { background:#fff; border:1px solid #eef2ec; border-radius:22px; padding:1.6rem; box-shadow:0 6px 24px rgba(47,94,47,.06); }
+    .step-card .step-icon { width:52px; height:52px; border-radius:16px; background:var(--nutri-green-light); color:var(--nutri-green-dark);
+                            display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0; }
+    .step-kicker { font-size:.75rem; font-weight:800; letter-spacing:.6px; text-transform:uppercase; color:var(--nutri-orange); }
+    .step-card h3 { color:var(--nutri-green-dark); font-weight:800; font-size:1.35rem; margin:0; }
+    .sec-intro { background:#f8faf6; border-radius:14px; padding:.8rem 1rem; font-size:.9rem; color:#55624f; margin:1rem 0 1.3rem; }
+    .form-label { font-weight:600; font-size:.9rem; }
     .tips-list { list-style:none; padding:0; margin:0; }
-    .tips-list li { display:flex; gap:.5rem; font-size:.85rem; opacity:.9; margin-top:.35rem; }
+    .tips-list li { display:flex; gap:.5rem; font-size:.85rem; opacity:.92; margin-top:.3rem; }
+
+    /* ---- Barre des boutons ---- */
+    .save-bar { position:sticky; bottom:0; z-index:5; background:rgba(255,255,255,.96); backdrop-filter:blur(6px);
+                border-top:1px solid #eef2ec; padding:.9rem 0; margin-top:1.2rem; }
+    .btn-nutri { background:var(--nutri-green); color:#fff; border:none; border-radius:50px; font-weight:700; transition:all .2s ease; }
+    .btn-nutri:hover { background:var(--nutri-green-dark); color:#fff; }
+    .btn-ghost { background:#f1f4ef; color:var(--nutri-green-dark); border:none; border-radius:50px; font-weight:700; }
+    .btn-ghost:hover { background:#e4ebe0; color:var(--nutri-green-dark); }
+    .btn-link-quit { color:#6b7a66; font-weight:600; font-size:.88rem; text-decoration:underline; background:none; border:0; }
 </style>
 
-<div class="container py-5">
+<div class="container py-4 py-md-5">
     <div class="row justify-content-center">
-        <div class="col-lg-10">
+        <div class="col-lg-9">
 
             {% if user.role == 'dietitian' %}
                 <a href="{% url 'patient_record' patient.id %}" class="small fw-bold text-decoration-none" style="color:var(--nutri-green);"><i class="bi bi-arrow-left me-1"></i>{% trans "Back to the patient file" %}</a>
@@ -43,120 +67,102 @@
                 <a href="{% url 'patient_home' %}" class="small fw-bold text-decoration-none" style="color:var(--nutri-green);"><i class="bi bi-arrow-left me-1"></i>{% trans "Back to my space" %}</a>
             {% endif %}
 
+            <!-- ===== EN-TETE + PROGRESSION ===== -->
             <div class="bilan-head mt-2">
-                <div class="row align-items-center g-3">
-                    <div class="col-md-8">
-                        <h2 class="fw-bolder mb-1"><i class="bi bi-clipboard2-heart me-2"></i>{% if user.role == 'dietitian' %}{% trans "Dietetic Consultation Form" %}{% else %}{% trans "My nutrition assessment" %}{% endif %}</h2>
-                        {% if user.role == 'dietitian' %}
-                            <p class="mb-0 progress-hint">{{ patient.get_full_name|default:patient.email }}</p>
-                        {% else %}
-                            <ul class="tips-list">
-                                <li><i class="bi bi-lightbulb"></i>{% trans "These questions help your dietitian prepare a plan adapted to you." %}</li>
-                                <li><i class="bi bi-pause-circle"></i>{% trans "Fill in what you can: nothing is mandatory. Save and come back whenever you want." %}</li>
-                                <li><i class="bi bi-question-circle"></i>{% trans "Not sure about an answer? Leave it blank, you will see it together during the consultation." %}</li>
-                            </ul>
-                        {% endif %}
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                    <div>
+                        <h2 class="h4 fw-bolder mb-1"><i class="bi bi-clipboard2-heart me-2"></i>{% if user.role == 'dietitian' %}{% trans "Dietetic Consultation Form" %}{% else %}{% trans "My nutrition assessment" %}{% endif %}</h2>
+                        {% if user.role == 'dietitian' %}<p class="mb-0 small opacity-75">{{ patient.get_full_name|default:patient.email }}</p>{% endif %}
                     </div>
-                    <div class="col-md-4">
-                        <div class="d-flex justify-content-between small fw-bold mb-1">
-                            <span>{% trans "Completed" %}</span><span>{{ bilan_percent }}%</span>
-                        </div>
-                        <div class="progress"><div class="progress-bar" style="width: {{ bilan_percent }}%;"></div></div>
+                    <div class="fw-bold">{% blocktrans with n=step_num total=steps_total %}Step {{ n }} of {{ total }}{% endblocktrans %}</div>
+                </div>
+                <div class="progress mt-3"><div class="progress-bar" style="width: {{ step_percent }}%;"></div></div>
+            </div>
+
+            <!-- Bouton par defaut (touche Entree = "Suivant") : doit etre le 1er bouton du formulaire -->
+            <button type="submit" form="bilanForm" name="action" value="next" class="d-none" tabindex="-1" aria-hidden="true"></button>
+
+            <!-- ===== FIL DES ETAPES (cliquer enregistre l'etape en cours puis y va) ===== -->
+            <nav class="stepper" aria-label="{% trans 'Steps' %}">
+                {% for s in steps %}
+                {% if s.num == step_num %}
+                <button type="submit" form="bilanForm" name="action" value="goto_{{ s.num }}" class="st is-current" title="{{ s.title }}" aria-current="step">
+                    <span class="dot">{{ s.num }}</span><span class="lbl">{{ s.title }}</span>
+                </button>
+                {% elif s.filled or s.num < step_num %}
+                <button type="submit" form="bilanForm" name="action" value="goto_{{ s.num }}" class="st is-done" title="{{ s.title }}">
+                    <span class="dot"><i class="bi bi-check-lg"></i></span><span class="lbl">{{ s.title }}</span>
+                </button>
+                {% else %}
+                <button type="submit" form="bilanForm" name="action" value="goto_{{ s.num }}" class="st" title="{{ s.title }}">
+                    <span class="dot">{{ s.num }}</span><span class="lbl">{{ s.title }}</span>
+                </button>
+                {% endif %}
+                {% endfor %}
+            </nav>
+
+            <!-- ===== ETAPE TERMINEE ===== -->
+            {% if done_step %}
+            <div class="step-done" role="status">
+                <div class="check"><i class="bi bi-check-lg"></i></div>
+                <div>
+                    <div class="fw-bolder">{% blocktrans with n=done_step.num title=done_step.title %}Step {{ n }} completed: {{ title }}{% endblocktrans %}</div>
+                    <div class="small">
+                        {% trans "Your answers are saved." %}
+                        {% if is_last %}{% trans "This is the last step!" %}
+                        {% else %}{% blocktrans count counter=steps_left|add:1 %}{{ counter }} step left.{% plural %}{{ counter }} steps left.{% endblocktrans %}{% endif %}
                     </div>
                 </div>
             </div>
+            {% endif %}
 
-            <form method="post">
+            {% if has_errors %}
+            <div class="alert alert-danger border-0 shadow-sm d-flex align-items-start gap-2" role="alert" style="border-radius:16px;">
+                <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+                <div>
+                    <div class="fw-bold">{% trans "This step has NOT been saved yet." %}</div>
+                    <div class="small">{% trans "Some answers need to be corrected: they are shown in red below. Correct them, then continue." %}</div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ===== L'ETAPE EN COURS ===== -->
+            <form method="post" id="bilanForm" action="?step={{ step_num }}" novalidate>
                 {% csrf_token %}
-
-                <div class="accordion" id="bilanAccordion">
-
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#sec1">
-                                <span class="sec-num">1</span>{{ sections.form1.title }}<span class="sec-count {% if sections.form1.filled == sections.form1.total %}full{% endif %}">{{ sections.form1.filled }}/{{ sections.form1.total }}</span>
-                            </button>
-                        </h2>
-                        <div id="sec1" class="accordion-collapse collapse show" data-bs-parent="#bilanAccordion">
-                            <div class="accordion-body"><p class="sec-intro"><i class="bi bi-info-circle me-1"></i>{% trans "Who you are and why you are consulting." %}</p>{{ form1|crispy }}</div>
+                <div class="step-card">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="step-icon"><i class="bi {{ step.icon }}"></i></div>
+                        <div>
+                            <div class="step-kicker">{% blocktrans with n=step_num total=steps_total %}Step {{ n }} of {{ total }}{% endblocktrans %}</div>
+                            <h3>{{ step.title }}</h3>
                         </div>
                     </div>
+                    <p class="sec-intro"><i class="bi bi-info-circle me-1"></i>{{ step.intro }}</p>
 
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sec2">
-                                <span class="sec-num">2</span>{{ sections.form2.title }}<span class="sec-count {% if sections.form2.filled == sections.form2.total %}full{% endif %}">{{ sections.form2.filled }}/{{ sections.form2.total }}</span>
-                            </button>
-                        </h2>
-                        <div id="sec2" class="accordion-collapse collapse" data-bs-parent="#bilanAccordion">
-                            <div class="accordion-body"><p class="sec-intro"><i class="bi bi-info-circle me-1"></i>{% trans "Illnesses, treatments and allergies. Only what you know." %}</p>{{ form2|crispy }}</div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sec3">
-                                <span class="sec-num">3</span>{{ sections.form3.title }}<span class="sec-count {% if sections.form3.filled == sections.form3.total %}full{% endif %}">{{ sections.form3.filled }}/{{ sections.form3.total }}</span>
-                            </button>
-                        </h2>
-                        <div id="sec3" class="accordion-collapse collapse" data-bs-parent="#bilanAccordion">
-                            <div class="accordion-body"><p class="sec-intro"><i class="bi bi-info-circle me-1"></i>{% trans "Sleep, physical activity, stress and habits." %}</p>{{ form3|crispy }}</div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sec4">
-                                <span class="sec-num">4</span>{{ sections.form4.title }}<span class="sec-count {% if sections.form4.filled == sections.form4.total %}full{% endif %}">{{ sections.form4.filled }}/{{ sections.form4.total }}</span>
-                            </button>
-                        </h2>
-                        <div id="sec4" class="accordion-collapse collapse" data-bs-parent="#bilanAccordion">
-                            <div class="accordion-body"><p class="sec-intro"><i class="bi bi-info-circle me-1"></i>{% trans "Height, weight and other measurements if you know them. Your dietitian will take the others." %}</p>{{ form4|crispy }}</div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sec5">
-                                <span class="sec-num">5</span>{{ sections.form5.title }}<span class="sec-count {% if sections.form5.filled == sections.form5.total %}full{% endif %}">{{ sections.form5.filled }}/{{ sections.form5.total }}</span>
-                            </button>
-                        </h2>
-                        <div id="sec5" class="accordion-collapse collapse" data-bs-parent="#bilanAccordion">
-                            <div class="accordion-body"><p class="sec-intro"><i class="bi bi-info-circle me-1"></i>{% trans "What a usual day of meals looks like for you, and what you drink." %}</p>{{ form5|crispy }}</div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sec6">
-                                <span class="sec-num">6</span>{{ sections.form6.title }}<span class="sec-count {% if sections.form6.filled == sections.form6.total %}full{% endif %}">{{ sections.form6.filled }}/{{ sections.form6.total }}</span>
-                            </button>
-                        </h2>
-                        <div id="sec6" class="accordion-collapse collapse" data-bs-parent="#bilanAccordion">
-                            <div class="accordion-body"><p class="sec-intro"><i class="bi bi-info-circle me-1"></i>{% trans "Your appetite, your eating habits and what you expect from the follow-up." %}</p>{{ form6|crispy }}</div>
-                        </div>
-                    </div>
-
-                    {% if user.role == 'dietitian' %}
-                    <div class="accordion-item" style="border-color: var(--nutri-orange);">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sec7">
-                                <span class="sec-num" style="background: var(--nutri-orange);">7</span>{% trans "Practitioner's Notes" %}
-                            </button>
-                        </h2>
-                        <div id="sec7" class="accordion-collapse collapse" data-bs-parent="#bilanAccordion">
-                            <div class="accordion-body">{{ form7|crispy }}</div>
-                        </div>
-                    </div>
+                    {% if step_num == 1 and user.role != 'dietitian' %}
+                    <ul class="tips-list mb-3 small text-muted">
+                        <li><i class="bi bi-pause-circle"></i>{% trans "Fill in what you can: nothing is mandatory. Save and come back whenever you want." %}</li>
+                        <li><i class="bi bi-question-circle"></i>{% trans "Not sure about an answer? Leave it blank, you will see it together during the consultation." %}</li>
+                    </ul>
                     {% endif %}
 
+                    {{ form|crispy }}
                 </div>
 
                 <div class="save-bar">
-                    <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
-                        <small class="text-muted flex-grow-1 d-none d-sm-block"><i class="bi bi-cloud-check me-1"></i>{% trans "You can save at any time, even if the assessment is not finished." %}</small>
-                        <button type="submit" class="btn btn-nutri btn-lg px-4 py-2">
-                            <i class="bi bi-check-lg me-2"></i>{% trans "Save" %}
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        {% if step_num > 1 %}
+                        <button type="submit" name="action" value="prev" class="btn btn-ghost px-3 py-2">
+                            <i class="bi bi-arrow-left me-1"></i>{% trans "Previous" %}
+                        </button>
+                        {% endif %}
+                        <button type="submit" name="action" value="quit" class="btn-link-quit me-auto">
+                            {% trans "Save and finish later" %}
+                        </button>
+                        <button type="submit" name="action" value="{% if is_last %}finish{% else %}next{% endif %}"
+                                class="btn btn-nutri btn-lg px-4 py-2" data-busy="{% trans 'Saving...' %}">
+                            {% if is_last %}<i class="bi bi-check2-circle me-1"></i>{% trans "Finish my assessment" %}
+                            {% else %}{% trans "Save and continue" %}<i class="bi bi-arrow-right ms-1"></i>{% endif %}
                         </button>
                     </div>
                 </div>
@@ -167,12 +173,29 @@
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        var invalid = document.querySelector('#bilanAccordion .is-invalid');
+        var form = document.getElementById('bilanForm');
+        if (!form) return;
+        // Retour immediat : le bouton choisi affiche "Enregistrement..." et on evite le double envoi
+        form.addEventListener('submit', function (e) {
+            var btn = e.submitter;
+            setTimeout(function () {  // apres l'envoi, pour que la valeur du bouton soit bien transmise
+                document.querySelectorAll('button[form="bilanForm"], #bilanForm button[type="submit"]').forEach(function (b) { b.disabled = true; });
+                if (btn && btn.dataset.busy) {
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>' + btn.dataset.busy;
+                }
+            }, 0);
+        });
+        window.addEventListener('pageshow', function () {
+            document.querySelectorAll('button[form="bilanForm"], #bilanForm button').forEach(function (b) { b.disabled = false; });
+        });
+        // Erreur : on amene directement sur le champ a corriger
+        var invalid = form.querySelector('.is-invalid');
         if (invalid) {
-            var pane = invalid.closest('.accordion-collapse');
-            if (pane) { bootstrap.Collapse.getOrCreateInstance(pane, { toggle: false }).show(); }
-            setTimeout(function () { invalid.scrollIntoView({ behavior: 'smooth', block: 'center' }); invalid.focus(); }, 350);
+            setTimeout(function () { invalid.scrollIntoView({ behavior: 'smooth', block: 'center' }); invalid.focus(); }, 250);
         }
+        // Le fil des etapes montre toujours l'etape en cours (utile sur telephone)
+        var current = document.querySelector('.stepper .is-current');
+        if (current) current.scrollIntoView({ block: 'nearest', inline: 'center' });
     });
 </script>
 {% endblock %}

@@ -5,3 +5,5 @@ __pycache__/
 *.sqlite3
 # Donnees de test - LOCAL UNIQUEMENT
 src/patients/management/commands/donnees_test.py
+# Script local de compression des images
+src/compresser.py

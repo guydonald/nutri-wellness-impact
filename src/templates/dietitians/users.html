@@ -1,0 +1,228 @@
+{% extends "bases.html" %}
+{% load i18n %}
+{% block content %}
+
+<style>
+    :root { --nutri-green:#5a8f3d; --nutri-green-dark:#2f5e2f; --nutri-green-light:#eaf3e3; --nutri-orange:#f4a020; }
+    .dash-title { color:var(--nutri-green-dark); font-weight:800; }
+    .kpi { background:#fff; border:1px solid #eef2ec; border-radius:18px; padding:1rem 1.1rem; height:100%;
+           text-decoration:none; color:inherit; display:block; transition:all .2s ease; }
+    a.kpi:hover { border-color:var(--nutri-green); transform:translateY(-2px); }
+    .kpi .num { font-size:1.6rem; font-weight:800; color:var(--nutri-green-dark); line-height:1.1; }
+    .kpi .lbl { font-size:.8rem; color:#6b7a66; font-weight:600; }
+    .kpi .hint { font-size:.72rem; color:#98a592; }
+    .kpi.warn .num { color:var(--nutri-orange); }
+    .kpi.alert .num { color:#d62828; }
+    .filter-pills .btn { border-radius:50px; font-weight:600; font-size:.82rem; border:1px solid #e4ebe0; color:var(--nutri-green-dark); background:#fff; }
+    .filter-pills .btn.active { background:var(--nutri-green); border-color:var(--nutri-green); color:#fff; }
+    .btn-nutri { background:var(--nutri-green); color:#fff; border:none; border-radius:50px; font-weight:700; }
+    .btn-nutri:hover { background:var(--nutri-green-dark); color:#fff; }
+    .table-card { border-radius:20px; border:1px solid #eef2ec; overflow:hidden; background:#fff; }
+    thead.table-head-green th { background:var(--nutri-green-light); color:var(--nutri-green-dark); border:0; font-size:.82rem; }
+    .mini-progress { height:7px; border-radius:50px; background:#eef2ec; min-width:70px; }
+    .mini-progress .bar { height:100%; border-radius:50px; background:var(--nutri-green); }
+    .muted-sm { font-size:.8rem; color:#7a8a72; }
+    .feed-item { display:flex; gap:.7rem; padding:.6rem 0; border-bottom:1px dashed #eef2ec; }
+    .feed-item:last-child { border-bottom:0; }
+    .feed-icon { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0; font-size:.9rem; }
+    .side-card { border-radius:20px; border:1px solid #eef2ec; background:#fff; padding:1.1rem 1.2rem; }
+
+    @media (max-width: 767.98px) {
+        .mobile-cards thead { display:none; }
+        .mobile-cards tbody tr { display:block; border:1px solid #eef2ec; border-radius:14px; margin:.6rem; padding:.7rem; }
+        .mobile-cards tbody td { display:flex; justify-content:space-between; align-items:center; gap:1rem;
+                                  border:none !important; padding:.3rem 0 !important; text-align:right; }
+        .mobile-cards tbody td::before { content:attr(data-label); color:#7a8a72; font-size:.76rem; font-weight:600; text-align:left; }
+        .mobile-cards tbody td.actions-cell { justify-content:center; flex-wrap:wrap; padding-top:.6rem !important; border-top:1px dashed #eef2ec !important; }
+        .mobile-cards tbody td.actions-cell::before { display:none; }
+    }
+</style>
+
+<div class="container py-4 py-md-5">
+    <h2 class="dash-title mb-1"><i class="bi bi-person-lines-fill me-2"></i>{% trans "Users" %}</h2>
+    <p class="text-muted mb-4">{% trans "Who is registered, who uses the application and who has not yet filled in their assessment." %}</p>
+
+    <!-- ===== CHIFFRES CLES (cliquables = filtre) ===== -->
+    <div class="row g-2 g-md-3 mb-4">
+        <div class="col-6 col-md-4 col-xl-2">
+            <a href="?show=all" class="kpi"><div class="num">{{ stats.total }}</div><div class="lbl">{% trans "Patients" %}</div>
+            <div class="hint">{{ stats.active }} {% trans "active" %} · {{ stats.inactive }} {% trans "deactivated" %}</div></a>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2">
+            <a href="?show=new" class="kpi"><div class="num">{{ stats.new_week }}</div><div class="lbl">{% trans "New this week" %}</div>
+            <div class="hint">{{ stats.new_month }} {% trans "in 30 days" %}</div></a>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2">
+            <a href="?show=all&order=login" class="kpi"><div class="num">{{ stats.seen_week }}</div><div class="lbl">{% trans "Logged in this week" %}</div>
+            <div class="hint">{% trans "Sorted by last login" %}</div></a>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="kpi"><div class="num">{{ stats.bilan_done }}</div><div class="lbl">{% trans "Assessments well advanced" %}</div>
+            <div class="hint">{% trans "70% or more filled in" %}</div></div>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2">
+            <a href="?show=bilan_todo" class="kpi warn"><div class="num">{{ stats.bilan_todo }}</div><div class="lbl">{% trans "Essentials missing" %}</div>
+            <div class="hint">{% trans "Age or weight not given" %}</div></a>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2">
+            <a href="?show=never" class="kpi alert"><div class="num">{{ stats.never }}</div><div class="lbl">{% trans "Never logged in" %}</div>
+            <div class="hint">{% trans "To call back?" %}</div></a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- ===== LISTE DES UTILISATEURS ===== -->
+        <div class="col-xl-8">
+            <form method="get" class="d-flex gap-2 mb-3 flex-wrap">
+                <input type="hidden" name="show" value="{{ show }}">
+                <input type="hidden" name="role" value="{{ role }}">
+                <input type="text" name="q" value="{{ q }}" class="form-control" style="border-radius:50px; max-width:340px;"
+                       placeholder="{% trans 'Name, email or phone...' %}">
+                <select name="order" class="form-select" style="border-radius:50px; max-width:220px;" onchange="this.form.submit()">
+                    <option value="recent" {% if order == 'recent' %}selected{% endif %}>{% trans "Most recent registrations" %}</option>
+                    <option value="login" {% if order == 'login' %}selected{% endif %}>{% trans "Last login" %}</option>
+                    <option value="name" {% if order == 'name' %}selected{% endif %}>{% trans "Name (A-Z)" %}</option>
+                </select>
+                <button class="btn btn-nutri px-3" type="submit"><i class="bi bi-search"></i></button>
+            </form>
+
+            <div class="filter-pills d-flex gap-2 flex-wrap mb-3">
+                {% with base="?role="|add:role|add:"&order="|add:order|add:"&q="|add:q %}
+                <a href="{{ base }}&show=all" class="btn btn-sm px-3 {% if show == 'all' %}active{% endif %}">{% trans "All" %}</a>
+                <a href="{{ base }}&show=active" class="btn btn-sm px-3 {% if show == 'active' %}active{% endif %}">{% trans "Active" %}</a>
+                <a href="{{ base }}&show=new" class="btn btn-sm px-3 {% if show == 'new' %}active{% endif %}">{% trans "New (7 days)" %}</a>
+                <a href="{{ base }}&show=bilan_todo" class="btn btn-sm px-3 {% if show == 'bilan_todo' %}active{% endif %}">{% trans "Essentials missing" %}</a>
+                <a href="{{ base }}&show=never" class="btn btn-sm px-3 {% if show == 'never' %}active{% endif %}">{% trans "Never logged in" %}</a>
+                <a href="{{ base }}&show=dormant" class="btn btn-sm px-3 {% if show == 'dormant' %}active{% endif %}">{% trans "Inactive for 30 days" %}</a>
+                <a href="{{ base }}&show=inactive" class="btn btn-sm px-3 {% if show == 'inactive' %}active{% endif %}">{% trans "Deactivated" %}</a>
+                {% endwith %}
+            </div>
+
+            <div class="table-card shadow-sm">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 mobile-cards">
+                        <thead class="table-head-green">
+                            <tr>
+                                <th class="px-3">{% trans "Name" %}</th>
+                                <th>{% trans "Registered" %}</th>
+                                <th>{% trans "Last login" %}</th>
+                                <th>{% trans "Assessment" %}</th>
+                                <th class="text-center">{% trans "Meals" %}</th>
+                                <th class="text-center">{% trans "Consult." %}</th>
+                                <th class="text-center">{% trans "Actions" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for row in rows %}{% with u=row.user %}
+                            <tr {% if not u.is_active %}style="opacity:.55;"{% endif %}>
+                                <td class="px-3" data-label="{% trans 'Name' %}">
+                                    <div class="fw-bold">{{ u.get_full_name }}
+                                        {% if not u.is_active %}<span class="badge bg-secondary ms-1">{% trans "Deactivated" %}</span>{% endif %}
+                                        {% if u.role == 'dietitian' %}<span class="badge ms-1" style="background:var(--nutri-orange);">{% trans "Dietitian" %}</span>{% endif %}
+                                    </div>
+                                    <div class="muted-sm text-truncate" style="max-width:230px;">{{ u.email }}{% if row.profile.phone %} · {{ row.profile.phone }}{% endif %}</div>
+                                </td>
+                                <td class="muted-sm" data-label="{% trans 'Registered' %}">{{ u.date_joined|date:"d/m/Y" }}</td>
+                                <td class="muted-sm" data-label="{% trans 'Last login' %}">
+                                    {% if u.last_login %}{% blocktrans with t=u.last_login|timesince %}{{ t }} ago{% endblocktrans %}
+                                    {% else %}<span class="text-danger fw-semibold">{% trans "Never" %}</span>{% endif %}
+                                </td>
+                                <td data-label="{% trans 'Assessment' %}">
+                                    {% if row.bilan_percent is not None %}
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="mini-progress flex-grow-1"><div class="bar" style="width:{{ row.bilan_percent }}%;{% if row.bilan_percent < 30 %}background:var(--nutri-orange);{% endif %}"></div></div>
+                                            <span class="muted-sm fw-bold">{{ row.bilan_percent }}%</span>
+                                        </div>
+                                    {% elif u.role == 'patient' %}<span class="muted-sm">{% trans "Not started" %}</span>{% else %}—{% endif %}
+                                </td>
+                                <td class="text-center fw-bold" data-label="{% trans 'Meals' %}">{{ u.meals_count }}</td>
+                                <td class="text-center fw-bold" data-label="{% trans 'Consult.' %}">{{ u.consult_count }}</td>
+                                <td class="text-center actions-cell" style="white-space:nowrap;">
+                                    {% if u.role == 'patient' %}
+                                    <a href="{% url 'patient_record' u.id %}" class="btn btn-sm text-white" style="background:var(--nutri-green); border-radius:10px;" title="{% trans 'Medical File' %}"><i class="bi bi-folder2-open"></i></a>
+                                    <a href="{% url 'bilan_patient' u.id %}" class="btn btn-sm btn-outline-secondary" style="border-radius:10px;" title="{% trans 'Assessment form' %}"><i class="bi bi-clipboard2-heart"></i></a>
+                                    {% if row.profile.phone %}<a href="tel:{{ row.profile.phone }}" class="btn btn-sm btn-outline-primary" style="border-radius:10px;" title="{% trans 'Call' %}"><i class="bi bi-telephone"></i></a>{% endif %}
+                                    {% if u.is_active %}
+                                        {% trans "Deactivate this account?" as c_title %}{% trans "The person will no longer be able to log in. You can reactivate the account at any time." as c_text %}{% trans "Deactivate" as c_ok %}
+                                    {% else %}
+                                        {% trans "Reactivate this account?" as c_title %}{% trans "The person will be able to log in again." as c_text %}{% trans "Reactivate" as c_ok %}
+                                    {% endif %}
+                                    <form method="post" action="{% url 'dietitian_toggle_user' u.id %}" class="d-inline"
+                                          data-confirm="{{ u.get_full_name }} — {{ c_text }}" data-confirm-title="{{ c_title }}"
+                                          data-confirm-ok="{{ c_ok }}" data-confirm-variant="{% if u.is_active %}danger{% else %}success{% endif %}">
+                                        {% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                        <button type="submit" class="btn btn-sm {% if u.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %}" style="border-radius:10px;"
+                                                title="{% if u.is_active %}{% trans 'Deactivate' %}{% else %}{% trans 'Reactivate' %}{% endif %}">
+                                            <i class="bi {% if u.is_active %}bi-person-x{% else %}bi-person-check{% endif %}"></i>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endwith %}{% empty %}
+                            <tr><td colspan="7" class="text-center p-4 text-muted">{% trans "No users match this filter." %}</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {% include "components/pagination.html" with page_obj=page_obj %}
+        </div>
+
+        <!-- ===== ACTIVITE RECENTE ===== -->
+        <div class="col-xl-4">
+            <div class="side-card shadow-sm" id="activity">
+                <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
+                    <h6 class="fw-bold mb-0" style="color:var(--nutri-green-dark);">
+                        <i class="bi bi-activity me-1"></i>{% if activity_all %}{% trans "Activity history" %}{% else %}{% trans "Recent activity" %}{% endif %}
+                        {% if activity_new_count and not activity_all %}<span class="badge rounded-pill ms-1" style="background:var(--nutri-orange);">{{ activity_new_count }}</span>{% endif %}
+                    </h6>
+                    {% if activity_new_count %}
+                    <form method="post" action="{% url 'activity_mark_seen' %}">
+                        {% csrf_token %}<input type="hidden" name="next" value="{% url 'dietitian_users' %}#activity">
+                        <button type="submit" class="btn btn-sm btn-outline-success" style="border-radius:50px; font-size:.75rem;">
+                            <i class="bi bi-check2-all me-1"></i>{% trans "Mark as seen" %}
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+
+                {% for e in activity_page %}
+                <div class="feed-item">
+                    <div class="feed-icon" style="background:{{ e.color }};"><i class="bi {{ e.icon }}"></i></div>
+                    <div class="small">
+                        {% if e.who %}<a href="{% url 'patient_record' e.who.id %}" class="fw-bold text-decoration-none" style="color:var(--nutri-green-dark);">{{ e.who.get_full_name }}</a>{% else %}<strong>{{ e.name }}</strong>{% endif %}
+                        {{ e.text }}
+                        <div class="muted-sm">{% blocktrans with t=e.when|timesince %}{{ t }} ago{% endblocktrans %}</div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="muted-sm mb-0 py-2"><i class="bi bi-check-circle me-1" style="color:var(--nutri-green);"></i>
+                    {% if activity_all %}{% trans "No activity yet." %}{% else %}{% trans "Nothing new since your last visit." %}{% endif %}</p>
+                {% endfor %}
+
+                {% if activity_page.has_other_pages %}
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    {% if activity_page.has_previous %}
+                        <a class="btn btn-sm btn-light" style="border-radius:50px;" href="{% querystring apage=activity_page.previous_page_number %}#activity">&laquo; {% trans "Previous" %}</a>
+                    {% else %}<span></span>{% endif %}
+                    <span class="muted-sm">{{ activity_page.number }} / {{ activity_page.paginator.num_pages }}</span>
+                    {% if activity_page.has_next %}
+                        <a class="btn btn-sm btn-light" style="border-radius:50px;" href="{% querystring apage=activity_page.next_page_number %}#activity">{% trans "Next" %} &raquo;</a>
+                    {% else %}<span></span>{% endif %}
+                </div>
+                {% endif %}
+
+                <div class="text-center mt-2 pt-2" style="border-top:1px dashed #eef2ec;">
+                    {% if activity_all %}
+                        <a href="{% querystring activity=None apage=None %}#activity" class="small fw-bold text-decoration-none" style="color:var(--nutri-green);">{% trans "Show only what is new" %}</a>
+                    {% else %}
+                        <a href="{% querystring activity='all' apage=None %}#activity" class="small fw-bold text-decoration-none" style="color:var(--nutri-green);">{% trans "See the full history" %}</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

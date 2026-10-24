@@ -6,235 +6,70 @@
     :root { --nutri-green:#5a8f3d; --nutri-green-dark:#2f5e2f; --nutri-green-light:#eaf3e3; --nutri-orange:#f4a020; }
     .form-hero-head {
         background: linear-gradient(135deg, var(--nutri-green), var(--nutri-green-dark));
-        color:#fff; border-radius:26px; padding:2rem 2.5rem; margin-bottom:1.5rem;
+        color:#fff; border-radius:24px; padding:1.6rem 2rem; margin-bottom:1.2rem;
     }
-    .accordion-item { border:1px solid #eef2ec; border-radius:18px !important; overflow:hidden; margin-bottom:1rem; }
-    .accordion-button { font-weight:700; color:var(--nutri-green-dark); background:#fff; }
-    .accordion-button:not(.collapsed) { background:var(--nutri-green-light); color:var(--nutri-green-dark); box-shadow:none; }
-    .accordion-button:focus { box-shadow:0 0 0 .2rem rgba(90,143,61,.2); }
-    .sec-num { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px;
-               border-radius:50%; background:var(--nutri-green); color:#fff; font-size:.8rem; margin-right:.8rem; flex-shrink:0; }
-    .btn-nutri { background:var(--nutri-green); color:#fff; border:none; border-radius:14px; font-weight:700; transition:all .25s ease; }
-    .btn-nutri:hover { background:var(--nutri-green-dark); color:#fff; transform:translateY(-2px); }
-    .btn-cancel { background:transparent; color:#7a8a72; border:2px solid #e4ebe0; border-radius:14px; font-weight:700; transition:all .2s ease; }
-    .btn-cancel:hover { background:#f8faf6; color:#2d3748; }
-    .sub-title { color:var(--nutri-green-dark); font-weight:700; font-size:.95rem; margin:1.2rem 0 .8rem; padding-bottom:.4rem; border-bottom:1px solid #eef2ec; }
+    .form-card { background:#fff; border:1px solid #eef2ec; border-radius:22px; padding:1.6rem; box-shadow:0 6px 24px rgba(47,94,47,.06); margin-bottom:1rem; }
+    .form-card h3 { color:var(--nutri-green-dark); font-weight:800; font-size:1.1rem; margin-bottom:1rem; }
+    .btn-nutri { background:var(--nutri-green); color:#fff; border:none; border-radius:50px; font-weight:700; transition:all .2s ease; }
+    .btn-nutri:hover { background:var(--nutri-green-dark); color:#fff; }
+    .btn-cancel { background:#f1f4ef; color:var(--nutri-green-dark); border:none; border-radius:50px; font-weight:700; }
+    .bilan-link { display:flex; align-items:center; gap:1rem; background:var(--nutri-green-light); border-radius:18px; padding:1.1rem 1.2rem;
+                  text-decoration:none; color:var(--nutri-green-dark); transition:all .2s ease; }
+    .bilan-link:hover { transform:translateY(-2px); color:var(--nutri-green-dark); box-shadow:0 6px 18px rgba(47,94,47,.12); }
+    .bilan-link .ic { width:48px; height:48px; border-radius:14px; background:var(--nutri-green); color:#fff; display:flex;
+                      align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0; }
+    .form-label { font-weight:600; font-size:.9rem; }
 </style>
 
-<div class="container py-5">
+<div class="container py-4 py-md-5">
     <div class="row justify-content-center">
-        <div class="col-lg-10">
+        <div class="col-lg-8">
+            <a href="{% url 'patient_profile' %}" class="small fw-bold text-decoration-none" style="color:var(--nutri-green);"><i class="bi bi-arrow-left me-1"></i>{% trans "Back to my profile" %}</a>
 
-            <div class="form-hero-head">
-                <h2 class="fw-bolder mb-1"><i class="bi bi-pencil-square me-2"></i>{% trans "Edit your profile" %}</h2>
-                <p class="mb-0 opacity-75">{% trans "Update your personal details and medical information." %}</p>
+            <div class="form-hero-head mt-2">
+                <h2 class="h4 fw-bolder mb-1"><i class="bi bi-pencil-square me-2"></i>{% trans "Edit your profile" %}</h2>
+                <p class="mb-0 small opacity-75">{% trans "Your name and personal details." %}</p>
             </div>
 
-            <form method="post">
+            <form method="post" novalidate>
                 {% csrf_token %}
-
-                <div class="accordion" id="editAccordion">
-
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#e1">
-                                <span class="sec-num">1</span>{% trans "Account Information" %}
-                            </button>
-                        </h2>
-                        <div id="e1" class="accordion-collapse collapse show" data-bs-parent="#editAccordion">
-                            <div class="accordion-body">
-                                <div class="row">
-                                    <div class="col-md-6">{{ user_form.first_name|as_crispy_field }}</div>
-                                    <div class="col-md-6">{{ user_form.last_name|as_crispy_field }}</div>
-                                </div>
-                                {{ user_form.email|as_crispy_field }}
-
-                                <div class="sub-title">{% trans "Personal Information" %}</div>
-                                <div class="row">
-                                    <div class="col-md-4">{{ profile_form.birth_date|as_crispy_field }}</div>
-                                    <div class="col-md-4">{{ profile_form.age|as_crispy_field }}</div>
-                                    <div class="col-md-4">{{ profile_form.gender|as_crispy_field }}</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">{{ profile_form.phone|as_crispy_field }}</div>
-                                    <div class="col-md-6">{{ profile_form.occupation|as_crispy_field }}</div>
-                                </div>
-                                {{ profile_form.address|as_crispy_field }}
-                                {{ profile_form.pathology|as_crispy_field }}
-                            </div>
-                        </div>
+                <div class="form-card">
+                    <h3><i class="bi bi-person me-2"></i>{% trans "Account Information" %}</h3>
+                    <div class="row">
+                        <div class="col-md-6">{{ user_form.first_name|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ user_form.last_name|as_crispy_field }}</div>
                     </div>
-
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#e2">
-                                <span class="sec-num">2</span>{% trans "Medical History" %}
-                            </button>
-                        </h2>
-                        <div id="e2" class="accordion-collapse collapse" data-bs-parent="#editAccordion">
-                            <div class="accordion-body">
-                                <div class="row">
-                                    <div class="col-md-8">{{ profile_form.diagnosis|as_crispy_field }}</div>
-                                    <div class="col-md-4">{{ profile_form.diagnosis_date|as_crispy_field }}</div>
-                                </div>
-                                {{ profile_form.known_diseases|as_crispy_field }}
-                                {{ profile_form.medical_history|as_crispy_field }}
-                                {{ profile_form.family_history|as_crispy_field }}
-                                {{ profile_form.previous_surgeries|as_crispy_field }}
-                                {{ profile_form.medications|as_crispy_field }}
-                                <div class="row">
-                                    <div class="col-md-6">{{ profile_form.allergies|as_crispy_field }}</div>
-                                    <div class="col-md-6">{{ profile_form.family_history_cvd|as_crispy_field }}</div>
-                                </div>
-                                {{ profile_form.food_allergies|as_crispy_field }}
-                                {{ profile_form.food_intolerances|as_crispy_field }}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#e3">
-                                <span class="sec-num">3</span>{% trans "Lifestyle" %}
-                            </button>
-                        </h2>
-                        <div id="e3" class="accordion-collapse collapse" data-bs-parent="#editAccordion">
-                            <div class="accordion-body">
-                                <div class="row">
-                                    <div class="col-md-6">{{ profile_form.sleep_hours|as_crispy_field }}</div>
-                                    <div class="col-md-6">{{ profile_form.sleep_quality|as_crispy_field }}</div>
-                                </div>
-                                {{ profile_form.activity_level|as_crispy_field }}
-                                <div class="row">
-                                    <div class="col-md-4">{{ profile_form.activity_type|as_crispy_field }}</div>
-                                    <div class="col-md-4">{{ profile_form.activity_frequency|as_crispy_field }}</div>
-                                    <div class="col-md-4">{{ profile_form.activity_duration|as_crispy_field }}</div>
-                                </div>
-                                {{ profile_form.stress_level|as_crispy_field }}
-                                {{ profile_form.stress_sources|as_crispy_field }}
-                                <div class="row align-items-end">
-                                    <div class="col-md-4">{{ profile_form.smoking|as_crispy_field }}</div>
-                                    <div class="col-md-8">{{ profile_form.smoking_frequency|as_crispy_field }}</div>
-                                </div>
-                                <div class="row align-items-end">
-                                    <div class="col-md-4">{{ profile_form.alcohol|as_crispy_field }}</div>
-                                    <div class="col-md-8">{{ profile_form.alcohol_frequency|as_crispy_field }}</div>
-                                </div>
-                                <div class="row align-items-end">
-                                    <div class="col-md-4">{{ profile_form.sweets|as_crispy_field }}</div>
-                                    <div class="col-md-8">{{ profile_form.sweets_frequency|as_crispy_field }}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#e4">
-                                <span class="sec-num">4</span>{% trans "Anthropometric Data" %}
-                            </button>
-                        </h2>
-                        <div id="e4" class="accordion-collapse collapse" data-bs-parent="#editAccordion">
-                            <div class="accordion-body">
-                                <div class="row">
-                                    <div class="col-md-3">{{ profile_form.height|as_crispy_field }}</div>
-                                    <div class="col-md-3">{{ profile_form.weight|as_crispy_field }}</div>
-                                    <div class="col-md-3">{{ profile_form.usual_weight|as_crispy_field }}</div>
-                                    <div class="col-md-3">{{ profile_form.desired_weight|as_crispy_field }}</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">{{ profile_form.waist_circumference|as_crispy_field }}</div>
-                                    <div class="col-md-4">{{ profile_form.hip_circumference|as_crispy_field }}</div>
-                                    <div class="col-md-4">{{ profile_form.body_fat_percent|as_crispy_field }}</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">{{ profile_form.blood_pressure_left|as_crispy_field }}</div>
-                                    <div class="col-md-6">{{ profile_form.blood_pressure_right|as_crispy_field }}</div>
-                                </div>
-                                {{ profile_form.other_measures|as_crispy_field }}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#e5">
-                                <span class="sec-num">5</span>{% trans "Eating Habits & Hydration" %}
-                            </button>
-                        </h2>
-                        <div id="e5" class="accordion-collapse collapse" data-bs-parent="#editAccordion">
-                            <div class="accordion-body">
-                                <div class="row align-items-end">
-                                    <div class="col-md-6">{{ profile_form.meals_per_day|as_crispy_field }}</div>
-                                    <div class="col-md-6">{{ profile_form.has_snacks|as_crispy_field }}</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3">{{ profile_form.breakfast_time|as_crispy_field }}</div>
-                                    <div class="col-md-3">{{ profile_form.lunch_time|as_crispy_field }}</div>
-                                    <div class="col-md-3">{{ profile_form.dinner_time|as_crispy_field }}</div>
-                                    <div class="col-md-3">{{ profile_form.snack_times|as_crispy_field }}</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">{{ profile_form.meal_place|as_crispy_field }}</div>
-                                    <div class="col-md-6">{{ profile_form.eat_with|as_crispy_field }}</div>
-                                </div>
-                                <div class="sub-title">{% trans "Typical Daily Intake" %}</div>
-                                {{ profile_form.typical_breakfast|as_crispy_field }}
-                                {{ profile_form.typical_morning_snack|as_crispy_field }}
-                                {{ profile_form.typical_lunch|as_crispy_field }}
-                                {{ profile_form.typical_afternoon_snack|as_crispy_field }}
-                                {{ profile_form.typical_dinner|as_crispy_field }}
-                                {{ profile_form.typical_evening_snack|as_crispy_field }}
-                                <div class="sub-title">{% trans "Weekly Consumption" %}</div>
-                                <div class="row">
-                                    <div class="col-md-4">{{ profile_form.fruits_consumption|as_crispy_field }}</div>
-                                    <div class="col-md-4">{{ profile_form.vegetables_consumption|as_crispy_field }}</div>
-                                    <div class="col-md-4">{{ profile_form.fatty_sugary_consumption|as_crispy_field }}</div>
-                                </div>
-                                <div class="sub-title">{% trans "Hydration" %}</div>
-                                <div class="row">
-                                    <div class="col-md-6">{{ profile_form.water_glasses|as_crispy_field }}</div>
-                                    <div class="col-md-6">{{ profile_form.water_liters|as_crispy_field }}</div>
-                                </div>
-                                {{ profile_form.other_drinks|as_crispy_field }}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#e6">
-                                <span class="sec-num">6</span>{% trans "Relationship with Food & Goals" %}
-                            </button>
-                        </h2>
-                        <div id="e6" class="accordion-collapse collapse" data-bs-parent="#editAccordion">
-                            <div class="accordion-body">
-                                <div class="row">
-                                    <div class="col-md-6">{{ profile_form.appetite|as_crispy_field }}</div>
-                                    <div class="col-md-6">{{ profile_form.snacking|as_crispy_field }}</div>
-                                </div>
-                                {{ profile_form.snacking_moments|as_crispy_field }}
-                                {{ profile_form.dietary_restrictions|as_crispy_field }}
-                                {{ profile_form.eating_behaviors|as_crispy_field }}
-                                {{ profile_form.main_expectations|as_crispy_field }}
-                                <div class="row">
-                                    <div class="col-md-8">{{ profile_form.goal_timeframe|as_crispy_field }}</div>
-                                    <div class="col-md-4">{{ profile_form.motivation_level|as_crispy_field }}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                    {{ user_form.email|as_crispy_field }}
                 </div>
 
-                <div class="d-flex gap-3 mt-4">
-                    <button type="submit" class="btn btn-nutri btn-lg flex-grow-1 py-3">
-                        <i class="bi bi-check-lg me-2"></i>{% trans "Save changes" %}
-                    </button>
-                    <a href="{% url 'patient_profile' %}" class="btn btn-cancel btn-lg px-4 py-3">{% trans "Cancel" %}</a>
+                <div class="form-card">
+                    <h3><i class="bi bi-person-vcard me-2"></i>{% trans "Personal Information" %}</h3>
+                    <div class="row">
+                        <div class="col-md-4">{{ profile_form.birth_date|as_crispy_field }}</div>
+                        <div class="col-md-4">{{ profile_form.age|as_crispy_field }}</div>
+                        <div class="col-md-4">{{ profile_form.gender|as_crispy_field }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">{{ profile_form.phone|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ profile_form.occupation|as_crispy_field }}</div>
+                    </div>
+                    {{ profile_form.address|as_crispy_field }}
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end mb-4">
+                    <a href="{% url 'patient_profile' %}" class="btn btn-cancel px-4 py-2">{% trans "Cancel" %}</a>
+                    <button type="submit" class="btn btn-nutri px-4 py-2"><i class="bi bi-check-lg me-1"></i>{% trans "Save changes" %}</button>
                 </div>
             </form>
 
+            <a href="{% url 'bilan' %}" class="bilan-link">
+                <div class="ic"><i class="bi bi-clipboard2-heart"></i></div>
+                <div class="flex-grow-1">
+                    <div class="fw-bold">{% trans "Health, habits, meals, measurements..." %}</div>
+                    <div class="small">{% trans "These answers are in your nutrition assessment. Modify them step by step." %}</div>
+                </div>
+                <i class="bi bi-arrow-right fs-5"></i>
+            </a>
         </div>
     </div>
 </div>

@@ -97,6 +97,19 @@
                                 <i class="bi bi-columns-gap me-1"></i>{% trans "Office" %}
                             </a>
                         </li>
+                        {% url 'dietitian_users' as url_users %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == url_users %}active-link{% endif %}" href="{{ url_users }}">
+                                <i class="bi bi-person-lines-fill me-1"></i>{% trans "Users" %}
+                            </a>
+                        </li>
+                        {% url 'dietitian_inbox' as url_inbox %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == url_inbox %}active-link{% endif %}" href="{{ url_inbox }}">
+                                <i class="bi bi-envelope me-1"></i>{% trans "Messages" %}
+                                {% if inbox_unread_count %}<span class="badge rounded-pill ms-1" style="background:var(--nutri-red);">{{ inbox_unread_count }}</span>{% endif %}
+                            </a>
+                        </li>
                     {% else %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'community_feed' %}">{% trans "Community" %}</a></li>
                     {% endif %}

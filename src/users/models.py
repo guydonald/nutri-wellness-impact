@@ -42,6 +42,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     updated_at = models.DateTimeField(auto_now=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True, verbose_name=_("Phone number"))
     profile_picture = models.ImageField(upload_to="profiles/", blank=True, null=True, verbose_name=_("Profile picture"))
+    # Fil "Activite recente" de la nutritionniste : ce qui est plus ancien a deja ete vu
+    activity_seen_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Activity seen until"))
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["role"]
